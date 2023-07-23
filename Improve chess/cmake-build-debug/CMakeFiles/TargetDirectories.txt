@@ -1,0 +1,3 @@
+/Users/noahjoubert/CLionProjects/Improve chess/cmake-build-debug/CMakeFiles/Improve_chess.dir
+/Users/noahjoubert/CLionProjects/Improve chess/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/noahjoubert/CLionProjects/Improve chess/cmake-build-debug/CMakeFiles/rebuild_cache.dir
