@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/noahjoubert/CLionProjects/Improve chess/src/main.cpp" "CMakeFiles/Improve_chess.dir/src/main.cpp.o" "gcc" "CMakeFiles/Improve_chess.dir/src/main.cpp.o.d"
+  "/Users/noahjoubert/CLionProjects/Chessington/Improve chess/old src/main.cpp" "CMakeFiles/Improve_chess.dir/old_src/main.cpp.o" "gcc" "CMakeFiles/Improve_chess.dir/old_src/main.cpp.o.d"
   )
 
 # Targets to which this target links.

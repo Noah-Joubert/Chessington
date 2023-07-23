@@ -132,10 +132,10 @@
 
 /* enable iPhone version of Core Audio driver */
 #define SDL_AUDIO_DRIVER_COREAUDIO 1
-/* Enable the dummy audio driver (src/audio/dummy/\*.c) */
+/* Enable the dummy audio driver (old src/audio/dummy/\*.c) */
 #define SDL_AUDIO_DRIVER_DUMMY  1
 
-/* Enable the stub haptic driver (src/haptic/dummy/\*.c) */
+/* Enable the stub haptic driver (old src/haptic/dummy/\*.c) */
 #define SDL_HAPTIC_DUMMY 1
 
 /* Enable joystick support */

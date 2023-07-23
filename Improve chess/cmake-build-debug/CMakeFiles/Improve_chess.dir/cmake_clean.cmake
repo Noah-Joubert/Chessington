@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Improve_chess.dir/src/main.cpp.o"
-  "CMakeFiles/Improve_chess.dir/src/main.cpp.o.d"
+  "CMakeFiles/Improve_chess.dir/old_src/main.cpp.o"
+  "CMakeFiles/Improve_chess.dir/old_src/main.cpp.o.d"
   "Improve_chess"
   "Improve_chess.pdb"
 )

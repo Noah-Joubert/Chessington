@@ -112,7 +112,7 @@ class HAIKU_SDL_MessageBox : public BAlert
 	int32
 	GetLeftPanelWidth(void) const
 	{
-		// See file "haiku/src/kits/interface/Alert.cpp" for this magic numbers.
+		// See file "haiku/old src/kits/interface/Alert.cpp" for this magic numbers.
 		//    IconStripeWidth = 30 * Scale
 		//    IconSize = 32 * Scale
 		//    Scale = max_c(1, ((int32)be_plain_font->Size() + 15) / 16)
@@ -204,7 +204,7 @@ class HAIKU_SDL_MessageBox : public BAlert
 		rgb_color background = ConvertColorType(aColor);
 
 		GetLayout()->View()->SetViewColor(background);
-		// See file "haiku/src/kits/interface/Alert.cpp", the "TAlertView" is the internal name of the left panel.
+		// See file "haiku/old src/kits/interface/Alert.cpp", the "TAlertView" is the internal name of the left panel.
 		FindView("TAlertView")->SetViewColor(background);
 		fMessageBoxTextView->SetViewColor(background);
 	}

@@ -178,7 +178,7 @@ BlitRGBtoRGBSurfaceAlpha128MMX(SDL_BlitInfo * info)
 {
     int width = info->dst_w;
     int height = info->dst_h;
-    Uint32 *srcp = (Uint32 *) info->src;
+    Uint32 *srcp = (Uint32 *) info->old src;
     int srcskip = info->src_skip >> 2;
     Uint32 *dstp = (Uint32 *) info->dst;
     int dstskip = info->dst_skip >> 2;
@@ -204,15 +204,15 @@ BlitRGBtoRGBSurfaceAlpha128MMX(SDL_BlitInfo * info)
             dst1 = *(__m64 *) dstp;     /* 2 x dst -> dst1(ARGBARGB) */
             dst2 = dst1;        /* 2 x dst -> dst2(ARGBARGB) */
 
-            src1 = *(__m64 *) srcp;     /* 2 x src -> src1(ARGBARGB) */
-            src2 = src1;        /* 2 x src -> src2(ARGBARGB) */
+            src1 = *(__m64 *) srcp;     /* 2 x old src -> src1(ARGBARGB) */
+            src2 = src1;        /* 2 x old src -> src2(ARGBARGB) */
 
             dst2 = _mm_and_si64(dst2, hmask);   /* dst & mask -> dst2 */
-            src2 = _mm_and_si64(src2, hmask);   /* src & mask -> src2 */
+            src2 = _mm_and_si64(src2, hmask);   /* old src & mask -> src2 */
             src2 = _mm_add_pi32(src2, dst2);    /* dst2 + src2 -> src2 */
             src2 = _mm_srli_pi32(src2, 1);      /* src2 >> 1 -> src2 */
 
-            dst1 = _mm_and_si64(dst1, src1);    /* src & dst -> dst1 */
+            dst1 = _mm_and_si64(dst1, src1);    /* old src & dst -> dst1 */
             dst1 = _mm_and_si64(dst1, lmask);   /* dst1 & !mask -> dst1 */
             dst1 = _mm_add_pi32(dst1, src2);    /* src2 + dst1 -> dst1 */
             dst1 = _mm_or_si64(dst1, dsta);     /* dsta(full alpha) | dst1 -> dst1 */
@@ -242,7 +242,7 @@ BlitRGBtoRGBSurfaceAlphaMMX(SDL_BlitInfo * info)
     } else {
         int width = info->dst_w;
         int height = info->dst_h;
-        Uint32 *srcp = (Uint32 *) info->src;
+        Uint32 *srcp = (Uint32 *) info->old src;
         int srcskip = info->src_skip >> 2;
         Uint32 *dstp = (Uint32 *) info->dst;
         int dstskip = info->dst_skip >> 2;
@@ -267,7 +267,7 @@ BlitRGBtoRGBSurfaceAlphaMMX(SDL_BlitInfo * info)
             int n = width;
             if (n & 1) {
                 /* One Pixel Blend */
-                src2 = _mm_cvtsi32_si64(*srcp); /* src(ARGB) -> src2 (0000ARGB) */
+                src2 = _mm_cvtsi32_si64(*srcp); /* old src(ARGB) -> src2 (0000ARGB) */
                 src2 = _mm_unpacklo_pi8(src2, mm_zero); /* 0A0R0G0B -> src2 */
 
                 dst1 = _mm_cvtsi32_si64(*dstp); /* dst(ARGB) -> dst1 (0000ARGB) */
@@ -290,8 +290,8 @@ BlitRGBtoRGBSurfaceAlphaMMX(SDL_BlitInfo * info)
 
             for (n >>= 1; n > 0; --n) {
                 /* Two Pixels Blend */
-                src1 = *(__m64 *) srcp; /* 2 x src -> src1(ARGBARGB) */
-                src2 = src1;    /* 2 x src -> src2(ARGBARGB) */
+                src1 = *(__m64 *) srcp; /* 2 x old src -> src1(ARGBARGB) */
+                src2 = src1;    /* 2 x old src -> src2(ARGBARGB) */
                 src1 = _mm_unpacklo_pi8(src1, mm_zero); /* low - 0A0R0G0B -> src1 */
                 src2 = _mm_unpackhi_pi8(src2, mm_zero); /* high - 0A0R0G0B -> src2 */
 
@@ -331,7 +331,7 @@ BlitRGBtoRGBPixelAlphaMMX(SDL_BlitInfo * info)
 {
     int width = info->dst_w;
     int height = info->dst_h;
-    Uint32 *srcp = (Uint32 *) info->src;
+    Uint32 *srcp = (Uint32 *) info->old src;
     int srcskip = info->src_skip >> 2;
     Uint32 *dstp = (Uint32 *) info->dst;
     int dstskip = info->dst_skip >> 2;
@@ -356,7 +356,7 @@ BlitRGBtoRGBPixelAlphaMMX(SDL_BlitInfo * info)
         } else if (alpha == amask) {
             *dstp = *srcp;
         } else {
-            src1 = _mm_cvtsi32_si64(*srcp); /* src(ARGB) -> src1 (0000ARGB) */
+            src1 = _mm_cvtsi32_si64(*srcp); /* old src(ARGB) -> src1 (0000ARGB) */
             src1 = _mm_unpacklo_pi8(src1, mm_zero); /* 0A0R0G0B -> src1 */
 
             dst1 = _mm_cvtsi32_si64(*dstp); /* dst(ARGB) -> dst1 (0000ARGB) */
@@ -392,7 +392,7 @@ BlitRGBtoRGBPixelAlphaMMX(SDL_BlitInfo * info)
 #endif /* __MMX__ */
 
 #if SDL_ARM_SIMD_BLITTERS
-void BlitARGBto565PixelAlphaARMSIMDAsm(int32_t w, int32_t h, uint16_t *dst, int32_t dst_stride, uint32_t *src, int32_t src_stride);
+void BlitARGBto565PixelAlphaARMSIMDAsm(int32_t w, int32_t h, uint16_t *dst, int32_t dst_stride, uint32_t *old src, int32_t src_stride);
 
 static void
 BlitARGBto565PixelAlphaARMSIMD(SDL_BlitInfo * info)
@@ -401,13 +401,13 @@ BlitARGBto565PixelAlphaARMSIMD(SDL_BlitInfo * info)
 	int32_t height = info->dst_h;
 	uint16_t *dstp = (uint16_t *)info->dst;
 	int32_t dststride = width + (info->dst_skip >> 1);
-	uint32_t *srcp = (uint32_t *)info->src;
+	uint32_t *srcp = (uint32_t *)info->old src;
 	int32_t srcstride = width + (info->src_skip >> 2);
 
 	BlitARGBto565PixelAlphaARMSIMDAsm(width, height, dstp, dststride, srcp, srcstride);
 }
 
-void BlitRGBtoRGBPixelAlphaARMSIMDAsm(int32_t w, int32_t h, uint32_t *dst, int32_t dst_stride, uint32_t *src, int32_t src_stride);
+void BlitRGBtoRGBPixelAlphaARMSIMDAsm(int32_t w, int32_t h, uint32_t *dst, int32_t dst_stride, uint32_t *old src, int32_t src_stride);
 
 static void
 BlitRGBtoRGBPixelAlphaARMSIMD(SDL_BlitInfo * info)
@@ -416,7 +416,7 @@ BlitRGBtoRGBPixelAlphaARMSIMD(SDL_BlitInfo * info)
     int32_t height = info->dst_h;
     uint32_t *dstp = (uint32_t *)info->dst;
     int32_t dststride = width + (info->dst_skip >> 2);
-    uint32_t *srcp = (uint32_t *)info->src;
+    uint32_t *srcp = (uint32_t *)info->old src;
     int32_t srcstride = width + (info->src_skip >> 2);
 
     BlitRGBtoRGBPixelAlphaARMSIMDAsm(width, height, dstp, dststride, srcp, srcstride);
@@ -424,7 +424,7 @@ BlitRGBtoRGBPixelAlphaARMSIMD(SDL_BlitInfo * info)
 #endif
 
 #if SDL_ARM_NEON_BLITTERS
-void BlitARGBto565PixelAlphaARMNEONAsm(int32_t w, int32_t h, uint16_t *dst, int32_t dst_stride, uint32_t *src, int32_t src_stride);
+void BlitARGBto565PixelAlphaARMNEONAsm(int32_t w, int32_t h, uint16_t *dst, int32_t dst_stride, uint32_t *old src, int32_t src_stride);
 
 static void
 BlitARGBto565PixelAlphaARMNEON(SDL_BlitInfo * info)
@@ -433,13 +433,13 @@ BlitARGBto565PixelAlphaARMNEON(SDL_BlitInfo * info)
     int32_t height = info->dst_h;
     uint16_t *dstp = (uint16_t *)info->dst;
     int32_t dststride = width + (info->dst_skip >> 1);
-    uint32_t *srcp = (uint32_t *)info->src;
+    uint32_t *srcp = (uint32_t *)info->old src;
     int32_t srcstride = width + (info->src_skip >> 2);
 
     BlitARGBto565PixelAlphaARMNEONAsm(width, height, dstp, dststride, srcp, srcstride);
 }
 
-void BlitRGBtoRGBPixelAlphaARMNEONAsm(int32_t w, int32_t h, uint32_t *dst, int32_t dst_stride, uint32_t *src, int32_t src_stride);
+void BlitRGBtoRGBPixelAlphaARMNEONAsm(int32_t w, int32_t h, uint32_t *dst, int32_t dst_stride, uint32_t *old src, int32_t src_stride);
 
 static void
 BlitRGBtoRGBPixelAlphaARMNEON(SDL_BlitInfo * info)
@@ -448,7 +448,7 @@ BlitRGBtoRGBPixelAlphaARMNEON(SDL_BlitInfo * info)
 	int32_t height = info->dst_h;
 	uint32_t *dstp = (uint32_t *)info->dst;
 	int32_t dststride = width + (info->dst_skip >> 2);
-	uint32_t *srcp = (uint32_t *)info->src;
+	uint32_t *srcp = (uint32_t *)info->old src;
 	int32_t srcstride = width + (info->src_skip >> 2);
 
 	BlitRGBtoRGBPixelAlphaARMNEONAsm(width, height, dstp, dststride, srcp, srcstride);
@@ -582,7 +582,7 @@ BlitRGBtoRGBPixelAlphaMMX3DNOW(SDL_BlitInfo * info)
 {
     int width = info->dst_w;
     int height = info->dst_h;
-    Uint32 *srcp = (Uint32 *) info->src;
+    Uint32 *srcp = (Uint32 *) info->old src;
     int srcskip = info->src_skip >> 2;
     Uint32 *dstp = (Uint32 *) info->dst;
     int dstskip = info->dst_skip >> 2;
@@ -612,7 +612,7 @@ BlitRGBtoRGBPixelAlphaMMX3DNOW(SDL_BlitInfo * info)
         } else if (alpha == amask) {
             *dstp = *srcp;
         } else {
-            src1 = _mm_cvtsi32_si64(*srcp); /* src(ARGB) -> src1 (0000ARGB) */
+            src1 = _mm_cvtsi32_si64(*srcp); /* old src(ARGB) -> src1 (0000ARGB) */
             src1 = _mm_unpacklo_pi8(src1, mm_zero); /* 0A0R0G0B -> src1 */
 
             dst1 = _mm_cvtsi32_si64(*dstp); /* dst(ARGB) -> dst1 (0000ARGB) */
@@ -770,7 +770,7 @@ Blit565to565SurfaceAlphaMMX(SDL_BlitInfo * info)
     } else {
         int width = info->dst_w;
         int height = info->dst_h;
-        Uint16 *srcp = (Uint16 *) info->src;
+        Uint16 *srcp = (Uint16 *) info->old src;
         int srcskip = info->src_skip >> 1;
         Uint16 *dstp = (Uint16 *) info->dst;
         int dstskip = info->dst_skip >> 1;
@@ -834,7 +834,7 @@ Blit565to565SurfaceAlphaMMX(SDL_BlitInfo * info)
                 d &= 0x07e0f81f;
                 *dstp++ = (Uint16)(d | d >> 16);
             },{
-                src1 = *(__m64*)srcp; /* 4 src pixels -> src1 */
+                src1 = *(__m64*)srcp; /* 4 old src pixels -> src1 */
                 dst1 = *(__m64*)dstp; /* 4 dst pixels -> dst1 */
 
                 /* red */
@@ -845,7 +845,7 @@ Blit565to565SurfaceAlphaMMX(SDL_BlitInfo * info)
                 dst2 = _mm_srli_pi16(dst2, 11); /* dst2 >> 11 -> dst2 [000r 000r 000r 000r] */
 
                 /* blend */
-                src2 = _mm_sub_pi16(src2, dst2);/* src - dst -> src2 */
+                src2 = _mm_sub_pi16(src2, dst2);/* old src - dst -> src2 */
                 src2 = _mm_mullo_pi16(src2, mm_alpha); /* src2 * alpha -> src2 */
                 src2 = _mm_srli_pi16(src2, 11); /* src2 >> 11 -> src2 */
                 dst2 = _mm_add_pi16(src2, dst2); /* src2 + dst2 -> dst2 */
@@ -855,13 +855,13 @@ Blit565to565SurfaceAlphaMMX(SDL_BlitInfo * info)
 
                 /* green -- process the bits in place */
                 src2 = src1;
-                src2 = _mm_and_si64(src2, gmask); /* src & MASKGREEN -> src2 */
+                src2 = _mm_and_si64(src2, gmask); /* old src & MASKGREEN -> src2 */
 
                 dst2 = dst1;
                 dst2 = _mm_and_si64(dst2, gmask); /* dst & MASKGREEN -> dst2 */
 
                 /* blend */
-                src2 = _mm_sub_pi16(src2, dst2);/* src - dst -> src2 */
+                src2 = _mm_sub_pi16(src2, dst2);/* old src - dst -> src2 */
                 src2 = _mm_mulhi_pi16(src2, mm_alpha); /* src2 * alpha -> src2 */
                 src2 = _mm_slli_pi16(src2, 5); /* src2 << 5 -> src2 */
                 dst2 = _mm_add_pi16(src2, dst2); /* src2 + dst2 -> dst2 */
@@ -870,13 +870,13 @@ Blit565to565SurfaceAlphaMMX(SDL_BlitInfo * info)
 
                 /* blue */
                 src2 = src1;
-                src2 = _mm_and_si64(src2, bmask); /* src & MASKBLUE -> src2[000b 000b 000b 000b] */
+                src2 = _mm_and_si64(src2, bmask); /* old src & MASKBLUE -> src2[000b 000b 000b 000b] */
 
                 dst2 = dst1;
                 dst2 = _mm_and_si64(dst2, bmask); /* dst & MASKBLUE -> dst2[000b 000b 000b 000b] */
 
                 /* blend */
-                src2 = _mm_sub_pi16(src2, dst2);/* src - dst -> src2 */
+                src2 = _mm_sub_pi16(src2, dst2);/* old src - dst -> src2 */
                 src2 = _mm_mullo_pi16(src2, mm_alpha); /* src2 * alpha -> src2 */
                 src2 = _mm_srli_pi16(src2, 11); /* src2 >> 11 -> src2 */
                 dst2 = _mm_add_pi16(src2, dst2); /* src2 + dst2 -> dst2 */
@@ -907,7 +907,7 @@ Blit555to555SurfaceAlphaMMX(SDL_BlitInfo * info)
     } else {
         int width = info->dst_w;
         int height = info->dst_h;
-        Uint16 *srcp = (Uint16 *) info->src;
+        Uint16 *srcp = (Uint16 *) info->old src;
         int srcskip = info->src_skip >> 1;
         Uint16 *dstp = (Uint16 *) info->dst;
         int dstskip = info->dst_skip >> 1;
@@ -972,18 +972,18 @@ Blit555to555SurfaceAlphaMMX(SDL_BlitInfo * info)
                 d &= 0x03e07c1f;
                 *dstp++ = (Uint16)(d | d >> 16);
             },{
-                src1 = *(__m64*)srcp; /* 4 src pixels -> src1 */
+                src1 = *(__m64*)srcp; /* 4 old src pixels -> src1 */
                 dst1 = *(__m64*)dstp; /* 4 dst pixels -> dst1 */
 
                 /* red -- process the bits in place */
                 src2 = src1;
-                src2 = _mm_and_si64(src2, rmask); /* src & MASKRED -> src2 */
+                src2 = _mm_and_si64(src2, rmask); /* old src & MASKRED -> src2 */
 
                 dst2 = dst1;
                 dst2 = _mm_and_si64(dst2, rmask); /* dst & MASKRED -> dst2 */
 
                 /* blend */
-                src2 = _mm_sub_pi16(src2, dst2);/* src - dst -> src2 */
+                src2 = _mm_sub_pi16(src2, dst2);/* old src - dst -> src2 */
                 src2 = _mm_mulhi_pi16(src2, mm_alpha); /* src2 * alpha -> src2 */
                 src2 = _mm_slli_pi16(src2, 5); /* src2 << 5 -> src2 */
                 dst2 = _mm_add_pi16(src2, dst2); /* src2 + dst2 -> dst2 */
@@ -993,13 +993,13 @@ Blit555to555SurfaceAlphaMMX(SDL_BlitInfo * info)
                 
                 /* green -- process the bits in place */
                 src2 = src1;
-                src2 = _mm_and_si64(src2, gmask); /* src & MASKGREEN -> src2 */
+                src2 = _mm_and_si64(src2, gmask); /* old src & MASKGREEN -> src2 */
 
                 dst2 = dst1;
                 dst2 = _mm_and_si64(dst2, gmask); /* dst & MASKGREEN -> dst2 */
 
                 /* blend */
-                src2 = _mm_sub_pi16(src2, dst2);/* src - dst -> src2 */
+                src2 = _mm_sub_pi16(src2, dst2);/* old src - dst -> src2 */
                 src2 = _mm_mulhi_pi16(src2, mm_alpha); /* src2 * alpha -> src2 */
                 src2 = _mm_slli_pi16(src2, 5); /* src2 << 5 -> src2 */
                 dst2 = _mm_add_pi16(src2, dst2); /* src2 + dst2 -> dst2 */
@@ -1007,14 +1007,14 @@ Blit555to555SurfaceAlphaMMX(SDL_BlitInfo * info)
                 mm_res = _mm_or_si64(mm_res, dst2); /* RED | GREEN -> mm_res */
 
                 /* blue */
-                src2 = src1; /* src -> src2 */
-                src2 = _mm_and_si64(src2, bmask); /* src & MASKBLUE -> src2[000b 000b 000b 000b] */
+                src2 = src1; /* old src -> src2 */
+                src2 = _mm_and_si64(src2, bmask); /* old src & MASKBLUE -> src2[000b 000b 000b 000b] */
 
                 dst2 = dst1; /* dst -> dst2 */
                 dst2 = _mm_and_si64(dst2, bmask); /* dst & MASKBLUE -> dst2[000b 000b 000b 000b] */
 
                 /* blend */
-                src2 = _mm_sub_pi16(src2, dst2);/* src - dst -> src2 */
+                src2 = _mm_sub_pi16(src2, dst2);/* old src - dst -> src2 */
                 src2 = _mm_mullo_pi16(src2, mm_alpha); /* src2 * alpha -> src2 */
                 src2 = _mm_srli_pi16(src2, 11); /* src2 >> 11 -> src2 */
                 dst2 = _mm_add_pi16(src2, dst2); /* src2 + dst2 -> dst2 */

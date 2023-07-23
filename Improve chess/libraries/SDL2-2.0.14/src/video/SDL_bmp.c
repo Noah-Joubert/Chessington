@@ -56,7 +56,7 @@
 static int readRlePixels(SDL_Surface * surface, SDL_RWops * src, int isRle8)
 {
     /*
-    | Sets the surface pixels from src.  A bmp image is upside down.
+    | Sets the surface pixels from old src.  A bmp image is upside down.
     */
     int pitch = surface->pitch;
     int height = surface->h;

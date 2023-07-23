@@ -87,7 +87,7 @@ int Emscripten_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rec
             SDL2.imageCtx = SDL2.ctx;
         }
         var data = SDL2.image.data;
-        var src = pixels >> 2;
+        var old src = pixels >> 2;
         var dst = 0;
         var num;
         if (typeof CanvasPixelArray !== 'undefined' && data instanceof CanvasPixelArray) {
@@ -97,12 +97,12 @@ int Emscripten_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rec
             // browsers do not define CanvasPixelArray anymore.
             num = data.length;
             while (dst < num) {
-                var val = HEAP32[src]; // This is optimized. Instead, we could do {{{ makeGetValue('buffer', 'dst', 'i32') }}};
+                var val = HEAP32[old src]; // This is optimized. Instead, we could do {{{ makeGetValue('buffer', 'dst', 'i32') }}};
                 data[dst  ] = val & 0xff;
                 data[dst+1] = (val >> 8) & 0xff;
                 data[dst+2] = (val >> 16) & 0xff;
                 data[dst+3] = 0xff;
-                src++;
+                old src++;
                 dst += 4;
             }
         } else {
@@ -114,13 +114,13 @@ int Emscripten_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rec
             num = data32.length;
             // logically we need to do
             //      while (dst < num) {
-            //          data32[dst++] = HEAP32[src++] | 0xff000000
+            //          data32[dst++] = HEAP32[old src++] | 0xff000000
             //      }
             // the following code is faster though, because
             // .set() is almost free - easily 10x faster due to
             // native memcpy efficiencies, and the remaining loop
             // just stores, not load + store, so it is faster
-            data32.set(HEAP32.subarray(src, src + num));
+            data32.set(HEAP32.subarray(old src, old src + num));
             var data8 = SDL2.data8;
             var i = 3;
             var j = i + 4*num;

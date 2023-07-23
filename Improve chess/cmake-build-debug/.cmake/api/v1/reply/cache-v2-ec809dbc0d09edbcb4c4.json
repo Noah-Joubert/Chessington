@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/noahjoubert/CLionProjects/Improve chess/cmake-build-debug"
+			"value" : "/Users/noahjoubert/CLionProjects/Chessington/Improve chess/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -579,7 +579,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/noahjoubert/CLionProjects/Improve chess/cmake-build-debug/CMakeFiles/pkgRedirects"
+			"value" : "/Users/noahjoubert/CLionProjects/Chessington/Improve chess/cmake-build-debug/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -639,7 +639,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/noahjoubert/CLionProjects/Improve chess"
+			"value" : "/Users/noahjoubert/CLionProjects/Chessington/Improve chess"
 		},
 		{
 			"name" : "CMAKE_INSTALL_NAME_TOOL",
@@ -1215,7 +1215,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/noahjoubert/CLionProjects/Improve chess/cmake-build-debug"
+			"value" : "/Users/noahjoubert/CLionProjects/Chessington/Improve chess/cmake-build-debug"
 		},
 		{
 			"name" : "Improve_chess_IS_TOP_LEVEL",
@@ -1239,7 +1239,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/noahjoubert/CLionProjects/Improve chess"
+			"value" : "/Users/noahjoubert/CLionProjects/Chessington/Improve chess"
 		},
 		{
 			"name" : "ProcessorCount_cmd_sysctl",

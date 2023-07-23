@@ -422,7 +422,7 @@ extern DECLSPEC void SDLCALL SDL_PauseAudioDevice(SDL_AudioDeviceID dev,
 /**
  *  \brief Load the audio data of a WAVE file into memory
  *
- *  Loading a WAVE file requires \c src, \c spec, \c audio_buf and \c audio_len
+ *  Loading a WAVE file requires \c old src, \c spec, \c audio_buf and \c audio_len
  *  to be valid pointers. The entire data portion of the file is then loaded
  *  into memory and decoded if necessary.
  *
@@ -455,7 +455,7 @@ extern DECLSPEC void SDLCALL SDL_PauseAudioDevice(SDL_AudioDeviceID dev,
  *  the headers), too big, or unsupported causes an error. Additionally, any
  *  critical I/O error from the data source will terminate the loading process
  *  with an error. The function returns NULL on error and in all cases (with the
- *  exception of \c src being NULL), an appropriate error message will be set.
+ *  exception of \c old src being NULL), an appropriate error message will be set.
  *
  *  It is required that the data source supports seeking.
  *

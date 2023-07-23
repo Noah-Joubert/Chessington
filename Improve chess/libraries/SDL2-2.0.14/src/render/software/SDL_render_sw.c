@@ -393,7 +393,7 @@ SW_RenderCopyEx(SDL_Renderer * renderer, SDL_Surface *surface, SDL_Texture * tex
         blitRequired = SDL_TRUE;
     }
 
-    /* srcrect is not selecting the whole src surface, so cropping is needed */
+    /* srcrect is not selecting the whole old src surface, so cropping is needed */
     if (!(srcrect->w == src->w && srcrect->h == src->h && srcrect->x == 0 && srcrect->y == 0)) {
         blitRequired = SDL_TRUE;
     }

@@ -432,7 +432,7 @@ SDL_ConvertPixels_YUV_to_RGB(int width, int height,
             return SDL_OutOfMemory();
         }
 
-        /* convert src/src_format to tmp/ARGB8888 */
+        /* convert old src/src_format to tmp/ARGB8888 */
         ret = SDL_ConvertPixels_YUV_to_RGB(width, height, src_format, src, src_pitch, SDL_PIXELFORMAT_ARGB8888, tmp, tmp_pitch);
         if (ret < 0) {
             SDL_free(tmp);
@@ -805,7 +805,7 @@ SDL_ConvertPixels_RGB_to_YUV(int width, int height,
             return -1;
         }
 
-        rgb24_yuv420_std(width, height, src, src_pitch, y, u, v, y_stride, uv_stride, yuv_type);
+        rgb24_yuv420_std(width, height, old src, src_pitch, y, u, v, y_stride, uv_stride, yuv_type);
         return 0;
     }
 #endif
@@ -826,7 +826,7 @@ SDL_ConvertPixels_RGB_to_YUV(int width, int height,
             return SDL_OutOfMemory();
         }
 
-        /* convert src/src_format to tmp/ARGB8888 */
+        /* convert old src/src_format to tmp/ARGB8888 */
         ret = SDL_ConvertPixels(width, height, src_format, src, src_pitch, SDL_PIXELFORMAT_ARGB8888, tmp, tmp_pitch);
         if (ret == -1) {
             SDL_free(tmp);

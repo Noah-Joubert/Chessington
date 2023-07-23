@@ -57,10 +57,10 @@ RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "/Users/noahjoubert/CLionProjects/Improve chess"
+CMAKE_SOURCE_DIR = "/Users/noahjoubert/CLionProjects/Chessington/Improve chess"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "/Users/noahjoubert/CLionProjects/Improve chess/cmake-build-debug"
+CMAKE_BINARY_DIR = "/Users/noahjoubert/CLionProjects/Chessington/Improve chess/cmake-build-debug"
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/noahjoubert/CLionProjects/Improve chess/cmake-build-debug/CMakeFiles" "/Users/noahjoubert/CLionProjects/Improve chess/cmake-build-debug//CMakeFiles/progress.marks"
+	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/noahjoubert/CLionProjects/Chessington/Improve chess/cmake-build-debug/CMakeFiles" "/Users/noahjoubert/CLionProjects/Chessington/Improve chess/cmake-build-debug//CMakeFiles/progress.marks"
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/noahjoubert/CLionProjects/Improve chess/cmake-build-debug/CMakeFiles" 0
+	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/noahjoubert/CLionProjects/Chessington/Improve chess/cmake-build-debug/CMakeFiles" 0
 .PHONY : all
 
 # The main clean target
@@ -129,29 +129,29 @@ Improve_chess/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/build
 .PHONY : Improve_chess/fast
 
-src/main.o: src/main.cpp.o
-.PHONY : src/main.o
+old_src/main.o: old_src/main.cpp.o
+.PHONY : old_src/main.o
 
 # target to build an object file
-src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/src/main.cpp.o
-.PHONY : src/main.cpp.o
+old_src/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/old_src/main.cpp.o
+.PHONY : old_src/main.cpp.o
 
-src/main.i: src/main.cpp.i
-.PHONY : src/main.i
+old_src/main.i: old_src/main.cpp.i
+.PHONY : old_src/main.i
 
 # target to preprocess a source file
-src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/src/main.cpp.i
-.PHONY : src/main.cpp.i
+old_src/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/old_src/main.cpp.i
+.PHONY : old_src/main.cpp.i
 
-src/main.s: src/main.cpp.s
-.PHONY : src/main.s
+old_src/main.s: old_src/main.cpp.s
+.PHONY : old_src/main.s
 
 # target to generate assembly for a file
-src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/src/main.cpp.s
-.PHONY : src/main.cpp.s
+old_src/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/old_src/main.cpp.s
+.PHONY : old_src/main.cpp.s
 
 # Help Target
 help:
@@ -162,9 +162,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Improve_chess"
-	@echo "... src/main.o"
-	@echo "... src/main.i"
-	@echo "... src/main.s"
+	@echo "... old_src/main.o"
+	@echo "... old_src/main.i"
+	@echo "... old_src/main.s"
 .PHONY : help
 
 

@@ -150,7 +150,7 @@ WINRT_ShowCursor(SDL_Cursor * cursor)
         //
         // SDL can use either means of hiding the cursor.  It provides a Win32-style
         // set of cursor resource files in its source distribution, inside
-        // src/main/winrt/.  If those files are linked to an SDL-for-WinRT/UWP app
+        // old src/main/winrt/.  If those files are linked to an SDL-for-WinRT/UWP app
         // (by including them in a MSVC project, for example), SDL will attempt to
         // use those, if and when the cursor is hidden via SDL APIs.  If those
         // files are not linked in, SDL will attempt to hide the cursor via the
@@ -160,8 +160,8 @@ WINRT_ShowCursor(SDL_Cursor * cursor)
         // Tech notes:
         //  - SDL's blank cursor resource uses a resource ID of 5000.
         //  - SDL's cursor resources consist of the following two files:
-        //     - src/main/winrt/SDL2-WinRTResource_BlankCursor.cur -- cursor pixel data
-        //     - src/main/winrt/SDL2-WinRTResources.rc             -- declares the cursor resource, and its ID (of 5000)
+        //     - old src/main/winrt/SDL2-WinRTResource_BlankCursor.cur -- cursor pixel data
+        //     - old src/main/winrt/SDL2-WinRTResources.rc             -- declares the cursor resource, and its ID (of 5000)
         //
 
         const unsigned int win32CursorResourceID = 5000;  

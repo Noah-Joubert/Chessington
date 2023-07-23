@@ -372,7 +372,7 @@ WINRT_ProcessCharacterReceivedEvent(Windows::UI::Core::CharacterReceivedEventArg
     char dest_utf8[16];
     int result;
 
-    /* Setup src */
+    /* Setup old src */
     src_ucs2[0] = args->KeyCode;
     src_ucs2[1] = L'\0';
 

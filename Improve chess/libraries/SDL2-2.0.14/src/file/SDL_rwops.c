@@ -727,7 +727,7 @@ SDL_LoadFile_RW(SDL_RWops * src, size_t *datasize, int freesrc)
     void *data = NULL, *newdata;
 
     if (!src) {
-        SDL_InvalidParamError("src");
+        SDL_InvalidParamError("old src");
         return NULL;
     }
 

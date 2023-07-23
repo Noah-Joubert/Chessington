@@ -304,7 +304,7 @@ RPI_CreateWindow(_THIS, SDL_Window * window)
                                                              displaydata->dispman_display,
                                                              layer /* layer */,
                                                              &dst_rect,
-                                                             0 /*src*/,
+                                                             0 /*old src*/,
                                                              &src_rect,
                                                              DISPMANX_PROTECTION_NONE,
                                                              &dispman_alpha /*alpha*/,

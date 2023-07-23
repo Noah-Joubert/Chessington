@@ -1288,7 +1288,7 @@ elseif(UNIX AND NOT APPLE AND NOT ANDROID AND NOT RISCOS)
     set(SOURCE_FILES ${SOURCE_FILES} "${SDL2_SOURCE_DIR}/src/core/linux/SDL_evdev_capabilities.c")
     set(SOURCE_FILES ${SOURCE_FILES} "${SDL2_SOURCE_DIR}/src/core/linux/SDL_threadprio.c")
 
-    # src/core/unix/*.c is included in a generic if(UNIX) section, elsewhere.
+    # old src/core/unix/*.c is included in a generic if(UNIX) section, elsewhere.
   endif()
 
   if(SDL_JOYSTICK)
@@ -1647,7 +1647,7 @@ elseif(APPLE)
 
   # We always need these libs on macOS at the moment.
   # !!! FIXME: we need Carbon for some very old API calls in
-  # !!! FIXME:  src/video/cocoa/SDL_cocoakeyboard.c, but we should figure out
+  # !!! FIXME:  old src/video/cocoa/SDL_cocoakeyboard.c, but we should figure out
   # !!! FIXME:  how to dump those.
   if(DARWIN OR MACOSX)
     set(SDL_FRAMEWORK_COCOA 1)
@@ -2002,7 +2002,7 @@ endif()
 #   [add dummy sources]
 # so it always adds a dummy, without checking, if it was actually requested.
 # This leads to missing internal references on building, since the
-# src/X/*.c does not get included.
+# old src/X/*.c does not get included.
 if(NOT HAVE_SDL_JOYSTICK)
   set(SDL_JOYSTICK_DUMMY 1)
   if(SDL_JOYSTICK AND NOT APPLE) # results in unresolved symbols on OSX

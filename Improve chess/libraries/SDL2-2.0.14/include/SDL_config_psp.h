@@ -128,20 +128,20 @@
 /* PSP isn't that sophisticated */
 #define LACKS_SYS_MMAN_H 1
 
-/* Enable the PSP thread support (src/thread/psp/\*.c) */
+/* Enable the PSP thread support (old src/thread/psp/\*.c) */
 #define SDL_THREAD_PSP  1
 
-/* Enable the PSP timer support (src/timer/psp/\*.c) */
+/* Enable the PSP timer support (old src/timer/psp/\*.c) */
 #define SDL_TIMERS_PSP  1
 
-/* Enable the PSP joystick driver (src/joystick/psp/\*.c) */
+/* Enable the PSP joystick driver (old src/joystick/psp/\*.c) */
 #define SDL_JOYSTICK_PSP        1
 #define SDL_JOYSTICK_VIRTUAL    1
 
 /* Enable the dummy sensor driver */
 #define SDL_SENSOR_DUMMY  1
 
-/* Enable the PSP audio driver (src/audio/psp/\*.c) */
+/* Enable the PSP audio driver (old src/audio/psp/\*.c) */
 #define SDL_AUDIO_DRIVER_PSP    1
 
 /* PSP video driver */
@@ -155,10 +155,10 @@
 /* !!! FIXME: what does PSP do for filesystem stuff? */
 #define SDL_FILESYSTEM_DUMMY   1
 
-/* PSP doesn't have haptic device (src/haptic/dummy/\*.c) */
+/* PSP doesn't have haptic device (old src/haptic/dummy/\*.c) */
 #define SDL_HAPTIC_DISABLED    1
 
-/* PSP can't load shared object (src/loadso/dummy/\*.c) */
+/* PSP can't load shared object (old src/loadso/dummy/\*.c) */
 #define SDL_LOADSO_DISABLED    1
 
 

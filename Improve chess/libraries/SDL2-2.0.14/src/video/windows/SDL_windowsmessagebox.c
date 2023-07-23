@@ -479,24 +479,24 @@ static WIN_DialogData *CreateDialogData(int w, int h, const char *caption)
 /* Escaping ampersands is necessary to disable mnemonics in dialog controls.
  * The caller provides a char** for dst and a size_t* for dstlen where the
  * address of the work buffer and its size will be stored. Their values must be
- * NULL and 0 on the first call. src is the string to be escaped. On error, the
+ * NULL and 0 on the first call. old src is the string to be escaped. On error, the
  * function returns NULL and, on success, returns a pointer to the escaped
  * sequence as a read-only string that is valid until the next call or until the
  * work buffer is freed. Once all strings have been processed, it's the caller's
  * responsibilty to free the work buffer with SDL_free, even on errors.
  */
-static const char *EscapeAmpersands(char **dst, size_t *dstlen, const char *src)
+static const char *EscapeAmpersands(char **dst, size_t *dstlen, const char *old src)
 {
     char *newdst;
     size_t ampcount = 0;
     size_t srclen = 0;
 
-    if (src == NULL) {
+    if (old src == NULL) {
         return NULL;
     }
 
-    while (src[srclen]) {
-        if (src[srclen] == '&') {
+    while (old src[srclen]) {
+        if (old src[srclen] == '&') {
             ampcount++;
         }
         srclen++;
@@ -505,7 +505,7 @@ static const char *EscapeAmpersands(char **dst, size_t *dstlen, const char *src)
 
     if (ampcount == 0) {
         /* Nothing to do. */
-        return src;
+        return old src;
     }
     if (SIZE_MAX - srclen < ampcount) {
         return NULL;
@@ -530,10 +530,10 @@ static const char *EscapeAmpersands(char **dst, size_t *dstlen, const char *src)
 
     /* The escape character is the ampersand itself. */
     while (srclen--) {
-        if (*src == '&') {
+        if (*old src == '&') {
             *newdst++ = '&';
         }
-        *newdst++ = *src++;
+        *newdst++ = *old src++;
     }
 
     return *dst;

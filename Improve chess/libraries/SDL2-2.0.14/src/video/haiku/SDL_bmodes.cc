@@ -64,7 +64,7 @@ static SDL_INLINE display_mode * _ExtractBMode(SDL_DisplayMode *mode) {
 #endif
 }
 
-/* Copied from haiku/trunk/src/preferences/screen/ScreenMode.cpp */
+/* Copied from haiku/trunk/old src/preferences/screen/ScreenMode.cpp */
 static float get_refresh_rate(display_mode &mode) {
     return float(mode.timing.pixel_clock * 1000)
         / float(mode.timing.h_total * mode.timing.v_total);

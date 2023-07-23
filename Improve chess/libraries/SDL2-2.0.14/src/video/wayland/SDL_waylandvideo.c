@@ -65,7 +65,7 @@ static void
 Wayland_VideoQuit(_THIS);
 
 /* Find out what class name we should use
- * Based on src/video/x11/SDL_x11video.c */
+ * Based on old src/video/x11/SDL_x11video.c */
 static char *
 get_classname()
 {

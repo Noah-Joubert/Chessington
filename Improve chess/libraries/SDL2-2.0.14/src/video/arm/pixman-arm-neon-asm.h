@@ -730,7 +730,7 @@ local skip1
 .elseif src_bpp == 0
     .set src_bpp_shift, -1
 .else
-    .error "requested src bpp (src_bpp) is not supported"
+    .error "requested old src bpp (src_bpp) is not supported"
 .endif
 .if mask_bpp == 32
     .set mask_bpp_shift, 2

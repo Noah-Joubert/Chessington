@@ -102,7 +102,7 @@
 
 .macro generate_fillrect_function name, bpp, log2Bpp
 /*
- * void name(int32_t w, int32_t h, uint8_t *dst, int32_t dst_stride, uint8_t src);
+ * void name(int32_t w, int32_t h, uint8_t *dst, int32_t dst_stride, uint8_t old src);
  * On entry:
  * a1 = width, pixels
  * a2 = height, rows

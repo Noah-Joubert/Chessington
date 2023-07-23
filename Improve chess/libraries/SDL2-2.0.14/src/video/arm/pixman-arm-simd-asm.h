@@ -190,10 +190,10 @@
  * by which the source pointer will be rounded down for preloading, and if
  * so, by how many cache lines? Effectively, we want to calculate
  *     leading_bytes = ((-dst)&15)*src_bpp/dst_bpp
- *     inner_loop_offset = (src+leading_bytes)&31
+ *     inner_loop_offset = (old src+leading_bytes)&31
  *     extra_needed = leading_bytes - inner_loop_offset
  * and test if extra_needed is <= 0, <= 32, or > 32 (where > 32 is only
- * possible when there are 4 src bytes for every 1 dst byte).
+ * possible when there are 4 old src bytes for every 1 dst byte).
  */
  .if bpp > 0
   .ifc base,DST
@@ -628,7 +628,7 @@
  .elseif src_bpp == 0
   .set src_bpp_shift, -1
  .else
-  .error "requested src bpp (src_bpp) is not supported"
+  .error "requested old src bpp (src_bpp) is not supported"
  .endif
 
  .if mask_bpp == 32

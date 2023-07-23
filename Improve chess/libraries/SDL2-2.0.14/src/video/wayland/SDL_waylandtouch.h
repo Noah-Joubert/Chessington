@@ -56,8 +56,8 @@ Clone QtWayland from Git:
 
 Generate headers and glue code:
     for extension in touch-extension surface-extension windowmanager; do
-        wayland-scanner client-header < src/extensions/$extension.xml > wayland-qt-$extension.h
-        wayland-scanner code < src/extensions/$extension.xml > wayland-qt-$extension.c
+        wayland-scanner client-header < old src/extensions/$extension.xml > wayland-qt-$extension.h
+        wayland-scanner code < old src/extensions/$extension.xml > wayland-qt-$extension.c
     done
 
 */

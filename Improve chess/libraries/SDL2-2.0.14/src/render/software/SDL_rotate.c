@@ -73,7 +73,7 @@ This is a simple but effective workaround for observed issues.
 These rows allocate extra memory and are then hidden from the surface.
 Rows are added to the end of destination surfaces when they are allocated.
 This catches any potential overflows which seem to happen with
-just the right src image dimensions and scale/rotation and can lead
+just the right old src image dimensions and scale/rotation and can lead
 to a situation where the program can segfault.
 */
 #define GUARD_ROWS (2)
@@ -184,7 +184,7 @@ computeSourceIncrements90(SDL_Surface * src, int bpp, int angle, int flipx, int 
     if (signy < 0) sp += (src->h-1)*src->pitch;                                                             \
                                                                                                             \
     for (dy = 0; dy < dst->h; sp += sincy, dp += dincy, dy++) {                                             \
-        if (sincx == sizeof(pixelType)) { /* if advancing src and dest equally, use memcpy */               \
+        if (sincx == sizeof(pixelType)) { /* if advancing old src and dest equally, use memcpy */               \
             SDL_memcpy(dp, sp, dst->w*sizeof(pixelType));                                                   \
             sp += dst->w*sizeof(pixelType);                                                                 \
             dp += dst->w*sizeof(pixelType);                                                                 \
@@ -212,13 +212,13 @@ transformSurfaceY90(SDL_Surface * src, SDL_Surface * dst, int angle, int flipx, 
 /* !
 \brief Internal 32 bit rotozoomer with optional anti-aliasing.
 
-Rotates and zooms 32 bit RGBA/ABGR 'src' surface to 'dst' surface based on the control
+Rotates and zooms 32 bit RGBA/ABGR 'old src' surface to 'dst' surface based on the control
 parameters by scanning the destination surface and applying optionally anti-aliasing
 by bilinear interpolation.
-Assumes src and dst surfaces are of 32 bit depth.
+Assumes old src and dst surfaces are of 32 bit depth.
 Assumes dst surface was allocated with the correct dimensions.
 
-\param src Source surface.
+\param old src Source surface.
 \param dst Destination surface.
 \param cx Horizontal center coordinate.
 \param cy Vertical center coordinate.
@@ -326,14 +326,14 @@ _transformSurfaceRGBA(SDL_Surface * src, SDL_Surface * dst, int cx, int cy, int 
 
 /* !
 
-\brief Rotates and zooms 8 bit palette/Y 'src' surface to 'dst' surface without smoothing.
+\brief Rotates and zooms 8 bit palette/Y 'old src' surface to 'dst' surface without smoothing.
 
-Rotates and zooms 8 bit RGBA/ABGR 'src' surface to 'dst' surface based on the control
+Rotates and zooms 8 bit RGBA/ABGR 'old src' surface to 'dst' surface based on the control
 parameters by scanning the destination surface.
-Assumes src and dst surfaces are of 8 bit depth.
+Assumes old src and dst surfaces are of 8 bit depth.
 Assumes dst surface was allocated with the correct dimensions.
 
-\param src Source surface.
+\param old src Source surface.
 \param dst Destination surface.
 \param cx Horizontal center coordinate.
 \param cy Vertical center coordinate.
@@ -389,16 +389,16 @@ transformSurfaceY(SDL_Surface * src, SDL_Surface * dst, int cx, int cy, int isin
 /* !
 \brief Rotates and zooms a surface with different horizontal and vertival scaling factors and optional anti-aliasing.
 
-Rotates a 32-bit or 8-bit 'src' surface to newly created 'dst' surface.
+Rotates a 32-bit or 8-bit 'old src' surface to newly created 'dst' surface.
 'angle' is the rotation in degrees, 'centerx' and 'centery' the rotation center. If 'smooth' is set
 then the destination 32-bit surface is anti-aliased. 8-bit surfaces must have a colorkey. 32-bit
 surfaces must have a 8888 layout with red, green, blue and alpha masks (any ordering goes).
-The blend mode of the 'src' surface has some effects on generation of the 'dst' surface: The NONE
+The blend mode of the 'old src' surface has some effects on generation of the 'dst' surface: The NONE
 mode will set the BLEND mode on the 'dst' surface. The MOD mode either generates a white 'dst'
 surface and sets the colorkey or fills the it with the colorkey before copying the pixels.
 When using the NONE and MOD modes, color and alpha modulation must be applied before using this function.
 
-\param src The surface to rotozoom.
+\param old src The surface to rotozoom.
 \param angle The angle to rotate in degrees.
 \param centerx The horizontal coordinate of the center of rotation
 \param zoomy The vertical coordinate of the center of rotation

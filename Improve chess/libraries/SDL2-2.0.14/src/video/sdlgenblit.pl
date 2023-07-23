@@ -154,7 +154,7 @@ sub output_copyfuncname
     my $args = shift;
     my $suffix = shift;
 
-    print FILE "$prefix SDL_Blit_${src}_${dst}";
+    print FILE "$prefix SDL_Blit_${old src}_${dst}";
     if ( $modulate ) {
         print FILE "_Modulate";
     }
@@ -233,9 +233,9 @@ __EOF__
     my $ignore_dst_alpha = !$dst_has_alpha && !$blend;
 
     if ( $blend ) {
-        get_rgba("src", $src, $ignore_dst_alpha);
+        get_rgba("old src", $src, $ignore_dst_alpha);
         get_rgba("dst", $dst, !$dst_has_alpha);
-        $s = "src";
+        $s = "old src";
         $d = "dst";
     } else {
         get_rgba("", $src, $ignore_dst_alpha);
@@ -545,7 +545,7 @@ __EOF__
                 for (my $blend = 0; $blend <= 1; ++$blend) {
                     for (my $scale = 0; $scale <= 1; ++$scale) {
                         if ( $modulate || $blend || $scale ) {
-                            print FILE "    { SDL_PIXELFORMAT_$src, SDL_PIXELFORMAT_$dst, ";
+                            print FILE "    { SDL_PIXELFORMAT_$old src, SDL_PIXELFORMAT_$dst, ";
                             my $flags = "";
                             my $flag = "";
                             if ( $modulate ) {

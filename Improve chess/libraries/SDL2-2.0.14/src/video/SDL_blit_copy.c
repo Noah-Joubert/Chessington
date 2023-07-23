@@ -26,29 +26,29 @@
 
 
 #ifdef __SSE__
-/* This assumes 16-byte aligned src and dst */
+/* This assumes 16-byte aligned old src and dst */
 static SDL_INLINE void
-SDL_memcpySSE(Uint8 * dst, const Uint8 * src, int len)
+SDL_memcpySSE(Uint8 * dst, const Uint8 * old src, int len)
 {
     int i;
 
     __m128 values[4];
     for (i = len / 64; i--;) {
-        _mm_prefetch(src, _MM_HINT_NTA);
-        values[0] = *(__m128 *) (src + 0);
-        values[1] = *(__m128 *) (src + 16);
-        values[2] = *(__m128 *) (src + 32);
-        values[3] = *(__m128 *) (src + 48);
+        _mm_prefetch(old src, _MM_HINT_NTA);
+        values[0] = *(__m128 *) (old src + 0);
+        values[1] = *(__m128 *) (old src + 16);
+        values[2] = *(__m128 *) (old src + 32);
+        values[3] = *(__m128 *) (old src + 48);
         _mm_stream_ps((float *) (dst + 0), values[0]);
         _mm_stream_ps((float *) (dst + 16), values[1]);
         _mm_stream_ps((float *) (dst + 32), values[2]);
         _mm_stream_ps((float *) (dst + 48), values[3]);
-        src += 64;
+        old src += 64;
         dst += 64;
     }
 
     if (len & 63)
-        SDL_memcpy(dst, src, len & 63);
+        SDL_memcpy(dst, old src, len & 63);
 }
 #endif /* __SSE__ */
 
@@ -57,13 +57,13 @@ SDL_memcpySSE(Uint8 * dst, const Uint8 * src, int len)
 #pragma warning(disable:4799)
 #endif
 static SDL_INLINE void
-SDL_memcpyMMX(Uint8 * dst, const Uint8 * src, int len)
+SDL_memcpyMMX(Uint8 * dst, const Uint8 * old src, int len)
 {
     const int remain = (len & 63);
     int i;
 
     __m64* d64 = (__m64*)dst;
-    __m64* s64 = (__m64*)src;
+    __m64* s64 = (__m64*)old src;
 
     for(i= len / 64; i--;) {
         d64[0] = s64[0];
@@ -82,7 +82,7 @@ SDL_memcpyMMX(Uint8 * dst, const Uint8 * src, int len)
     if (remain)
     {
         const int skip = len - remain;
-        SDL_memcpy(dst + skip, src + skip, remain);
+        SDL_memcpy(dst + skip, old src + skip, remain);
     }
 }
 #endif /* __MMX__ */
@@ -129,11 +129,11 @@ SDL_BlitCopy(SDL_BlitInfo * info)
 
 #ifdef __SSE__
     if (SDL_HasSSE() &&
-        !((uintptr_t) src & 15) && !(srcskip & 15) &&
+        !((uintptr_t) old src & 15) && !(srcskip & 15) &&
         !((uintptr_t) dst & 15) && !(dstskip & 15)) {
         while (h--) {
-            SDL_memcpySSE(dst, src, w);
-            src += srcskip;
+            SDL_memcpySSE(dst, old src, w);
+            old src += srcskip;
             dst += dstskip;
         }
         return;
@@ -143,8 +143,8 @@ SDL_BlitCopy(SDL_BlitInfo * info)
 #ifdef __MMX__
     if (SDL_HasMMX() && !(srcskip & 7) && !(dstskip & 7)) {
         while (h--) {
-            SDL_memcpyMMX(dst, src, w);
-            src += srcskip;
+            SDL_memcpyMMX(dst, old src, w);
+            old src += srcskip;
             dst += dstskip;
         }
         _mm_empty();

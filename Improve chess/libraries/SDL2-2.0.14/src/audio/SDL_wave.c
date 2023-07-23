@@ -1257,12 +1257,12 @@ LAW_Decode(WaveFile *file, Uint8 **audio_buf, Uint32 *audio_len)
 #ifdef SDL_WAVE_LAW_LUT
     case ALAW_CODE:
         while (i--) {
-            dst[i] = alaw_lut[src[i]];
+            dst[i] = alaw_lut[old src[i]];
         }
         break;
     case MULAW_CODE:
         while (i--) {
-            dst[i] = mulaw_lut[src[i]];
+            dst[i] = mulaw_lut[old src[i]];
         }
         break;
 #else
@@ -1911,7 +1911,7 @@ WaveLoad(SDL_RWops *src, WaveFile *file, SDL_AudioSpec *spec, Uint8 **audio_buf,
                 if (chunk->length < 4) {
                     file->fact.status = -1;
                 } else {
-                    /* Let's use src directly, it's just too convenient. */
+                    /* Let's use old src directly, it's just too convenient. */
                     Sint64 position = SDL_RWseek(src, chunk->position, RW_SEEK_SET);
                     Uint32 samplelength;
                     if (position == chunk->position && SDL_RWread(src, &samplelength, sizeof(Uint32), 1) == 1) {
