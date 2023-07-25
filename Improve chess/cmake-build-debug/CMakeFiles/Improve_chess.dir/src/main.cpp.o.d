@@ -424,11 +424,20 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__split_buffer \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/types.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/vector \
-  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/bitboards.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/movegen.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/position.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/bitboards.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../types.h \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/movegen.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../Search/SearchState.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../Search/../types.h \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../Search/../Board/bitboards.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../Search/../misc.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../Search/../evaluation.h \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../Search/../Board/board.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../misc.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../evaluation.h \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/SearchState.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/misc.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/evaluation.h \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/evaluation.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/search.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/search.h
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/evaluation.h \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/search.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../Search/search.h

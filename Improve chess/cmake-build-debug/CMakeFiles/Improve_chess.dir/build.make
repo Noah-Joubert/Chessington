@@ -69,28 +69,28 @@ include CMakeFiles/Improve_chess.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/Improve_chess.dir/flags.make
 
-CMakeFiles/Improve_chess.dir/old_src/main.cpp.o: CMakeFiles/Improve_chess.dir/flags.make
-CMakeFiles/Improve_chess.dir/old_src/main.cpp.o: /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/old\ src/main.cpp
-CMakeFiles/Improve_chess.dir/old_src/main.cpp.o: CMakeFiles/Improve_chess.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/noahjoubert/CLionProjects/Chessington/Improve chess/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Improve_chess.dir/old_src/main.cpp.o"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Improve_chess.dir/old_src/main.cpp.o -MF CMakeFiles/Improve_chess.dir/old_src/main.cpp.o.d -o CMakeFiles/Improve_chess.dir/old_src/main.cpp.o -c "/Users/noahjoubert/CLionProjects/Chessington/Improve chess/old src/main.cpp"
+CMakeFiles/Improve_chess.dir/src/main.cpp.o: CMakeFiles/Improve_chess.dir/flags.make
+CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/main.cpp
+CMakeFiles/Improve_chess.dir/src/main.cpp.o: CMakeFiles/Improve_chess.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/noahjoubert/CLionProjects/Chessington/Improve chess/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Improve_chess.dir/src/main.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Improve_chess.dir/src/main.cpp.o -MF CMakeFiles/Improve_chess.dir/src/main.cpp.o.d -o CMakeFiles/Improve_chess.dir/src/main.cpp.o -c "/Users/noahjoubert/CLionProjects/Chessington/Improve chess/src/main.cpp"
 
-CMakeFiles/Improve_chess.dir/old_src/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Improve_chess.dir/old_src/main.cpp.i"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/noahjoubert/CLionProjects/Chessington/Improve chess/old src/main.cpp" > CMakeFiles/Improve_chess.dir/old_src/main.cpp.i
+CMakeFiles/Improve_chess.dir/src/main.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Improve_chess.dir/src/main.cpp.i"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/noahjoubert/CLionProjects/Chessington/Improve chess/src/main.cpp" > CMakeFiles/Improve_chess.dir/src/main.cpp.i
 
-CMakeFiles/Improve_chess.dir/old_src/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Improve_chess.dir/old_src/main.cpp.s"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/noahjoubert/CLionProjects/Chessington/Improve chess/old src/main.cpp" -o CMakeFiles/Improve_chess.dir/old_src/main.cpp.s
+CMakeFiles/Improve_chess.dir/src/main.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Improve_chess.dir/src/main.cpp.s"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/noahjoubert/CLionProjects/Chessington/Improve chess/src/main.cpp" -o CMakeFiles/Improve_chess.dir/src/main.cpp.s
 
 # Object files for target Improve_chess
 Improve_chess_OBJECTS = \
-"CMakeFiles/Improve_chess.dir/old_src/main.cpp.o"
+"CMakeFiles/Improve_chess.dir/src/main.cpp.o"
 
 # External object files for target Improve_chess
 Improve_chess_EXTERNAL_OBJECTS =
 
-Improve_chess: CMakeFiles/Improve_chess.dir/old_src/main.cpp.o
+Improve_chess: CMakeFiles/Improve_chess.dir/src/main.cpp.o
 Improve_chess: CMakeFiles/Improve_chess.dir/build.make
 Improve_chess: CMakeFiles/Improve_chess.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/Users/noahjoubert/CLionProjects/Chessington/Improve chess/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable Improve_chess"

@@ -129,29 +129,29 @@ Improve_chess/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/build
 .PHONY : Improve_chess/fast
 
-old_src/main.o: old_src/main.cpp.o
-.PHONY : old_src/main.o
+src/main.o: src/main.cpp.o
+.PHONY : src/main.o
 
 # target to build an object file
-old_src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/old_src/main.cpp.o
-.PHONY : old_src/main.cpp.o
+src/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/src/main.cpp.o
+.PHONY : src/main.cpp.o
 
-old_src/main.i: old_src/main.cpp.i
-.PHONY : old_src/main.i
+src/main.i: src/main.cpp.i
+.PHONY : src/main.i
 
 # target to preprocess a source file
-old_src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/old_src/main.cpp.i
-.PHONY : old_src/main.cpp.i
+src/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/src/main.cpp.i
+.PHONY : src/main.cpp.i
 
-old_src/main.s: old_src/main.cpp.s
-.PHONY : old_src/main.s
+src/main.s: src/main.cpp.s
+.PHONY : src/main.s
 
 # target to generate assembly for a file
-old_src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/old_src/main.cpp.s
-.PHONY : old_src/main.cpp.s
+src/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/src/main.cpp.s
+.PHONY : src/main.cpp.s
 
 # Help Target
 help:
@@ -162,9 +162,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Improve_chess"
-	@echo "... old_src/main.o"
-	@echo "... old_src/main.i"
-	@echo "... old_src/main.s"
+	@echo "... src/main.o"
+	@echo "... src/main.i"
+	@echo "... src/main.s"
 .PHONY : help
 
 

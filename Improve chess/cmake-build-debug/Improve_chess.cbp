@@ -80,7 +80,7 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/noahjoubert/CLionProjects/Chessington/Improve chess/old src/main.cpp">
+		<Unit filename="/Users/noahjoubert/CLionProjects/Chessington/Improve chess/src/main.cpp">
 			<Option target="Improve_chess"/>
 		</Unit>
 		<Unit filename="/Users/noahjoubert/CLionProjects/Chessington/Improve chess/CMakeLists.txt">

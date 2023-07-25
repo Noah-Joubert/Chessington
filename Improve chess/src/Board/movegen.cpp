@@ -354,7 +354,7 @@ void convertPromo(short startSquare, short endSquare, short toPiece, MoveList &m
 }
 
 /* board status stuff */
-U64 SearchState::getSquareAttackers(U64 sq, short SIDE) {
+U64 Board::getSquareAttackers(U64 sq, short SIDE) {
     short mover, enemy;
 
     if (SIDE == WHITE) {
@@ -378,7 +378,7 @@ U64 SearchState::getSquareAttackers(U64 sq, short SIDE) {
 
     return attacks;
 }
-bool SearchState::checkKingCheck(short SIDE) {
+bool Board::checkKingCheck(short SIDE) {
     U64 king = pieceBB[KING];
     if (SIDE == WHITE) {
         king &= pieceBB[nWhite];
@@ -388,7 +388,7 @@ bool SearchState::checkKingCheck(short SIDE) {
 
     return getSquareAttackers(king, SIDE);
 }
-short SearchState::getPieceAt(U64 &sq) {
+short Board::getPieceAt(U64 &sq) {
     if (pieceBB[PAWN] & sq) return PAWN;
     if (pieceBB[KNIGHT] & sq) return KNIGHT;
     if (pieceBB[BISHOP] & sq) return BISHOP;
@@ -396,7 +396,7 @@ short SearchState::getPieceAt(U64 &sq) {
     if (pieceBB[QUEEN] & sq) return QUEEN;
     if (pieceBB[KING] & sq) return KING;
 }
-U64 SearchState::getRay (U64 &from, U64 &to){
+U64 Board::getRay (U64 &from, U64 &to){
     U64 ray;
     ray = genNorthMoves(from, emptySquares);
     if (ray & to) return ray | from;
@@ -424,7 +424,7 @@ U64 SearchState::getRay (U64 &from, U64 &to){
 }
 
 /* move generation stuff */
-void SearchState::genBlockers() {
+void Board::genBlockers() {
     // used when generating legal moves
     // Returns the set of pieces which prevent a check. Includes both players' pieces for en-passant gen.
     U64 king = pieceBB[KING];
@@ -456,7 +456,7 @@ void SearchState::genBlockers() {
     enemyMoves = genNWMoves(bishopNqueen, emptySquares) | genSEMoves(bishopNqueen, emptySquares);
     blockersNW = kingMoves & enemyMoves & occupiedSquares;
 }
-void SearchState::genAttackMap() {
+void Board::genAttackMap() {
     // used to find safe squares for king to move to
     // exclude the king from empty squares to stop moves backwards along rays from being generated
     U64 enemyPieces;
@@ -496,7 +496,7 @@ void SearchState::genAttackMap() {
 
     emptySquares ^= friendlyKing; // set the king square to occupied
 }
-void SearchState::genKingMoves() {
+void Board::genKingMoves() {
     U64 moves = 0, actives = 0, quiets = 0;
     U64 generatingPiece = pieceBB[friendly] & pieceBB[KING]; // get the king
     if (generatingPiece) {
@@ -511,7 +511,7 @@ void SearchState::genKingMoves() {
         convertActiveBitboard(generatingPieceIndex, KING, actives, activeMoveList, pieceBB);
     }
 }
-void SearchState::genPawnMoves(short TYPE) {
+void Board::genPawnMoves(short TYPE) {
     U64 generatingPawns = pieceBB[PAWN] & pieceBB[friendly];
 
     // get the en-passant and the promotion rank
@@ -671,7 +671,7 @@ void SearchState::genPawnMoves(short TYPE) {
     }
 }
 
-U64 SearchState::genBishopLegal(U64 piece) {
+U64 Board::genBishopLegal(U64 piece) {
     U64 horizontalBlockers = ~(blockersNS | blockersEW);
     U64 generatingPiece = piece & horizontalBlockers;
 
@@ -685,7 +685,7 @@ U64 SearchState::genBishopLegal(U64 piece) {
 
     return moves;
 }
-U64 SearchState::genRookLegal(U64 piece) {
+U64 Board::genRookLegal(U64 piece) {
     U64 diagonalBlockers = blockersNE | blockersNW;
     U64 generatingPiece = piece & (~diagonalBlockers); // get the set of pieces
 
@@ -696,14 +696,14 @@ U64 SearchState::genRookLegal(U64 piece) {
 
     return moves;
 }
-U64 SearchState::genKnightLegal(U64 piece) {
+U64 Board::genKnightLegal(U64 piece) {
     U64 generatingPiece = piece & ~(blockersNS | blockersEW | blockersNE | blockersNW); // consider blockers
     U64 moves = genAttack<KNIGHT>(generatingPiece, emptySquares);
 
     return moves;
 }
 
-U64 SearchState::genPieceLegal(U64 piece, short pieceType) {
+U64 Board::genPieceLegal(U64 piece, short pieceType) {
     if (pieceType == BISHOP) {
         return genBishopLegal(piece);
 
@@ -718,7 +718,7 @@ U64 SearchState::genPieceLegal(U64 piece, short pieceType) {
 
     }
 }
-void SearchState::genLegal(short pieceType, short TYPE) {
+void Board::genLegal(short pieceType, short TYPE) {
     // used to generate moves for all pieces except pawns/king
     assert((pieceType != PAWN) && (pieceType != KING));
 
@@ -765,7 +765,7 @@ void SearchState::genLegal(short pieceType, short TYPE) {
         }
     }
 }
-void SearchState::genCastlingNew() {
+void Board::genCastlingNew() {
     CRights subRights;
     short king, left, right;
     if (currentSide == WHITE) {
@@ -794,7 +794,7 @@ void SearchState::genCastlingNew() {
         quietMoveList.emplace_back(encodeMove(king, right, 0, 3, KING, ROOK));
     }
 }
-void SearchState::genAllMoves(short TYPE) {
+void Board::genAllMoves(short TYPE) {
     // this function generates all the moves for the current position
     // the type can be all moves, or quiesence moves for the quiesence search ie. checks and captures, or check evasions
 
@@ -874,19 +874,19 @@ void SearchState::genAllMoves(short TYPE) {
     combinedMoveList.insert(combinedMoveList.begin(), activeMoveList.begin(), activeMoveList.end());
 }
 
-bool givesCheck(Move &move, SearchState board) {
+bool Board::givesCheck(Move &move) {
     // see if the move is a check
     short piece = (move & fromTypeMask) >> 16;
 
     if (piece != KING) {
         U64 destinationSquare = toBB((move & toMask) >> 6);
-        U64 enemyKing = board.getPieces(KING, board.getOtherSide());
+        U64 enemyKing = getPieces(KING, getOtherSide());
         U64 kingAttacks;
         if (piece != PAWN) {
-            U64 emptySquares = board.getEmptySquares();
+            U64 emptySquares = getEmptySquares();
             kingAttacks = genAttackWrapper(piece, enemyKing, emptySquares);
         } else {
-            kingAttacks = genPawnAttacks(enemyKing, board.getOtherSide());
+            kingAttacks = genPawnAttacks(enemyKing, getOtherSide());
         }
         if (destinationSquare & kingAttacks) return true;
     }

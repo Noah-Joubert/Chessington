@@ -97,7 +97,7 @@ inline bool isQuietMove(Move &move, SearchState &Board) {
     bool isPromo = (flag == PROMOTION);
     if (isPromo) return false;
 
-    if (givesCheck(move, Board)) return false;
+    if (Board.givesCheck(move)) return false;
 
     return true;
 }
@@ -364,7 +364,7 @@ void orderMoves(SearchState &Board, MoveList &moves, int &depth) {
     if (depth >= 2) {
         int i = 0;
         for (Move m: moves) {
-            if (givesCheck(m, Board)) moveScores[i] += 50;
+            if (Board.givesCheck(m)) moveScores[i] += 50;
             i++;
         }
     }

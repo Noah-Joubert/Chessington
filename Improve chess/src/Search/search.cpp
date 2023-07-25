@@ -37,7 +37,7 @@ int quiesenceSearch(SearchState&Board, int depth, int alpha, int beta, Move &bes
     for (Move move: qMoves) {
         // try delta pruning ~ skipping a capture if it is unlikely to raise alpha
         if (useDeltaPruning &&  // if delta pruning is enabled
-            Board.getPhase() <= 18 && // and not late in endgame
+//            Board.getPhase() <= 18 && // and not late in endgame
             moveWorth(move) + DELTA_MARGIN + standPat < alpha // and this capture won't beat alpha
             ) continue;
 
@@ -162,8 +162,8 @@ int negaMax(SearchState &Board, int depth, int alpha, int beta, Move &bestMove, 
             depth >= R && // and not above a certain depth R
             nullAllowed && // and the last move was not a null move
             staticEval >= beta && // and the static eval exceeds beta
-            nodeType != PV_NODE && // and this is not a pv node
-            Board.getPhase() <= 18 // and not in in the endgame
+            nodeType != PV_NODE  // and this is not a pv node
+//            Board.getPhase() <= 18 // and not in in the endgame
             ) {
         // switch side to carry out the null move
         Board.switchSide();
@@ -204,7 +204,7 @@ int negaMax(SearchState &Board, int depth, int alpha, int beta, Move &bestMove, 
         if (futilityPruning &&
             nodeType != PV_NODE && // not a pv-node
             staticEval + futilityMargin(depth) + moveWorth(move) <= alpha && // the move has no potential to raise alpha
-            !givesCheck(move, Board) && // the move is quiet
+            !Board.givesCheck(move) && // the move is quiet
             !closeToMate(alpha, beta) // not close to inCheckMate
             ) {
             continue;
@@ -220,7 +220,7 @@ int negaMax(SearchState &Board, int depth, int alpha, int beta, Move &bestMove, 
             !Board.getInCheck() && // if not in check
             !isCapture(move) && // not a capture
             !isPromo(move) && // not a promotion
-            !givesCheck(move, Board) && // not a check
+            !Board.givesCheck(move) && // not a check
             !isKillerMove(move, depth) // not a killer
             ) {
 
@@ -333,8 +333,8 @@ int firstPly(SearchState &Board, int depth, int alpha, int beta, Move &bestMove,
             depth >= R && // and not above a certain depth R
             nullAllowed && // and the last move was not a null move
             staticEval >= beta && // and the static eval exceeds beta
-            nodeType != PV_NODE && // and this is not a pv node
-            Board.getPhase() <= 18 // and not in in the endgame
+            nodeType != PV_NODE // and this is not a pv node
+//            Board.getPhase() <= 18 // and not in in the endgame
             ) {
         // switch side to carry out the null move
         Board.switchSide();

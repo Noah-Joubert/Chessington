@@ -212,7 +212,7 @@ int SearchState::evaluate(int alpha, int beta) {
     }
 
     /* Step 2: Add on the weighted opening and endgame evaluations */
-    eval += (openingEval(wAttacks, bAttacks) * (ENDGAME - PHASE) + endgameEval() * (PHASE)) / ENDGAME;
+//    eval += (openingEval(wAttacks, bAttacks) * (ENDGAME - PHASE) + endgameEval() * (PHASE)) / ENDGAME;
 //    cout << "Phase: " << PHASE << "\n";
 //    cout << "Eval: " << eval << "\n";
 
