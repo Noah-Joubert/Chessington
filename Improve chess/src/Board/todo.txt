@@ -1,0 +1,2 @@
+TODO 1. Strip Board back to its most simple form. Make move, unmake move ect
+TODO 2. Strip back the search to nothing

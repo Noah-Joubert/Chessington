@@ -1,39 +1,45 @@
 //
 // Created by Noah Joubert on 23/07/2023.
 //
-
 #include "../types.h"
 #include "bitboards.cpp"
 #include "../misc.cpp"
 #include "../evaluation.h"
 
+/*
+ * This is the board class. It runs the game of chess, in a bare-bones form.
+ * It only contains methods and attributes that are essential for chess to run
+ * To run chess: use innerMakeMove, and innerUnMakeMove!
+ * ~ That is about it.
+ * */
 class Board {
 protected:
     short moveNumber = 1; // how many moves have been made
 
-    U64 pieceBB[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; // one extra redundant board is kept
+    /* These are the bitboards */
+    U64 pieceBB[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; // main BB, one redundant
     U64 occupiedSquares, emptySquares; // emptySquares and it's compliment
+
+    U64 blockersNS, blockersEW, blockersNE, blockersNW; // the set of pieces that are preventing a check (they can't move)
+    U64 attackMap; // map of attacked squares, used to stop king from moving into check
+
+    /* History stuff. This is needed for undoing moves */
     MoveList activeMoveList; // stores the active moves
     MoveList quietMoveList; // stores the quiet moves
     MoveList combinedMoveList; // stores both types of moves
-    U64 blockersNS, blockersEW, blockersNE, blockersNW; // blockers for all the ray directions
-    U64 attackMap;
-
     MoveList moveHistory; // stores past moves
     vector<EnPassantRights> enPassantHistory; // stores past en-passant rights
     vector<CRights> CastleRightsHistory; // stores previous castle rights
-    vector<Zobrist> prevStates; // stores previous zobrist hashes
-    vector<short> PST_history; // stores previous piece square table values
 
+    /* Board status stuff */
     short currentSide = WHITE, otherSide = BLACK, friendly = nWhite, enemy = nBlack;
     CRights CastleRights = 15;
     EnPassantRights enPassantRights = 0;
-    Zobrist zobristState;
 
     U64 checkingRay; // holds the acceptable squares for a move to land
     bool inCheck; // holds whether board in check
 
-    /* move gen stuff */
+    /* Move gen stuff (completely self-contained) */
     void genBlockers();
     void genAttackMap();
     void genKingMoves();
@@ -53,12 +59,7 @@ protected:
     short getPieceAt(U64 &sq);
     U64 getSquareAttackers(U64 sq, short SIDE);
     U64 getRay(U64 &from, U64 &to);
-    MoveList getCaptures() {
-        return activeMoveList;
-    }
-    MoveList getQuiets() {
-        return quietMoveList;
-    }
+
 
     /* make move */
     inline void decodeMove(Move move, short &from, short &to, short &promo, short &flag, short &fromType, short &toType) {
@@ -71,11 +72,6 @@ protected:
     }
     inline void clearEnPassRights() {
         // update zobrist key by removing any previous en-passants.
-        if (enPassantRights) {
-            short file = pop8BitIntLSB(enPassantRights);
-            zobristState ^= enPassKeys[file];
-        }
-
         enPassantHistory.emplace_back(enPassantRights);
         enPassantRights = 0;
     }
@@ -101,21 +97,17 @@ protected:
         U64 w = (pieceBB[KING] | pieceBB[ROOK]) & pieceBB[nWhite];
         if ((CastleRights & 1) && (w & CastleMasks[WHITE][0]) != CastleMasks[WHITE][0]) {
             CastleRights ^= 1;
-            zobristState ^= castleKeys[0];
         }
         if ((CastleRights & 2) && (w & CastleMasks[WHITE][1]) != CastleMasks[WHITE][1]) {
             CastleRights ^= 2;
-            zobristState ^= castleKeys[1];
         }
 
         U64 b = (pieceBB[KING] | pieceBB[ROOK]) & pieceBB[nBlack];
         if ((CastleRights & 4) && (b & CastleMasks[BLACK][0]) != CastleMasks[BLACK][0]) {
             CastleRights ^= 4;
-            zobristState ^= castleKeys[2];
         }
         if ((CastleRights & 8) && (b & CastleMasks[BLACK][1]) != CastleMasks[BLACK][1]) {
             CastleRights ^= 8;
-            zobristState ^= castleKeys[3];
         }
     }
     inline void undoCastleRights() {
@@ -161,9 +153,19 @@ protected:
         pieceBB[type] ^= square;
         emptySquares ^= square;
         occupiedSquares ^= square;
-
-        // update zobrist
-        zobristState ^= pieceKeys[type + 6 * side][sq];
+    }
+    void switchSide() {
+        if (currentSide == WHITE) {
+            currentSide = BLACK;
+            otherSide = WHITE;
+            friendly = nBlack;
+            enemy = nWhite;
+        } else {
+            currentSide = WHITE;
+            otherSide = BLACK;
+            friendly = nWhite;
+            enemy = nBlack;
+        }
     }
 
     /* getters - a lot of these can only be used once moves have been generated */
@@ -206,6 +208,9 @@ protected:
             return bitScanForward(pieceAttackers);
         }
     }
+    U64 getEmptySquares() {
+        return emptySquares;
+    }
 
     /* other stuff */
     short FENToPieceCode(char c) {
@@ -227,10 +232,6 @@ protected:
         return EMPTY;
     }
 
-    /* Possibly need to be reworked */
-    U64 getEmptySquares() {
-        return emptySquares;
-    }
 
     /* Init stuff */
     void initPieceBitboards(bool pawns, bool knights, bool bishops, bool rooks, bool kings, bool queens) {
@@ -329,76 +330,17 @@ protected:
             }
         }
     }
-
-    /* Zobrist stuff */
-    bool validateZobrist() {
-        Zobrist created = createZobrist();
-        return zobristState == created;
-    }
-    Zobrist createZobrist() {
-        Zobrist key = 0;
-
-        // first do pieces
-        for (short pc = PAWN; pc <= KING; pc ++) {
-            vector<short> w_pc = toArray(pieceBB[pc] & pieceBB[nWhite]);
-            vector<short> b_pc = toArray(pieceBB[pc] & pieceBB[nBlack]);
-
-            for (short sq: w_pc) {key ^= pieceKeys[pc][sq];}
-            for (short sq: b_pc) {key ^= pieceKeys[pc + 6][sq];}
-        }
-
-        // now do current player
-        key ^= sideKey[currentSide];
-
-        // next do en-pass rights
-        for (int i = 0; i < 8; i++) {
-            if (enPassantRights & toBB(i)) {
-                key ^= enPassKeys[i];
-                break;
-            }
-        }
-
-        // next do castling rights
-        for (int i = 0; i < 4; i++) {
-            if (CastleRights & toBB(i)) {key ^= castleKeys[i];}
-        }
-
-        return key;
-    }
-    void setZobrist() {
-        zobristState = createZobrist();
-        prevStates.emplace_back(zobristState);
-    }
-
 public:
     /* Getters */
-    MoveList getMoveList() {
-        // returns the regular move list
-
-        genAllMoves(ALL_MOVES);
-
-        return combinedMoveList;
-    }
-    MoveList getQMoveList() {
-        // returns the quiescence move list
-
-        genAllMoves(QUIESENCE_MOVES);
-
-        return combinedMoveList;
-    }
     short getCurrentSide() {
         return currentSide;
     }
     short getOtherSide() {
         return otherSide;
     }
-    Zobrist getZobristState() {
-        return zobristState;
-    }
     int getMoveNumber() {
         return moveNumber;
     }
-
     bool getInCheck() {
         return inCheck;
     }
@@ -424,9 +366,6 @@ public:
         if (moveNumber < 7) return false;
 
         int reps = 1;
-        for (int i = moveNumber - 3; i >= 0; i -= 2) {
-            if (zobristState == prevStates[i]) reps ++;
-        }
 
         return reps >= 3;
     }
@@ -438,35 +377,97 @@ public:
 
 
     /* Game function */
-    void switchSide() {
-        // xor out the old player
-        zobristState ^= sideKey[currentSide];
+    void innerMakeMove(Move move) {
+        moveHistory.emplace_back(move);
+        clearEnPassRights();
 
-        if (currentSide == WHITE) {
-            currentSide = BLACK;
-            otherSide = WHITE;
-            friendly = nBlack;
-            enemy = nWhite;
+        short from, to, promo, flag, fromType, toType;
+        decodeMove(move, from, to, promo, flag, fromType, toType);
+
+        if (flag == ENPASSANT) {
+            /* en passant */
+            doEnPass(fromType, toType, from, to);
+        } else if (flag == CASTLING) {
+            /* castle */
+            doCastle(fromType, toType, from, to);
         } else {
-            currentSide = WHITE;
-            otherSide = BLACK;
-            friendly = nWhite;
-            enemy = nBlack;
+            // normal move
+            if (toType == EMPTY) {
+                /* quiet move */
+                doQuiet(fromType, from, to);
+
+                // check for double pawn push and update en-passant rights
+                if ((fromType == PAWN) && ((from - to) % 16 == 0)) {
+                    short file = to % 8;
+                    enPassantRights ^= toBB(file);
+                }
+            } else {
+                /* capture */
+                doCapture(fromType, toType, from, to);
+            }
+
+            // if it was a promotion, set the destination square to the promotion piece
+            if (flag == PROMOTION) {
+                // remove the pawn
+                setSquare(fromType, currentSide, to);
+
+                // add in the promoted piece
+                short promoPiece = getPromoPiece(promo);
+                setSquare(promoPiece, currentSide, to);
+            }
         }
 
-        // xor in the new player
-        zobristState ^= sideKey[currentSide];
-    }
-    void innerMakeMove() {
-
+        updateCastleRights();
+        switchSide(); // switch the side
     }
     void innerUnMakeMove() {
+        Move move = moveHistory.back(); // get the last move played
+        moveHistory.pop_back();
 
+        undoEnPassRights();
+        switchSide(); // switch the side
+
+        moveNumber--; // decrease the move number
+        undoCastleRights();
+
+        // decode the move
+        short from, to, promo, flag, fromType, toType;
+        decodeMove(move, from, to, promo, flag, fromType, toType);
+
+        if (flag == ENPASSANT) {
+            /* en passant */
+            doEnPass(fromType, toType, from, to);
+
+        } else if (flag == CASTLING) {
+            /* castle */
+            doCastle(fromType, toType, from, to);
+
+        } else {
+            // normal move
+
+            // if it's a promotion, turn the to square back to a pawn
+            if (flag == PROMOTION) {
+                // take out the promoted piece
+
+                short promoPiece = getPromoPiece(promo);
+
+                setSquare(fromType, currentSide, to);
+                setSquare(promoPiece, currentSide, to);
+
+            }
+            if (toType == EMPTY) {
+                /* quiet move */
+                doQuiet(fromType, from, to);
+            } else {
+                /* capture */
+                doCapture(fromType, toType, from, to);
+            }
+        }
     }
 
 
     /* Setters */
-    void readFEN(string FEN) {
+    void readFENInner(string FEN) {
         /* reset the board */
         for (int i = 0; i < 9; i++) pieceBB[i] = 0;
         occupiedSquares = 0;
@@ -528,11 +529,11 @@ public:
         }
         enPassantRights = enPassantRights;
 
-        /* the other sections aren't needed for now */
-        setZobrist();
-        prevStates.clear();
+
+
         moveHistory.clear();
         enPassantHistory.clear();
         CastleRightsHistory.clear();
     }
+
 };

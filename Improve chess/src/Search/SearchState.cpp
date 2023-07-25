@@ -11,6 +11,10 @@
 #include "../evaluation.h"
 #include "../Board/board.cpp"
 
+/*
+ * This is the SearchState class. It inherits the Board class, which implements chess.
+ * It contains the extra things that Board doesn't eg. evaluation metrics and
+ * */
 class SearchState: public Board{
 private:
     /* evaluation variables */
@@ -25,13 +29,55 @@ private:
     int materialEval();
     int lazyEval();
 
+    /* Zobrist */
+    Zobrist zobristState;
+    vector<Zobrist> prevStates; // stores previous zobrist hashes
 
+    bool validateZobrist() {
+        Zobrist created = createZobrist();
+        return zobristState == created;
+    }
+    Zobrist createZobrist() {
+        Zobrist key = 0;
+
+        // first do pieces
+        for (short pc = PAWN; pc <= KING; pc ++) {
+            vector<short> w_pc = toArray(pieceBB[pc] & pieceBB[nWhite]);
+            vector<short> b_pc = toArray(pieceBB[pc] & pieceBB[nBlack]);
+
+            for (short sq: w_pc) {key ^= pieceKeys[pc][sq];}
+            for (short sq: b_pc) {key ^= pieceKeys[pc + 6][sq];}
+        }
+
+        // now do current player
+        key ^= sideKey[currentSide];
+
+        // next do en-pass rights
+        for (int i = 0; i < 8; i++) {
+            if (enPassantRights & toBB(i)) {
+                key ^= enPassKeys[i];
+                break;
+            }
+        }
+
+        // next do castling rights
+        for (int i = 0; i < 4; i++) {
+            if (CastleRights & toBB(i)) {key ^= castleKeys[i];}
+        }
+
+        return key;
+    }
+    void setZobrist() {
+        zobristState = createZobrist();
+        prevStates.emplace_back(zobristState);
+    }
 public:
     /* Evaluation */
     int evaluate(int alpha, int beta);
     int relativeLazy();
 
     /* Game control */
+    // TODO Fix init
     void init() {
         initPieceBitboards(true, true, true, true, true, true);
 
@@ -49,148 +95,41 @@ public:
         enPassantHistory.reserve(100);
     }
     void makeMove(Move &move) {
-        PST_history.emplace_back(pst);
+        //TODO add in the god damn evaluation stuff
+        //TODO Zobrist needs to changed based on enpassant right and castle rights. And in SetSquare. And in SwitchPlayer. ANd updated enpassant rights in inner move on fdouble pawn push.
 
-        short from, to, promo, flag, fromType, toType;
-        decodeMove(move, from, to, promo, flag, fromType, toType);
-        prevStates.emplace_back(getZobristState());
-        clearEnPassRights();
-
-        if (flag == ENPASSANT) {
-            // update the material balance
-            material -= PieceWorths[getCurrentSide() * 6 + PAWN];
-
-            // update piece square tables
-            pst -= getPSTValue(from, fromType, currentSide);
-            pst += getPSTValue(to, fromType, currentSide);
-
-            short enPassSquare;
-            if (currentSide == WHITE) {
-                enPassSquare = to + 8;
-            } else {
-                enPassSquare = to - 8;
-            }
-
-            pst -= getPSTValue(enPassSquare, fromType, otherSide);
-
-            /* en passant */
-            doEnPass(fromType, toType, from, to);
-        } else if (flag == CASTLING) {
-            // update king PST
-            short newRook, newKing;
-            U64 rook = toBB(to);
-            getCastleSquares(rook, newRook, newKing, currentSide);
-            pst += getPSTValue(newKing, fromType, currentSide);
-            pst -= getPSTValue(from, fromType, currentSide);
-
-            // add on bonus for castling
-            hasCastled[currentSide] = true;
-
-            /* castle */
-            doCastle(fromType, toType, from, to);
-        } else {
-            // normal move
-            if (toType == EMPTY) {
-                /* quiet move */
-                doQuiet(fromType, from, to);
-
-                // check for double pawn push and update en-passant rights
-                if ((fromType == PAWN) && ((from - to) % 16 == 0)) {
-                    short file = to % 8;
-                    enPassantRights ^= toBB(file);
-                    zobristState ^= enPassKeys[file];
-                }
-            } else {
-                /* capture */
-                doCapture(fromType, toType, from, to);
-
-                material -= PieceWorths[currentSide * 6 + toType]; // update the material balance
-
-                // minus of pst for the taken piece
-                pst -= getPSTValue(to, toType, otherSide);
-            }
-
-            // update pst worth
-            pst -= getPSTValue(from, fromType, currentSide);
-            pst += getPSTValue(to, fromType, currentSide);
-
-            // if it was a promotion, set the destination square to the promotion piece
-            if (flag == PROMOTION) {
-                // remove the pawn
-                setSquare(fromType, currentSide, to);
-
-                // add in the promoted piece
-                short promoPiece = getPromoPiece(promo);
-                setSquare(promoPiece, currentSide, to);
-
-                material -= PieceWorths[currentSide * 6 + promoPiece]; // update the material balance
-
-                // update pst
-                pst -= getPSTValue(to, fromType, currentSide);
-                pst += getPSTValue(to, promoPiece, currentSide);
-            }
-        }
-
-        updateCastleRights();
-        moveHistory.emplace_back(move); // store the move so it can be undone
-        switchSide(); // switch the side
-        moveNumber++; // increment the move number
+        /* ACUTALLY MAKE THE MOVE */
+        innerMakeMove(move);
     }
     void unMakeMove() {
-        Move move = moveHistory.back(); // get the last move played
-        moveHistory.pop_back();
+        /* ACTUALLY UNMAKE THE MOVE */
+        innerUnMakeMove();
+    }
+    MoveList getMoveList() {
+        // returns the regular move list
 
-        undoEnPassRights();
-        switchSide(); // switch the side
+        genAllMoves(ALL_MOVES);
 
-        moveNumber--; // decrease the move number
-        undoCastleRights();
+        return combinedMoveList;
+    }
+    MoveList getQMoveList() {
+        // returns the quiescence move list
 
-        // decode the move
-        short from, to, promo, flag, fromType, toType;
-        decodeMove(move, from, to, promo, flag, fromType, toType);
+        genAllMoves(QUIESENCE_MOVES);
 
-        if (flag == ENPASSANT) {
-            /* en passant */
-            doEnPass(fromType, toType, from, to);
+        return combinedMoveList;
+    }
+    void readFEN(string FEN) {
+        readFENInner(FEN);
 
-            material += PieceWorths[currentSide * 6 + PAWN]; // update the material balance
-        } else if (flag == CASTLING) {
-            /* castle */
-            doCastle(fromType, toType, from, to);
-
-            // remove bonus for un-castling
-            hasCastled[currentSide] = false;
-        } else {
-            // normal move
-
-            // if it's a promotion, turn the to square back to a pawn
-            if (flag == PROMOTION) {
-                // take out the promoted piece
-
-                short promoPiece = getPromoPiece(promo);
-
-                setSquare(fromType, currentSide, to);
-                setSquare(promoPiece, currentSide, to);
-
-                material += PieceWorths[currentSide * 6 + promoPiece]; // update the material balance
-            }
-            if (toType == EMPTY) {
-                /* quiet move */
-                doQuiet(fromType, from, to);
-            } else {
-                /* capture */
-                doCapture(fromType, toType, from, to);
-                material += PieceWorths[currentSide * 6 + toType]; // update the material balance
-            }
-        }
-        zobristState = prevStates.back();
-        prevStates.pop_back();
-        pst = PST_history.back();
-        PST_history.pop_back();
+        /* the other sections aren't needed for now */
+        setZobrist();
+        prevStates.clear();
     }
 
+
     /* What does this do? Fuck knows mate google it. */
+    // TODO sort this
     int SEE(int square) {
         int value = 0;
         int startSquare = getSmallestAttacker(square);
@@ -214,6 +153,9 @@ public:
     }
 
     /* Output */
+    Zobrist getZobristState() {
+        return zobristState;
+    }
     void printBoardPrettily() {
         U64 board;
         string mailbox[64];
