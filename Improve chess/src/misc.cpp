@@ -116,16 +116,16 @@ void printMoveCounts(MoveList moves, vector<int> counts) {
     }
     cout << "\n";
 }
-void printMoveBitboard(Move &move) {
+void printMoveBitboard(Move move) {
     short start, end, promoPiece, moveCode, fromType, toType;
     decodeMove(move, start, end, promoPiece, moveCode, fromType, toType);
 
     cout << "Start: " << SquareStrings[start] << " <> ";
     cout << "End: " << (SquareStrings[end]) << " <> ";
-    cout << "PromoPiece: " << (promoPiece) << " <> ";
+    cout << "PromoPiece: " << getPieceString(promoPiece) << " <> ";
     cout << "MoveCode: " << (moveCode) << " <> ";
-    cout << "FromType: " << (fromType) << " <> ";
-    cout << "ToType: " << (toType) << "\n";
+    cout << "FromType: " << getPieceString(fromType) << " <> ";
+    cout << "ToType: " << getPieceString(toType) << "\n";
 }
 inline Move encodeMove(short startSquare, short endSquare, short promoCode, short moveFlag, short startType, short endType) {
     return (startSquare) | (endSquare << 6) | (promoCode << 12) | (moveFlag << 14) | (startType << 16) | (endType << 19);

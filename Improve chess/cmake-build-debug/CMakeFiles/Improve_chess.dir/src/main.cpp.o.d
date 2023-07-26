@@ -431,13 +431,13 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../Search/../types.h \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../Search/../Board/bitboards.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../Search/../misc.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../Search/../evaluation.h \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../Search/Evaluation/evaluation.h \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../Search/Evaluation/../../types.h \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../Search/../Board/board.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../misc.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../evaluation.h \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/SearchState.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/misc.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/evaluation.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/evaluation.h \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/Evaluation/evaluation.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../Search/Evaluation/../SearchState.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/search.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/../Search/search.h

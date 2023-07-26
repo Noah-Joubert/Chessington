@@ -4,7 +4,7 @@
 #include "../types.h"
 #include "bitboards.cpp"
 #include "../misc.cpp"
-#include "../evaluation.h"
+#include "../Search/Evaluation/evaluation.h"
 
 /*
  * This is the board class. It runs the game of chess, in a bare-bones form.

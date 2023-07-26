@@ -433,14 +433,14 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/types.h \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/bitboards.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/misc.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/evaluation.h \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/Evaluation/evaluation.h \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/types.h \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/board.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/misc.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/evaluation.h \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/SearchState.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/misc.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/evaluation.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/evaluation.h \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/Evaluation/evaluation.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/SearchState.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/search.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/search.h
 
@@ -449,9 +449,9 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
 
 /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/search.cpp:
 
-/Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/evaluation.cpp:
-
 /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/board.cpp:
+
+/Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/Evaluation/evaluation.h:
 
 /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/misc.cpp:
 
@@ -537,13 +537,13 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cctype:
 
-/Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/evaluation.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cwchar:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_pid_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/xlocale/_ctype.h:
+
+/Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/Evaluation/evaluation.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/transform.h:
 

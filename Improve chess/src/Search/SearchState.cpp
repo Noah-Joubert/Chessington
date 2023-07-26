@@ -8,12 +8,12 @@
 #include "../types.h"
 #include "../Board/bitboards.cpp"
 #include "../misc.cpp"
-#include "../evaluation.h"
+#include "Evaluation/evaluation.h"
 #include "../Board/board.cpp"
 
 /*
  * This is the SearchState class. It inherits the Board class, which implements chess.
- * It contains the extra things that Board doesn't eg. evaluation metrics and
+ * It contains the extra things that Board doesn't eg. evaluation and zobrist hasing.
  * */
 class SearchState: public Board{
 private:
@@ -23,12 +23,6 @@ private:
     int pst = 0; // the piece square table value
     int castle = 0; // holds the bonus each side has recieved for castling
     bool hasCastled[2] = {false, false}; // worth's for castling for each side
-
-    /* evaluation stuff */
-    int openingEval(U64 wAttacks, U64 bAttacks);
-    int endgameEval();
-    int materialEval();
-    int lazyEval();
 
     /* Zobrist */
     Zobrist zobristState;
@@ -112,7 +106,7 @@ public:
     // TODO CORE STUFF - THIS IS SAFE FROM BEING STRIPPED BACK
 
     /* Evaluation */
-    int evaluate(int alpha, int beta);
+    int evaluate();
 
     /* Game control */
     void init() {

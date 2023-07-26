@@ -5,12 +5,13 @@
 #ifndef IMPROVE_CHESS_EVALUATION_H
 #define IMPROVE_CHESS_EVALUATION_H
 
-#include "types.h"
+#include "../../types.h"
 
 #define INFINITY 1000000
 #define MATE 100000
 
 // worths of all the pieces for each side
+const int PieceScores[6] = {100, 300, 300, 500, 900, 0};
 const int PieceWorths[12] = {100, 300, 300, 500, 900, 0, -100, -300, -300, -500, -900, 0}; // holds the worth for all pieces
 
 /* piece square tables */
@@ -89,11 +90,6 @@ const Byte PST_Endgame_King[2][64] = {{-50,-40,-30,-20,-20,-30,-40,-50,
                                         -30,-10, 20, 30, 30, 20,-10,-30,
                                         -30,-20,-10,  0,  0,-10,-20,-30,
                                         -50,-40,-30,-20,-20,-30,-40,-50,}};
-
-// function used to init things needed for evaluation
-void initEval() {
-
-}
 
 
 #endif //IMPROVE_CHESS_EVALUATION_H
