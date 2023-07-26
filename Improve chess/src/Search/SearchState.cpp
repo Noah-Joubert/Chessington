@@ -17,6 +17,7 @@
  * */
 class SearchState: public Board{
 private:
+    // TODO NON CORE - WILL BE STRIPPED
     /* evaluation variables */
     int material = 0; // holds the value of the material on the board,
     int pst = 0; // the piece square table value
@@ -71,14 +72,51 @@ private:
         zobristState = createZobrist();
         prevStates.emplace_back(zobristState);
     }
+
 public:
-    /* Evaluation */
-    int evaluate(int alpha, int beta);
+    // TODO NON CORE - WILL BE STRIPPED
+
+    /* What does this do? Fuck knows mate google it. */
+    // TODO sort this
+    int SEE(int square) {
+        int value = 0;
+        int startSquare = getSmallestAttacker(square);
+
+
+        // if there are no more pieces return 0
+        if (startSquare != -1) {
+            U64 from = toBB(startSquare);
+            U64 to = toBB(square);
+
+            int fromPiece = getPieceAt(from);
+            int toPiece = getPieceAt(to);
+
+            Move m = encodeMove(startSquare, square, 0, 0, fromPiece, toPiece);
+            makeMove(m);
+            value = PieceWorths[toPiece] - SEE(square);
+            unMakeMove();
+        }
+
+        return value;
+    }
+
     int relativeLazy();
 
+    /* Output */
+    Zobrist getZobristState() {
+        return zobristState;
+    }
+
+
+public:
+    // TODO CORE STUFF - THIS IS SAFE FROM BEING STRIPPED BACK
+
+    /* Evaluation */
+    int evaluate(int alpha, int beta);
+
     /* Game control */
-    // TODO Fix init
     void init() {
+        // TODO Fix init
         initPieceBitboards(true, true, true, true, true, true);
 
         // create the 'empty/occupied squares' BB
@@ -126,37 +164,59 @@ public:
         setZobrist();
         prevStates.clear();
     }
-
-
-    /* What does this do? Fuck knows mate google it. */
-    // TODO sort this
-    int SEE(int square) {
-        int value = 0;
-        int startSquare = getSmallestAttacker(square);
-
-
-        // if there are no more pieces return 0
-        if (startSquare != -1) {
-            U64 from = toBB(startSquare);
-            U64 to = toBB(square);
-
-            int fromPiece = getPieceAt(from);
-            int toPiece = getPieceAt(to);
-
-            Move m = encodeMove(startSquare, square, 0, 0, fromPiece, toPiece);
-            makeMove(m);
-            value = PieceWorths[toPiece] - SEE(square);
-            unMakeMove();
+    void switchSide() {
+        if (currentSide == WHITE) {
+            currentSide = BLACK;
+            otherSide = WHITE;
+            friendly = nBlack;
+            enemy = nWhite;
+        } else {
+            currentSide = WHITE;
+            otherSide = BLACK;
+            friendly = nWhite;
+            enemy = nBlack;
         }
-
-        return value;
     }
 
-    /* Output */
-    Zobrist getZobristState() {
-        return zobristState;
+    /* Getters */
+    int getMoveNumber() {
+        return moveNumber;
     }
+    bool getInCheck() {
+        return inCheck;
+    }
+    bool inCheckMate() {
+        // you are in inCheckMate if you are in check without any moves
+        return inCheck && combinedMoveList.empty();
+    }
+    inline bool checkThreefold() {
+        /* check for checkThreefold repetition */
+
+        // loop through every other zobrist state from the current one
+        // the current state is only added to the prevStates vector once a move is made
+        if (moveNumber < 7) return false;
+
+        int reps = 1;
+
+        return reps >= 3;
+    }
+    bool inStalemate() {
+        // you are in inStalemate if there are no moves and you're not in check
+        return (!inCheck) && combinedMoveList.empty();
+    }
+    bool givesCheck(Move &move) {
+        return innerGivesCheck(move);
+    }
+    short getCurrentSide() {
+        return currentSide;
+    }
+    short getOtherSide() {
+        return otherSide;
+    }
+
+
     void printBoardPrettily() {
+        // TODO make this nicer
         U64 board;
         string mailbox[64];
         for (int i = 0; i < 64; i++) {
@@ -197,6 +257,7 @@ public:
         cout << "   ----------------------------------\n";
         cout << "      A   B   C   D   E   F   G   H \n";
     }
+
 };
 
 #endif /* !FILE_TYPES_SEEN */

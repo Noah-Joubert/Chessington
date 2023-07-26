@@ -874,19 +874,19 @@ void Board::genAllMoves(short TYPE) {
     combinedMoveList.insert(combinedMoveList.begin(), activeMoveList.begin(), activeMoveList.end());
 }
 
-bool Board::givesCheck(Move &move) {
+bool Board::innerGivesCheck(Move &move) {
     // see if the move is a check
     short piece = (move & fromTypeMask) >> 16;
 
     if (piece != KING) {
         U64 destinationSquare = toBB((move & toMask) >> 6);
-        U64 enemyKing = getPieces(KING, getOtherSide());
+        U64 enemyKing = getPieces(KING, innerGetOtherSide());
         U64 kingAttacks;
         if (piece != PAWN) {
             U64 emptySquares = getEmptySquares();
             kingAttacks = genAttackWrapper(piece, enemyKing, emptySquares);
         } else {
-            kingAttacks = genPawnAttacks(enemyKing, getOtherSide());
+            kingAttacks = genPawnAttacks(enemyKing, innerGetOtherSide());
         }
         if (destinationSquare & kingAttacks) return true;
     }
