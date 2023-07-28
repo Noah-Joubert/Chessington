@@ -178,7 +178,7 @@ inline short getPromoPiece(short promoCode) {
     if (promoCode == ROOKPROMO) return ROOK;
     if (promoCode == QUEENPROMO) return QUEEN;
 }
-inline void getCastleSquares(U64 &to, short &newRook, short &newKing, short &currentSide) {
+inline void getCastleSquares(U64 &to, short &newRook, short &newKing, Side &currentSide) {
     if (currentSide == WHITE) {
         if (to & castleLeftMask) {
             newRook = D1;

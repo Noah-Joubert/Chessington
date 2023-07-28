@@ -1,13 +1,13 @@
 //
 // Created by Noah Joubert on 2021-05-09.
 //
-#include "SearchState.cpp"
+#include "SearchController.cpp"
 #include "../misc.cpp"
 #include "search.h"
 
 #define STALEMATE 1000
 
-int SearchState::negaMax(int alpha, int beta, int depth, Move &bestMove) {
+int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     /* Negamax */
     /* How does it work?
      * 1. The depth counts down to 0. When at zero, we return the static evaluation, which is relative to the current player (positive = good, negative = bad).
@@ -61,15 +61,16 @@ int SearchState::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     return alpha; // return the evaluation for the best move
 }
 
-bool SearchState::search(Move &bestMove, char &twice) {
+bool SearchController::search(Move &bestMove, char &FENFlag) {
     /* This is the search function. It executes a search */
     /* How does it do it?
      * 1. Iterative deepening. The search is timed, and the searchDepth is increased by one until the search takes an appropriate amount of time.
      * 2. Run negamax
      * 3. Check if the game has ended
      * 4. Either exit out of iterative deepening depending on if the search took long enough, or increase the depth and keep going.
-     * 5. Make the best move
-     * 6. Print out stats
+     * 5. See if the move could have been done by another piece for PGN notation
+     * 6. Make the best move
+     * 7. Print out stats
      * */
 
     int eval = 0; // evaluation for this position
@@ -100,10 +101,32 @@ bool SearchState::search(Move &bestMove, char &twice) {
         searchDepth = searchDepth + 1;
     }
 
-    // 5.
-    makeMove(bestMove);
+    // see if the move could have been done by another piece for PGN notation
+    short fromSq, toSq, promo, flag, fromPc, toPc;
+    decodeMove(bestMove, fromSq, toSq, promo, flag, fromPc, toPc);
+    for (Move move: getMoveList()) {
+        if (move == bestMove) continue;
+
+        short fromSq1, toSq1, promo1, flag1, fromPc1, toPc1;
+        decodeMove(move, fromSq1, toSq1, promo1, flag1, fromPc1, toPc1);
+
+        if (toSq == toSq1 && fromPc == fromPc1) {
+            // get the files
+            int file = fromSq % 8, file1 = fromSq1 % 8;
+            int rank = fromSq / 8, rank1 = fromSq1 / 8;
+
+            if (file != file1) {
+                FENFlag = 'a' + file;
+            } else if (rank != rank1) {
+                FENFlag = '0' + (8 - rank);
+            }
+        }
+    }
 
     // 6.
+    makeMove(bestMove);
+
+    // 7.
     cout << "---------------------=+ Search Results " << moveNumber - 1<< ". +=---------------------\n";
     cout << "Move: " << moveToFEN(bestMove, '-') << " | ";
     cout << "Eval: " << eval << "\n";

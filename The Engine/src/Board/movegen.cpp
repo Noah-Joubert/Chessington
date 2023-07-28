@@ -4,7 +4,7 @@
 
 #include "../types.h"
 #include "bitboards.cpp"
-#include "../Search/SearchState.cpp"
+#include "board.h"
 #include "../misc.cpp"
 
 /*
@@ -512,6 +512,8 @@ void Board::genKingMoves() {
     }
 }
 void Board::genPawnMoves(short TYPE) {
+    // TODO Try and digest the genius that I displayed in producing this code
+
     U64 generatingPawns = pieceBB[PAWN] & pieceBB[friendly];
 
     // get the en-passant and the promotion rank
@@ -533,7 +535,7 @@ void Board::genPawnMoves(short TYPE) {
         upRight = 7;
     }
 
-    // if we are generating quiesence moves, AND the validSquares with squares which put the enemy in check
+    // if we are generating quiescence moves, AND the validSquares with squares which put the enemy in check
     // and the enemy pieces, and the promotion rank (rank 1 or rank 8)
     // or promotions
     U64 validSquares = checkingRay;
@@ -585,6 +587,7 @@ void Board::genPawnMoves(short TYPE) {
             activeMoveList.emplace_back(move);
         }
     }
+
     /* now take a deep breath and check for en-passants */
     if (enPassantRights) {
         U64 subCheckingRay = validSquares; // used for check evasion

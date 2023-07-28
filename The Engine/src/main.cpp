@@ -10,7 +10,7 @@
 #include "types.h"
 #include "Board/bitboards.cpp"
 #include "Board/movegen.cpp"
-#include "Search/SearchState.cpp"
+#include "Search/SearchController.cpp"
 #include "misc.cpp"
 #include "Search/Evaluation/evaluation.cpp"
 #include "Search/search.cpp"
@@ -26,7 +26,7 @@ bool parallel = true;
 bool useLogs = true;
 int maxDepth = 6;
 
-SearchState SuperBoard;
+SearchController SuperBoard;
 mutex mtx;
 
 /* Perft stuff. Don't need to touch this */
@@ -48,7 +48,7 @@ void splitMoveList(MoveList moves, vector<MoveList> &moveLists) {
         i = (i + 1) % numThreads;
     }
 }
-void reccursiveMoveCheck(int depth, SearchState &ChessBoard, int &count) {
+void reccursiveMoveCheck(int depth, SearchController &ChessBoard, int &count) {
     if (depth == maxDepth - 1) {
         MoveList moves = ChessBoard.getMoveList();
 
@@ -68,7 +68,7 @@ void reccursiveMoveCheck(int depth, SearchState &ChessBoard, int &count) {
         ChessBoard.unMakeMove();
     }
 }
-void startThread(MoveList moves, SearchState ChessBoard) {
+void startThread(MoveList moves, SearchController ChessBoard) {
     /* note we pass by value here to allow the same super-board to be used for different threads */
     if (maxDepth == 1) {
         nodeCount += moves.size();
@@ -97,7 +97,7 @@ float perft() {
 
     MoveList moves = SuperBoard.getMoveList();
     vector<MoveList> moveLists;
-    vector<SearchState> positions;
+    vector<SearchController> positions;
     vector<int> counts; // stores the counts for each sub move
 
     nodeCount = 0;
@@ -163,6 +163,60 @@ void doReccursiveThings() {
     cout << "Nodes: " << nodeCount << "\n";
 }
 
+void engineAgainstSelf() {
+    // see what game 'number' this is
+    string fileName = logsPath + "games/num.txt";
+
+    // open the file
+    ifstream inputFile;
+    inputFile.open(fileName, ios::in);
+
+    // get the number
+    string numStr;
+    getline(inputFile, numStr);
+    int num = stoi(numStr) + 1;
+
+    // close the input file
+    inputFile.close();
+
+    // open the write file
+    ofstream outputFile;
+    outputFile.open(fileName, ios::out);
+
+    // write the number
+    outputFile << num;
+    outputFile.close();
+
+    string MatchString = "";
+
+    // run the game, and generate the PGN string
+    int maxMoves = 100;
+    Move m;
+    char FENString;
+    while (SuperBoard.search(m, FENString)) {
+        if (SuperBoard.getMoveNumber() % 2 == 0) {
+            MatchString += to_string(SuperBoard.getMoveNumber() / 2) + ". ";
+        }
+        MatchString += moveToFEN(m, FENString) + " ";
+        if (SuperBoard.getMoveNumber() % 2 == 1) {
+            MatchString += "\n";
+        }
+
+        if (!SuperBoard.validateZobrist()) {
+            cout << "Oh no :( \n";
+            break;
+        }
+
+        if (SuperBoard.getMoveNumber() > maxMoves) break;
+    };
+
+    // write the PGN string to the file
+    ofstream gameFile;
+    gameFile.open(logsPath + "games/game-" + to_string(num) + ".txt", ios::app);
+    gameFile << MatchString;
+
+    gameFile.close();
+}
 void debugMode() {
     MoveList moves = SuperBoard.getMoveList();
     while (true) {
@@ -190,17 +244,36 @@ void debugMode() {
             char t;
             SuperBoard.search(m, t);
             moves = SuperBoard.getMoveList();
-        } else if (command == "eval") {cout << "Board evaluation: " << SuperBoard.evaluate() << "\n";} else if (command == "play") {
-            Move m;
-            char t;
-            while (SuperBoard.search(m, t));
+        } else if (command == "eval") {
+            cout << "Board evaluation: " << SuperBoard.evaluate() << "\n";
+        } else if (command == "play") {
+            engineAgainstSelf();
+        } else if (command == "zobrist") {
+            cout << "Current Zobrist key: " << SuperBoard.getZobristState() << "\n";
+            cout << "Calculate Zobrist key: " << SuperBoard.calculateZobristHash() << "\n";
+            cout << "All good: " << SuperBoard.validateZobrist() << "\n";
+        } else if (command == "unmove") {
+            SuperBoard.unMakeMove();
+            moves = SuperBoard.getMoveList();
+        } else if (command == "move") {
+            cout << "       Enter the move ID: ";
+            int moveID;
+            cin >> moveID;
+
+            if (moveID < moves.size() && moveID >= 0) {
+                SuperBoard.makeMove(moves.at(moveID));
+                moves = SuperBoard.getMoveList();
+            } else {
+                cout << "       Invalid move";
+            }
+        } else if (command == "threefold") {
+            cout << "Threefold?: " << SuperBoard.checkThreefold() << "\n";
         }
     }
 }
 
 void init() {
     initStaticMasks(); // used to create various masks
-
 }
 
 int main() {

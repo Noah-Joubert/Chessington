@@ -26,6 +26,11 @@ typedef int8_t Byte;
  * bits 14-15 special move flag (1 = promotion, 2 = en passant, 3 = castling)
  * bits 16-18 are the source piece
  * bits 19-21 are the end piece */
+/* I'll detail how special moves are encoded
+ * Castling: A move from king square to the rook square, with type king and rook
+ * En-Passant: A move from the taking pawn square to it's empty destination square, with type pawn to pawn
+ * Promotion: The promotion flag will be set to the new piece
+ * */
 typedef uint32_t Move;
 
 /* stores the castling rights */

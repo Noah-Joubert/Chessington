@@ -3,9 +3,9 @@
 //
 
 #include "evaluation.h"
-#include "../SearchState.cpp"
+#include "../SearchController.cpp"
 
-int SearchState::evaluate() {
+int SearchController::evaluate() {
     /* this evaluation function is relative to white */
     /* Right now it just does piece worths */
 
