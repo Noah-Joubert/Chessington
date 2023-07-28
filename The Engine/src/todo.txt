@@ -1,0 +1,4 @@
+TODO Implement Zobrist Hashing
+TODO Threefold repetition
+TODO Make the search functions members of search state
+TODO Make regime for testing search functions
