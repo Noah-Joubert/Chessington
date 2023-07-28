@@ -5,87 +5,115 @@
 #include "../misc.cpp"
 #include "search.h"
 
-int negaMax(SearchState &Board, int depth, long int &nodeCount, Move &bestMove) {
+#define STALEMATE 1000
+
+int SearchState::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     /* Negamax */
     /* How does it work?
      * 1. The depth counts down to 0. When at zero, we return the static evaluation, which is relative to the current player (positive = good, negative = bad).
      * 2. We then generate moves, so we can check for checkmates/stalemates/three-folds. It returns a massive negative number in the case of check-mate (as it would be bad for the current player).
-     * 3. Loop through all moves, execute negamax. If a move is better than our best search so far, save it as the best move.
+     * 3. Loop through all moves, execute negamax. If a move is better than our best search so far, save it as the best move. I use alpha beta pruning
+     * 3. a. Beta represents the maximum score that the minimising player is assured of. So if the evaluation is greater than beta, the minimising player won't take this path.
+     * 3. b. Alpha represents the minimum score that the maximising player is assured of. So if the evaluation is greater than alpha, this becomes new alpha!
      * 4. Return the score from the best move searched.
      * */
 
-    nodeCount++; // count the number of nodes searched
+    searchedNodes++; // count the number of nodes searched
 
     // 1. if at the end of the tree, return static evaluation
     if (depth == 0) {
         // return static evaluation
-        return Board.evaluate();
+        return evaluate();
     }
 
 
     // 2. generate all the moves ~ this needs to be done before checking for inCheckMate/ inStalemate
-    MoveList moves = Board.getMoveList();
-    if (Board.inCheckMate()) {
+    MoveList moves = getMoveList();
+    if (inCheckMate()) {
         // return static evaluation ~ do this after checking if depth == 0, to avoid generating moves
         // return -MATE as a checkmate is very bad for the current player
         return (-MATE - depth);
-    } else if (Board.inStalemate() | Board.checkThreefold()) {
+    } else if (inStalemate() | checkThreefold()) {
         // if there is a three-fold or a inStalemate, return the negative of the evaluation
         return STALEMATE;
     }
 
     // 3. now loop through all the moves
     Move subBestMove = 0; // stores the best move within the search
-    int bestEval = -INFINITY; // stores the evaluation of the best move
     for (Move move: moves) {
         // do a full depth search
-        Board.makeMove(move); // make the move
-        int subEval = -negaMax(Board, depth - 1, nodeCount, subBestMove);
-        Board.unMakeMove(); // unmake the move
+        makeMove(move); // make the move
+        int subEval = -negaMax(-beta, -alpha, depth - 1, subBestMove);
+        unMakeMove(); // unmake the move
 
-        if (subEval > bestEval) {
-            bestEval = subEval;
+        // 3. a. Fail hard beta cut off.
+        if (subEval >= beta) {
+            return beta;
+        }
+        // 3. b. New Best Move
+        if (subEval > alpha) {
+            alpha = subEval;
             bestMove = move;
         }
     }
 
     // 4.
-    return bestEval; // return the evaluation for the best move
+    return alpha; // return the evaluation for the best move
 }
 
-bool search(SearchState &SuperBoard, Move &bestMove, char &twice) {
+bool SearchState::search(Move &bestMove, char &twice) {
     /* This is the search function. It executes a search */
     /* How does it do it?
-     * 1. Run negamax
-     * 2. Check if the game has ended
-     * 3. Make the best move
-     * 4. Print out stats
+     * 1. Iterative deepening. The search is timed, and the searchDepth is increased by one until the search takes an appropriate amount of time.
+     * 2. Run negamax
+     * 3. Check if the game has ended
+     * 4. Either exit out of iterative deepening depending on if the search took long enough, or increase the depth and keep going.
+     * 5. Make the best move
+     * 6. Print out stats
      * */
 
-    int eval = 0; // time taken for the evaluation
-
-    searchDepth = 4;
+    int eval = 0; // evaluation for this position
+    float searchTime = 0; // time taken for the search
+    int searchDepth = startingDepth; // the depth at which we search
+    searchedNodes = 0; // the number of nodes searched
 
     // 1.
-    eval = negaMax(SuperBoard, searchDepth, negaNodes, bestMove); // run the search
-    if (SuperBoard.getCurrentSide() == BLACK) {
-        eval *= -1;
+    while (searchTime < minSearchTime) {
+        Timer timer; // start the timer
+
+        // 2.
+        int alpha = -INFINITY, beta = INFINITY;
+        eval = negaMax(alpha, beta, searchDepth, bestMove); // run the search
+        if (getCurrentSide() == BLACK) {
+            eval *= -1;
+        }
+
+        // 3.
+        getMoveList();
+        if (inCheckMate() || inStalemate() || checkThreefold()) {
+            cout << "Game over.\n";
+            return false;
+        }
+
+        // 4.
+        searchTime = timer.end(); // end the timer
+        searchDepth = searchDepth + 1;
     }
 
-    // 2.
-    SuperBoard.getMoveList();
-    if (SuperBoard.inCheckMate() || SuperBoard.inStalemate() || SuperBoard.checkThreefold()) {
-        cout << "Game over.\n";
-        return false;
-    }
+    // 5.
+    makeMove(bestMove);
 
-    // 3.
-    SuperBoard.makeMove(bestMove);
+    // 6.
+    cout << "---------------------=+ Search Results " << moveNumber - 1<< ". +=---------------------\n";
+    cout << "Move: " << moveToFEN(bestMove, '-') << " | ";
+    cout << "Eval: " << eval << "\n";
+    cout << "Depth: " << searchDepth << " | ";
+    cout << "Time: " << searchTime << " | ";
+    cout << "mNodes: " << (float)searchedNodes / 1000000 << " | ";
+    cout << "mNodes per second: " << (float)searchedNodes / 1000000 / searchTime;
+    cout << "\n";
+    printBoardPrettily();
 
-    // 4.
-    SuperBoard.printBoardPrettily();
-    cout << "Eval: " << eval << " | " << "Nodes: " << negaNodes << "\n";
-    printMoveBitboard(bestMove);
 
     return true;
 }

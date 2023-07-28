@@ -10,12 +10,15 @@
 #include "../misc.cpp"
 #include "Evaluation/evaluation.h"
 #include "../Board/board.cpp"
+#include "zobrist.h"
+
+
 
 /*
  * This is the SearchState class. It inherits the Board class, which implements chess.
  * It contains the extra things that Board doesn't eg. evaluation and zobrist hasing.
  * */
-class SearchState: public Board{
+class SearchState: public Board {
 private:
     // TODO NON CORE - WILL BE STRIPPED
     /* evaluation variables */
@@ -67,6 +70,8 @@ private:
         prevStates.emplace_back(zobristState);
     }
 
+    long int searchDepth, searchedNodes;
+
 public:
     // TODO NON CORE - WILL BE STRIPPED
 
@@ -108,17 +113,10 @@ public:
     /* Evaluation */
     int evaluate();
 
-    /* Game control */
-    void init() {
-        // TODO Fix init
-        initPieceBitboards(true, true, true, true, true, true);
+    SearchState() {
+        readFEN(initialFEN);
 
-        // create the 'empty/occupied squares' BB
-        occupiedSquares = (pieceBB[nWhite] | pieceBB[nBlack]);
-        emptySquares = ~occupiedSquares;
-
-        setZobrist();
-
+        //TODO this yeah
         /* this should be looked into/optimised */
         activeMoveList.reserve(100);
         quietMoveList.reserve(100);
@@ -126,6 +124,7 @@ public:
         combinedMoveList.reserve(200);
         enPassantHistory.reserve(100);
     }
+
     void makeMove(Move &move) {
         //TODO add in the god damn evaluation stuff
         //TODO Zobrist needs to changed based on enpassant right and castle rights. And in SetSquare. And in SwitchPlayer. ANd updated enpassant rights in inner move on fdouble pawn push.
@@ -208,7 +207,6 @@ public:
         return otherSide;
     }
 
-
     void printBoardPrettily() {
         // TODO make this nicer
         U64 board;
@@ -252,6 +250,9 @@ public:
         cout << "      A   B   C   D   E   F   G   H \n";
     }
 
+    /* Search Stuff */
+    int negaMax(int alpha, int beta, int depth, Move &bestMove);
+    bool search(Move &bestMove, char &twice);
 };
 
-#endif /* !FILE_TYPES_SEEN */
+#endif !FILE_pos_SEEN

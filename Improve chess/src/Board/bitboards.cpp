@@ -6,6 +6,7 @@
 
 #include "../types.h"
 #include <string>
+#include <vector>
 
 /*
  * These masks give the possible knight/ king/ pawn masks for each square

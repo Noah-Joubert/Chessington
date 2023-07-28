@@ -1,15 +1,11 @@
 //
-// Created by Noah Joubert on 2021-06-17.
+// Created by Noah Joubert on 28/07/2023.
 //
 
-#ifndef IMPROVE_CHESS_SEARCH_H
-#define IMPROVE_CHESS_SEARCH_H
+#ifndef SEARCH_CPP_SEARCH_H
+#define SEARCH_CPP_SEARCH_H
 
+const int startingDepth = 5;
+const float minSearchTime = 0.01;
 
-#define STALEMATE 1000
-
-long int searchDepth, negaNodes;
-
-bool search(SearchState &SuperBoard, Move &bMove, char &twice);
-
-#endif //IMPROVE_CHESS_SEARCH_H
+#endif //SEARCH_CPP_SEARCH_H

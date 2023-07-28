@@ -182,7 +182,6 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o
  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdexcept
  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/unique_ptr.h
  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/hash.h
- /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/auto_ptr.h
  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/atomic
  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__thread/poll_with_backoff.h
  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/chrono
@@ -434,10 +433,19 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o
  /Users/noahjoubert/CLionProjects/Chessington/Improve chess/src/types.h
  /Users/noahjoubert/CLionProjects/Chessington/Improve chess/src/Board/bitboards.cpp
  /Users/noahjoubert/CLionProjects/Chessington/Improve chess/src/misc.cpp
+ /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/unistd.h
+ /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/unistd.h
+ /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_posix_vdisable.h
+ /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_seek_set.h
+ /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/select.h
+ /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_select.h
+ /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_uuid_t.h
+ /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/gethostuuid.h
  /Users/noahjoubert/CLionProjects/Chessington/Improve chess/src/Search/Evaluation/evaluation.h
  /Users/noahjoubert/CLionProjects/Chessington/Improve chess/src/types.h
  /Users/noahjoubert/CLionProjects/Chessington/Improve chess/src/Board/board.cpp
  /Users/noahjoubert/CLionProjects/Chessington/Improve chess/src/misc.cpp
+ /Users/noahjoubert/CLionProjects/Chessington/Improve chess/src/Search/zobrist.h
  /Users/noahjoubert/CLionProjects/Chessington/Improve chess/src/Search/SearchState.cpp
  /Users/noahjoubert/CLionProjects/Chessington/Improve chess/src/misc.cpp
  /Users/noahjoubert/CLionProjects/Chessington/Improve chess/src/Search/Evaluation/evaluation.cpp

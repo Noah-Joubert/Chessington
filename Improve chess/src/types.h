@@ -91,47 +91,7 @@ enum MoveCode {
     CASTLING = 3
 };
 
-// datatype used for zobrist hash
-typedef U64 Zobrist;
-// taken from stockfish - a Pseudo Random Number Generator
-struct PRNG {
-    U64 seed = 1070372;
-
-    U64 rand() {
-        seed ^= seed >> 12, seed ^= seed << 25, seed ^= seed >> 27;
-        return seed * 2685821657736338717LL;
-    }
-};
-Zobrist pieceKeys[12][64]; // generated keys for all the pieces and squares - 2 sides, 6 pieces, 64 squares
-Zobrist enPassKeys[8]; // generated keys for all files for en-passant rights
-Zobrist castleKeys[4]; // generated keys for all castle rights
-Zobrist sideKey[2]; // generated keys for who's side it is
-void initZobrist() {
-    PRNG rng;
-
-    // init the piece keys
-    for (short side: {WHITE, BLACK}) {
-        for (int pc = PAWN; pc <= KING; pc++) {
-            for (int sq = A8; sq <= H1; sq++) {
-                pieceKeys[side * 6 + pc][sq] = rng.rand();
-            }
-        }
-    }
-
-    // do the side keys
-    sideKey[0] = rng.rand();
-    sideKey[1] = rng.rand();
-
-    // init the en-passant keys
-    for (short file = 0; file < 8; file ++) {
-        enPassKeys[file] = rng.rand();
-    }
-
-    // init the castling keys
-    for (int i = 0; i < 4; i ++) {
-        castleKeys[i] = rng.rand();
-    }
-}
+const string initialFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 // functions needed throughout the program
 const string SquareStrings[64] = {"a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8",

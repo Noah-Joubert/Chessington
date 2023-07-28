@@ -181,7 +181,6 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdexcept \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/unique_ptr.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/hash.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/auto_ptr.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/atomic \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__thread/poll_with_backoff.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/chrono \
@@ -433,10 +432,19 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/types.h \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/bitboards.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/misc.cpp \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/unistd.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/unistd.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_posix_vdisable.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_seek_set.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/select.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_select.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_uuid_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/gethostuuid.h \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/Evaluation/evaluation.h \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/types.h \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/board.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/misc.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/zobrist.h \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/SearchState.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/misc.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/Evaluation/evaluation.cpp \
@@ -452,6 +460,14 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
 /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Board/board.cpp:
 
 /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/Evaluation/evaluation.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/gethostuuid.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/select.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/unistd.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/unistd.h:
 
 /Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/misc.cpp:
 
@@ -494,10 +510,6 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_ino64_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_ino_t.h:
-
-/Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/types.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_in_addr_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/set_symmetric_difference.h:
 
@@ -570,6 +582,8 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/remove.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/remove_copy_if.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_uuid_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/counted_iterator.h:
 
@@ -715,6 +729,8 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/pointer_to_unary_function.h:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_posix_vdisable.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/mem_fun_ref.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/mem_fn.h:
@@ -838,10 +854,6 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/pthread/pthread_impl.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/pthread/sched.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/shared_ptr.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/errno.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_pthread/_pthread_types.h:
 
@@ -1099,6 +1111,8 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/comp_ref_type.h:
 
+/Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/Search/zobrist.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/version:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/arm/_mcontext.h:
@@ -1108,6 +1122,8 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cstddef:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__utility/forward.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_seek_set.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/AvailabilityInternal.h:
 
@@ -1185,6 +1201,10 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_off_t.h:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/shared_ptr.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/errno.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_ctermid.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/allocator_traits.h:
@@ -1196,6 +1216,8 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_va_list.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdio.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_select.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_wchar_t.h:
 
@@ -1245,6 +1267,10 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/pthread.h:
 
+/Users/noahjoubert/CLionProjects/Chessington/Improve\ chess/src/types.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_in_addr_t.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/operations.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/machine/_types.h:
@@ -1264,8 +1290,6 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/arm/limits.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/errno.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/auto_ptr.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/set_intersection.h:
 

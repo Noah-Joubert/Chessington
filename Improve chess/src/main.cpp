@@ -16,8 +16,7 @@
 #include "Search/search.cpp"
 
 using namespace std;
-const string initialFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-const string logsPath = "/Users/noahjoubert/CLionProjects/Chessington/Improve chess/logs/";
+const string logsPath = getCWDString() + "/logs/";
 
 double moveTimer = 0;
 long long int nodeCount = 0;
@@ -189,24 +188,19 @@ void debugMode() {
         }  else if (command == "search") {
             Move m;
             char t;
-            search(SuperBoard, m, t);
+            SuperBoard.search(m, t);
             moves = SuperBoard.getMoveList();
         } else if (command == "eval") {cout << "Board evaluation: " << SuperBoard.evaluate() << "\n";} else if (command == "play") {
             Move m;
             char t;
-            while (search(SuperBoard, m, t)) {
-
-            }
+            while (SuperBoard.search(m, t));
         }
     }
 }
 
 void init() {
-    initZobrist();
-    SuperBoard.init();
     initStaticMasks(); // used to create various masks
-    /* create initSearch function */
-    SuperBoard.readFEN(initialFEN);
+
 }
 
 int main() {

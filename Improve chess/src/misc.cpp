@@ -4,10 +4,36 @@
 #include <string>
 #include "types.h"
 
+#ifdef _WIN32
+#include <direct.h>
+    #define getcwd _getcwd // stupid MSFT "deprecation" warning
+#else
+#include <unistd.h>
+#endif
+
 #ifndef FILE_misc_SEEN
 #define FILE_misc_SEEN
 
 /* other stuff */
+string getCWDString() {
+    // returns the current working directory address
+
+    int SIZE = 1000;
+    char buffer[SIZE];
+    char *answer = getcwd(buffer, sizeof(buffer));
+    string s_cwd;
+    if (answer)
+    {
+        s_cwd = answer;
+
+        // remove the '/cmake-build-debug' from the end
+        int stringLength = s_cwd.size();
+        return s_cwd.substr(0, stringLength - 18);
+    } else {
+        cout << "Error with fetching cwd.";
+        return " ";
+    }
+}
 string getPieceString(short int key) {
     switch (key) {
         case PAWN:
@@ -126,6 +152,91 @@ void printMoveBitboard(Move move) {
     cout << "MoveCode: " << (moveCode) << " <> ";
     cout << "FromType: " << getPieceString(fromType) << " <> ";
     cout << "ToType: " << getPieceString(toType) << "\n";
+}
+string moveToFEN(Move move, char twice) {
+    short fromSq, toSq, promo, flag, fromPc, toPc;
+    decodeMove(move, fromSq, toSq, promo, flag, fromPc, toPc);
+
+    string moveString = "";
+
+    if (flag == CASTLING) {
+        // castle queenside
+        if (toSq == A1 || toSq == A8) {
+            moveString += "O-O-O";
+        } else {
+            moveString += "O-O";
+        }
+    } else if (flag == PROMOTION) {
+        string promoStr;
+        if (promo == QUEENPROMO) {
+            promoStr = "Q";
+        } else if (promo == BISHOPPROMO) {
+            promoStr = "B";
+        } else if (promo == KNIGHTPROMO) {
+            promoStr = "N";
+        } else if (promo == ROOKPROMO) {
+            promoStr = "R";
+        }
+
+        // get the start file of the pawn
+        char startFile = char(int('a') + fromSq % 8);
+
+        // see if this was a capture
+        if (toPc != EMPTY) {
+            // capture
+            moveString.push_back(startFile);
+            moveString += "x" + SquareStrings[toSq] + "=" + promoStr;
+        } else {
+            moveString += SquareStrings[toSq] + "=" + promoStr;
+        }
+    } else if (flag == ENPASSANT) {
+        char startFile = char(int('a') + fromSq % 8);
+
+        moveString.push_back(startFile);
+        moveString += "x" + SquareStrings[toSq];
+    } else {
+        // see if it is a pawn move
+        if (fromPc == PAWN) {
+            char startFile = char(int('a') + fromSq % 8);
+
+            if (toPc != EMPTY) {
+                // capture
+                moveString.push_back(startFile);
+                moveString += "x" + SquareStrings[toSq];
+            } else {
+                // not capture
+                moveString += SquareStrings[toSq];
+            }
+        } else {
+            // get the piece string
+            string pcString;
+            if (fromPc == KNIGHT) {
+                pcString = "N";
+            } else if (fromPc == BISHOP) {
+                pcString = "B";
+            } else if (fromPc == ROOK) {
+                pcString = "R";
+            } else if (fromPc == KING) {
+                pcString = "K";
+            } else {
+                pcString = "Q";
+            }
+
+            moveString += pcString;
+
+            if (twice != '-') moveString.push_back(twice);
+
+            // see if it was a capture
+            if (toPc != EMPTY) {
+                // capture
+                moveString += "x" + SquareStrings[toSq];
+            } else {
+                moveString += SquareStrings[toSq];
+            }
+        }
+    }
+
+    return moveString;
 }
 inline Move encodeMove(short startSquare, short endSquare, short promoCode, short moveFlag, short startType, short endType) {
     return (startSquare) | (endSquare << 6) | (promoCode << 12) | (moveFlag << 14) | (startType << 16) | (endType << 19);
