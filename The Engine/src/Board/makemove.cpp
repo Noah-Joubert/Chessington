@@ -4,6 +4,9 @@
 
 #include "board.h"
 
+#ifndef SEARCH_MAKEMOVECPP
+#define SEARCH_MAKEMOVECPP
+
 /* make move */
 /* How does make move work?
  * You call the innerMakeMove function, or the innerUnMakeMove function with a legal move.
@@ -207,3 +210,5 @@ inline void Board::setSquare(short &type, Side &side, short &sq) {
     emptySquares ^= square;
     occupiedSquares ^= square;
 }
+
+#endif SEARCH_MAKEMOVECPP

@@ -2,8 +2,8 @@
 // Created by Noah Joubert on 2021-05-09.
 //
 
+#include "../SearchController.h"
 #include "evaluation.h"
-#include "../SearchController.cpp"
 
 int SearchController::evaluate() {
     /* this evaluation function is relative to white */

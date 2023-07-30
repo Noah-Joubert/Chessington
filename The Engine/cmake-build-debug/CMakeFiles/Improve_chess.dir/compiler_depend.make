@@ -423,13 +423,15 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stack \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/deque \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__split_buffer \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/types.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/vector \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/SearchController.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Evaluation/evaluation.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/SearchController.h \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/board.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/bitboards.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/types.h \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/movegen.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/board.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/vector \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/misc.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/types.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/unistd.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/unistd.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_posix_vdisable.h \
@@ -438,36 +440,38 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_select.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_uuid_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/gethostuuid.h \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/SearchController.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/types.h \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/bitboards.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/misc.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Evaluation/evaluation.h \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/types.h \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/board.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Evaluation/evaluation.h \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/board.h \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/makemove.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Transposition\ Table/zobrist.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/movegen.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Transposition\ Table/zobrist.h \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/types.h \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Evaluation/evaluation.h \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/types.h \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Transposition\ Table/zobrist.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/SearchController.h \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/SearchController.h \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/misc.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Evaluation/evaluation.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/SearchController.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/search.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/search.h
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/misc.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/search.h \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/SearchController.h \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/commandline\ interface.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/perft.cpp
 
+
+/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/perft.cpp:
+
+/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/commandline\ interface.cpp:
 
 /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/search.h:
 
 /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Transposition\ Table/zobrist.cpp:
 
-/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/makemove.cpp:
-
 /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Evaluation/evaluation.h:
 
-/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/SearchController.cpp:
+/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/movegen.cpp:
+
+/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/makemove.cpp:
+
+/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/board.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/gethostuuid.h:
 
@@ -477,15 +481,13 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: /Users/noahjoubert/CLionProjects/Ch
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/unistd.h:
 
-/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/board.h:
-
-/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/movegen.cpp:
-
-/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/bitboards.cpp:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/vector:
 
 /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/types.h:
+
+/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Board/bitboards.cpp:
+
+/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/SearchController.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__split_buffer:
 

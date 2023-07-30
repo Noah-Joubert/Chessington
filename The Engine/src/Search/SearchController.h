@@ -2,12 +2,15 @@
 // Created by Noah Joubert on 28/07/2023.
 //
 
+#include "../Board/board.cpp"
+#include "Transposition Table/zobrist.h"
+
 #ifndef SEARCH_CPP_SEARCHCONTROLLER_H
 #define SEARCH_CPP_SEARCHCONTROLLER_H
 
 /*
  * This is the SearchState class. It inherits the Board class, which implements chess.
- * It contains the extra things that Board doesn't eg. evaluation and zobrist hasing.
+ * It contains the extra things that Board doesn't eg. evaluation and zobrist hashing.
  * */
 class SearchController: public Board {
 private:

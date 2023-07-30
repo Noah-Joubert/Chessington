@@ -2,15 +2,12 @@
 // Created by Noah Joubert on 2021-04-22.
 //
 
-#ifndef FILE_SearchState_SEEN
-#define FILE_SearchState_SEEN
+#ifndef FILE_SearchControllerCPP_SEEN
+#define FILE_SearchControllerCPP_SEEN
 
-#include "../types.h"
-#include "../Board/bitboards.cpp"
-#include "../misc.cpp"
-#include "Evaluation/evaluation.h"
-#include "../Board/board.cpp"
+#include "Evaluation/evaluation.cpp"
 #include "Transposition Table/zobrist.cpp"
+#include "search.cpp"
 #include "SearchController.h"
 
 /* What does this do? Fuck knows mate google it. */
@@ -36,7 +33,6 @@ int SearchController::SEE(int square) {
 
     return value;
 }
-
 
 /* Constructor */
 SearchController::SearchController() {
@@ -195,4 +191,4 @@ void SearchController::printBoardPrettily() {
     cout << "      A   B   C   D   E   F   G   H \n";
 }
 
-#endif !FILE_SearchState_SEEN
+#endif !FILE_SearchControllerCPP_SEEN

@@ -2,7 +2,6 @@
 // Created by Noah Joubert on 28/07/2023.
 //
 
-#include "zobrist.h"
 #include "../SearchController.h"
 
 #ifndef SEARCH_CPP_ZOBRIST_CPP
@@ -123,4 +122,4 @@ void SearchController::updateSideZobrist() {
     zobristState ^= sideKey[otherSide];
 }
 
-#endif //SEARCH_CPP_ZOBRIST_CPP
+#endif SEARCH_CPP_ZOBRIST_CPP

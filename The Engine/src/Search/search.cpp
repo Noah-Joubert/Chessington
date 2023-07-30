@@ -1,7 +1,6 @@
 //
 // Created by Noah Joubert on 2021-05-09.
 //
-#include "SearchController.cpp"
 #include "../misc.cpp"
 #include "search.h"
 
@@ -92,13 +91,18 @@ bool SearchController::search(Move &bestMove, char &FENFlag) {
         // 3.
         getMoveList();
         if (inCheckMate() || inStalemate() || checkThreefold()) {
-            cout << "Game over.\n";
+            cout << "game over";
             return false;
         }
 
         // 4.
         searchTime = timer.end(); // end the timer
         searchDepth = searchDepth + 1;
+
+        // this breaks the iterative deepening if whatever reason the search is super duper quick.
+        if (searchDepth > 50) {
+            break;
+        }
     }
 
     // see if the move could have been done by another piece for PGN notation
@@ -127,15 +131,18 @@ bool SearchController::search(Move &bestMove, char &FENFlag) {
     makeMove(bestMove);
 
     // 7.
-    cout << "---------------------=+ Search Results " << moveNumber - 1<< ". +=---------------------\n";
-    cout << "Move: " << moveToFEN(bestMove, '-') << " | ";
-    cout << "Eval: " << eval << "\n";
-    cout << "Depth: " << searchDepth << " | ";
-    cout << "Time: " << searchTime << " | ";
-    cout << "mNodes: " << (float)searchedNodes / 1000000 << " | ";
-    cout << "mNodes per second: " << (float)searchedNodes / 1000000 / searchTime;
-    cout << "\n";
-    printBoardPrettily();
+    const bool DEBUG_MODE = false;
+    if (DEBUG_MODE) {
+        cout << "---------------------=+ Search Results " << moveNumber - 1 << ". +=---------------------\n";
+        cout << "Move: " << moveToFEN(bestMove, '-') << " | ";
+        cout << "Eval: " << eval << "\n";
+        cout << "Depth: " << searchDepth << " | ";
+        cout << "Time: " << searchTime << " | ";
+        cout << "mNodes: " << (float) searchedNodes / 1000000 << " | ";
+        cout << "mNodes per second: " << (float) searchedNodes / 1000000 / searchTime;
+        cout << "\n";
+        printBoardPrettily();
+    }
 
 
     return true;

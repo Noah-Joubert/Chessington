@@ -1,12 +1,11 @@
 //
 // Created by Noah Joubert on 23/07/2023.
 //
-#include "../types.h"
 #include "bitboards.cpp"
 #include "../misc.cpp"
-#include "../Search/Evaluation/evaluation.h"
 #include "board.h"
 #include "makemove.cpp"
+#include "movegen.cpp"
 
 #ifndef FILE_board_SEEN
 #define FILE_board_SEEN

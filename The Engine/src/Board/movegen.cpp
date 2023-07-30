@@ -7,6 +7,9 @@
 #include "board.h"
 #include "../misc.cpp"
 
+#ifndef SEARCH_MOVEGENCPP
+#define SEARCH_MOVEGENCPP
+
 /*
  * Generates all moves in a certain direction
  */
@@ -896,3 +899,5 @@ bool Board::innerGivesCheck(Move &move) {
 
     return false;
 }
+
+#endif SEARCH_MOVEGENCPP
