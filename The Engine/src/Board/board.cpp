@@ -2,7 +2,7 @@
 // Created by Noah Joubert on 23/07/2023.
 //
 #include "bitboards.cpp"
-#include "../misc.cpp"
+#include "../misc.h"
 #include "board.h"
 #include "makemove.cpp"
 #include "movegen.cpp"

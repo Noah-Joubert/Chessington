@@ -6,8 +6,13 @@
 #include "evaluation.h"
 
 int SearchController::evaluate() {
+    /* Right now it just does piece worth's */
+
+    /* negamax requires that the evaluation is relative to the current side */
+    return materialEvaluation * (currentSide == WHITE ? 1 : -1);
+}
+int SearchController::biasedMaterial() {
     /* this evaluation function is relative to white */
-    /* Right now it just does piece worths */
 
     int eval = 0;
 
@@ -32,5 +37,5 @@ int SearchController::evaluate() {
     eval += PieceScores[PAWN] * (count(wPawns) - count(bPawns));
 
     /* negamax requires that the evaluation is relative to the current side */
-    return eval * (currentSide == WHITE ? 1 : -1);
+    return eval ;
 }

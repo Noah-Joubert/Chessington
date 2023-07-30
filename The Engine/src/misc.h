@@ -153,7 +153,7 @@ void printMoveBitboard(Move move) {
     cout << "FromType: " << getPieceString(fromType) << " <> ";
     cout << "ToType: " << getPieceString(toType) << "\n";
 }
-string moveToFEN(Move move, char twice) {
+string moveToFEN(Move move, string twice) {
     short fromSq, toSq, promo, flag, fromPc, toPc;
     decodeMove(move, fromSq, toSq, promo, flag, fromPc, toPc);
 
@@ -224,7 +224,9 @@ string moveToFEN(Move move, char twice) {
 
             moveString += pcString;
 
-            if (twice != '-') moveString.push_back(twice);
+            if (twice != "-") {
+                moveString += twice;
+            }
 
             // see if it was a capture
             if (toPc != EMPTY) {

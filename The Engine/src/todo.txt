@@ -1,4 +1,33 @@
-TODO Implement Zobrist Hashing
-TODO Threefold repetition
-TODO Make the search functions members of search state
-TODO Make regime for testing search functions
+TODO Transposition table
+---------------------=+ Search Results 1. +=---------------------
+Results:
+	Move: Na3 | Eval: -100
+	Depth: 9 | Time: 0.559385 | mNodes: 4.54647 | mNodes per second: 8.12763
+Transposition Table:
+	Fill rate: 100% | Absolute size: 0.524288mb
+	Probe hit rate: 4.13635% | {Exact Probe Rate: 6.05866% | Upper Probe Rate: 12.1901% | Lower Probe Rate: 81.7512%}
+	Node set rate: 5.19205% | {Overwrite proportion: 28.8571% | Collision proportion: 14.011% | New node proportion: 57.1319%}
+---------------------=+ Search Results 1. +=---------------------
+Results:
+	Move: Na3 | Eval: -100
+	Depth: 9 | Time: 0.561828 | mNodes: 4.44812 | mNodes per second: 7.91722
+Transposition Table:
+	Fill rate: 96.8536% | Absolute size: 0.507792mb
+	Probe hit rate: 14.844% | {Exact Probe Rate: 8.03415% | Upper Probe Rate: 19.2297% | Lower Probe Rate: 72.7361%}
+	Node set rate: 25.3402% | {Overwrite proportion: 18.8499% | Collision proportion: 2.24747% | New node proportion: 78.9026%}
+---------------------=+ Search Results 1. +=---------------------
+Results:
+    Move: Na3 | Eval: -100
+    Depth: 9 | Time: 0.734521 | mNodes: 4.68309 | mNodes per second: 6.3757
+Transposition Table:
+    Fill rate: 52.9907% | Absolute size: 0.277824mb
+    Probe hit rate: 24.3779% | {Exact Probe Rate: 3.64483% | Upper Probe Rate: 9.74225% | Lower Probe Rate: 86.6129%}
+    Node set rate: 61.283% | {Overwrite proportion: 9.36672% | Collision proportion: 0.425996% | New node proportion: 90.2073%}
+---------------------=+ Search Results 1. +=---------------------
+Results:
+	Move: Na3 | Eval: -100
+	Depth: 9 | Time: 0.548199 | mNodes: 4.67307 | mNodes per second: 8.5244
+Transposition Table:
+	Fill rate: 52.9907% | Absolute size: 0.277824mb
+	Probe hit rate: 1.02676% | {Exact Probe Rate: 3.24981% | Upper Probe Rate: 10.6902% | Lower Probe Rate: 86.0002%}
+	Node set rate: 61.2811% | {Overwrite proportion: 9.36672% | Collision proportion: 0.425996% | New node proportion: 90.2073%}

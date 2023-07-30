@@ -428,7 +428,7 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/../Board/bitboards.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/../Board/../types.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/vector \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/../Board/../misc.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/../Board/../misc.h \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/types.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/unistd.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/unistd.h \
@@ -443,13 +443,12 @@ CMakeFiles/Improve_chess.dir/src/main.cpp.o: \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/../Board/movegen.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Transposition\ Table/zobrist.h \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Transposition\ Table/../../types.h \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Transposition\ Table/TT.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Evaluation/evaluation.h \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Evaluation/../../types.h \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Transposition\ Table/zobrist.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/Transposition\ Table/../SearchController.h \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/search.cpp \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/../misc.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/../misc.h \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/search.h \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/Search/SearchController.h \
-  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/commandline\ interface.cpp \
+  /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/API.cpp \
   /Users/noahjoubert/CLionProjects/Chessington/The\ Engine/src/perft.cpp

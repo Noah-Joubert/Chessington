@@ -37,18 +37,18 @@ if __name__ == '__main__':
     print("This script runs two engines against each-other.")
 
     # get the name of the engine versions to compete
-    firstEngineName, secondEngineName = "Improve_chess", "Improve_chess"
-    # while True:
-    #     nameInput = input("\tEnter the engines name: ")
-    #     if isValidEngine(nameInput):
-    #         print("\t\tGot it!")
-    #         if firstEngineName == "":
-    #             firstEngineName = nameInput
-    #         else:
-    #             secondEngineName = nameInput
-    #             break
-    #     else:
-    #         print("\t\tCouldn't find it")
+    firstEngineName, secondEngineName = "", ""
+    while True:
+        nameInput = input("\tEnter the engines name: ")
+        if isValidEngine(nameInput):
+            print("\t\tGot it!")
+            if firstEngineName == "":
+                firstEngineName = nameInput
+            else:
+                secondEngineName = nameInput
+                break
+        else:
+            print("\t\tCouldn't find it")
 
     # create processes for the engines
     firstPlayerProcess = startProcess(firstEngineName)
@@ -79,11 +79,13 @@ if __name__ == '__main__':
         firstPlayerProcess = secondPlayerProcess
         secondPlayerProcess = tempPlayerProcess
 
+        print(str(moveNumber))
+
+    giveCommand(firstPlayerProcess, "print")
+
     giveCommand(firstPlayerProcess, "end")
     giveCommand(secondPlayerProcess, "end")
-    print(getAllOutput(firstPlayerProcess))
-
-
-
+    for line in getAllOutput(firstPlayerProcess):
+        print(line, end="")
 
 

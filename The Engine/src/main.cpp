@@ -5,7 +5,7 @@
 #include <thread>
 #include <fstream>
 #include "Search/SearchController.cpp"
-#include "commandline interface.cpp"
+#include "API.cpp"
 #include "perft.cpp"
 
 using namespace std;
@@ -38,13 +38,13 @@ void engineAgainstSelf() {
     string MatchString = "";
 
     // run the game, and generate the PGN string
-    int maxMoves = 100;
     Move m;
-    char FENString;
-    while (SuperBoard.search(m, FENString)) {
+    string FENString;
+    while (SuperBoard.search(m, FENString, true)) {
         if (SuperBoard.getMoveNumber() % 2 == 0) {
             MatchString += to_string(SuperBoard.getMoveNumber() / 2) + ". ";
         }
+
         MatchString += moveToFEN(m, FENString) + " ";
         if (SuperBoard.getMoveNumber() % 2 == 1) {
             MatchString += "\n";
@@ -55,7 +55,7 @@ void engineAgainstSelf() {
             break;
         }
 
-        if (SuperBoard.getMoveNumber() > maxMoves) break;
+//        if (SuperBoard.getMoveNumber() > 100) break; // break if the game goes on too long
     };
 
     // write the PGN string to the file
@@ -89,8 +89,8 @@ void debugMode() {
             moves = SuperBoard.getMoveList();
         }  else if (command == "search") {
             Move m;
-            char t;
-            SuperBoard.search(m, t);
+            string t;
+            SuperBoard.search(m, t, true);
             moves = SuperBoard.getMoveList();
         } else if (command == "eval") {
             cout << "Board evaluation: " << SuperBoard.evaluate() << "\n";
@@ -116,6 +116,10 @@ void debugMode() {
             }
         } else if (command == "threefold") {
             cout << "Threefold?: " << SuperBoard.checkThreefold() << "\n";
+        } else if (command == "test") {
+            cout << (SuperBoard.biasedMaterial()) << "\n";
+            cout << (SuperBoard.getMaterialEvaluation()) << "\n";
+            cout << (SuperBoard.biasedMaterial() == SuperBoard.getMaterialEvaluation()) << "\n";
         }
     }
 }
@@ -124,15 +128,14 @@ void init() {
     initStaticMasks(); // used to create various masks
 }
 
-int main(int argc, char *argv[]) {
+int main() {
     /* computer has two cores
      * two threads for each core
      * therefore 4 threads all together*/
     init();
 
-    mainLoop();
+//    mainLoop();
 
-//    debugMode();
-
+    debugMode();
     return 0;
 }

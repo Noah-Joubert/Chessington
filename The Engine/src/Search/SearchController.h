@@ -4,6 +4,7 @@
 
 #include "../Board/board.cpp"
 #include "Transposition Table/zobrist.h"
+#include "Transposition Table/TT.cpp"
 
 #ifndef SEARCH_CPP_SEARCHCONTROLLER_H
 #define SEARCH_CPP_SEARCHCONTROLLER_H
@@ -16,7 +17,7 @@ class SearchController: public Board {
 private:
     // TODO NON CORE - WILL BE STRIPPED
     /* evaluation variables */
-    int material = 0; // holds the value of the material on the board,
+    int materialEvaluation = 0; // holds the value of the material on the board,
     int pst = 0; // the piece square table value
     int castle = 0; // holds the bonus each side has recieved for castling
     bool hasCastled[2] = {false, false}; // worth's for castling for each side
@@ -24,9 +25,13 @@ private:
     /* Zobrist */
     Zobrist zobristState; // current zobrist hash
     vector<Zobrist> prevZobristStates; // stores previous zobrist hashes
-    void updateMoveZobrist(Move move);
+    vector<int> prevMaterialEvaluations; // stores previous material evaluations
+    void updateAfterMove(Move move);
     void updateSideZobrist();
     inline void zobristXOR(short piece, short square, Side side);
+
+    /* Transposition table */
+    TranspositionTable TT;
 
     long int searchDepth, searchedNodes;
 
@@ -43,6 +48,7 @@ public:
     // TODO CORE STUFF - THIS IS SAFE FROM BEING STRIPPED BACK
 
     /* Evaluation */
+    int biasedMaterial();
     int evaluate();
 
     /* Constructor */
@@ -64,6 +70,7 @@ public:
     bool givesCheck(Move &move);
     short getCurrentSide();
     short getOtherSide();
+    int getMaterialEvaluation() {return materialEvaluation;}
 
     /* Zobrist stuff */
     bool validateZobrist();
@@ -77,7 +84,7 @@ public:
 
     /* Search Stuff */
     int negaMax(int alpha, int beta, int depth, Move &bestMove);
-    bool search(Move &bestMove, char &FENFlag);
+    bool search(Move &bestMove, string &FENFlag , bool DEBUG_MODE);
 };
 
 #endif //SEARCH_CPP_SEARCHCONTROLLER_H

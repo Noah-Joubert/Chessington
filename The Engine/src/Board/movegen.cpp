@@ -5,7 +5,7 @@
 #include "../types.h"
 #include "bitboards.cpp"
 #include "board.h"
-#include "../misc.cpp"
+#include "../misc.h"
 
 #ifndef SEARCH_MOVEGENCPP
 #define SEARCH_MOVEGENCPP
