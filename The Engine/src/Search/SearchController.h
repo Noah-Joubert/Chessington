@@ -9,6 +9,23 @@
 #ifndef SEARCH_CPP_SEARCHCONTROLLER_H
 #define SEARCH_CPP_SEARCHCONTROLLER_H
 
+struct SearchParameters {
+    struct TTParameters{
+        int TTSizeMb = 0; // size of the TT in mb
+        int replaceDepth = 0; // the extra depth needed to overwrite a node
+        int replaceAge = 0; // the extra age needed to overwrite a node
+
+        int minTTProbeDepth = 0; // the minimum depth at which the transposition table will be probed
+        int minTTInsertDepth = 0; // the minimum depth at which a search will be inputted into the transposition table
+    };
+
+    TTParameters ttParameters;
+    float minSearchTime = 0; // the minimum time of a search in the iterative deepening framework
+    int startingDepth = 0; // the depth at which iterative deepening is started
+
+    int stalemateEvaluation = -1000; // the evaluation of a stalemate position
+};
+
 /*
  * This is the SearchState class. It inherits the Board class, which implements chess.
  * It contains the extra things that Board doesn't eg. evaluation and zobrist hashing.
@@ -18,9 +35,6 @@ private:
     // TODO NON CORE - WILL BE STRIPPED
     /* evaluation variables */
     int materialEvaluation = 0; // holds the value of the material on the board,
-    int pst = 0; // the piece square table value
-    int castle = 0; // holds the bonus each side has recieved for castling
-    bool hasCastled[2] = {false, false}; // worth's for castling for each side
 
     /* Zobrist */
     Zobrist zobristState; // current zobrist hash
@@ -29,6 +43,9 @@ private:
     void updateAfterMove(Move move);
     void updateSideZobrist();
     inline void zobristXOR(short piece, short square, Side side);
+
+    /* Search parameters */
+    SearchParameters searchParameters;
 
     /* Transposition table */
     TranspositionTable TT;
@@ -42,8 +59,6 @@ public:
     // TODO sort this
     int SEE(int square);
 
-    int relativeLazy();
-
 public:
     // TODO CORE STUFF - THIS IS SAFE FROM BEING STRIPPED BACK
 
@@ -52,7 +67,7 @@ public:
     int evaluate();
 
     /* Constructor */
-    SearchController();
+    SearchController(SearchParameters searchParamsIn);
 
     void makeMove(Move &move);
     void unMakeMove();

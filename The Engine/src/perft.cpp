@@ -11,7 +11,8 @@ bool parallel = true;
 bool useLogs = true;
 int maxDepth = 6;
 
-SearchController SuperBoard;
+SearchParameters perftParams; // the default values for SearchParameters are all zero. This is suitable for a perft instance
+SearchController perftBoard(perftParams);
 mutex mtx;
 
 /* Perft stuff. Don't need to touch this */
@@ -80,7 +81,7 @@ void startThread(MoveList moves, SearchController ChessBoard) {
 float perft() {
     auto start = chrono::high_resolution_clock::now();
 
-    MoveList moves = SuperBoard.getMoveList();
+    MoveList moves = perftBoard.getMoveList();
     vector<MoveList> moveLists;
     vector<SearchController> positions;
     vector<int> counts; // stores the counts for each sub move
@@ -99,7 +100,7 @@ float perft() {
                 i++;
 
                 /* create and join the thread */
-                thread t(startThread, mList, SuperBoard);
+                thread t(startThread, mList, perftBoard);
                 t.join();
                 cout << "\n\tThread " << i << ": " << nodeCount << "";
             }
@@ -107,7 +108,7 @@ float perft() {
         } else {
             vector<thread> threads;
             for (MoveList mList: moveLists) {
-                threads.emplace_back(thread(startThread, mList, SuperBoard));
+                threads.emplace_back(thread(startThread, mList, perftBoard));
             }
 
             for (thread &T: threads) {
@@ -115,7 +116,7 @@ float perft() {
             }
         }
     } else {
-        startThread(moves, SuperBoard);
+        startThread(moves, perftBoard);
     }
 
     auto finish = chrono::high_resolution_clock::now();

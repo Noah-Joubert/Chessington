@@ -13,8 +13,11 @@ string getStringInput(string promptText) {
 }
 
 /* The main commandline loop */
-void mainLoop() {
-    SearchController SuperBoard;
+void mainLoop(SearchParameters searchParams) {
+    searchParams.minSearchTime = 0.001;
+    searchParams.startingDepth = 4;
+    searchParams.ttParameters.TTSizeMb = 0;
+    SearchController SuperBoard(searchParams);
 
     while (true) {
         string command = getStringInput("");
@@ -39,6 +42,9 @@ void mainLoop() {
             cout << !(SuperBoard.checkThreefold() || SuperBoard.inStalemate() || SuperBoard.inCheckMate()) << "\n";
         } else if (command == "end") {
             return;
+        } else if (command == "checkmate") {
+            SuperBoard.getMoveList();
+            cout << SuperBoard.inCheckMate() << "\n";
         }
     }
 }

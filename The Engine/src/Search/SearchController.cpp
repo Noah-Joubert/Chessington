@@ -35,7 +35,10 @@ int SearchController::SEE(int square) {
 }
 
 /* Constructor */
-SearchController::SearchController() {
+SearchController::SearchController(SearchParameters searchParamsIn): TT(TranspositionTable(searchParamsIn.ttParameters.TTSizeMb)) {
+    searchParameters = searchParamsIn;
+
+    /* Init the Zobrist Keys and FEN */
     initZobristKeys();
     readFEN(initialFEN);
 
@@ -96,6 +99,9 @@ MoveList SearchController::getQMoveList() {
 }
 void SearchController::readFEN(string FEN) {
     readFENInner(FEN);
+
+    /* Clear the TT table */
+    TT.clear();
 
     /* clear the search's history */
     prevZobristStates.clear();

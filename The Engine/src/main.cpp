@@ -11,7 +11,8 @@
 using namespace std;
 const string logsPath = getCWDString() + "/logs/";
 
-void engineAgainstSelf() {
+void engineAgainstSelf(SearchController SuperBoard) {
+
     // see what game 'number' this is
     string fileName = logsPath + "games/num.txt";
 
@@ -65,7 +66,9 @@ void engineAgainstSelf() {
 
     gameFile.close();
 }
-void debugMode() {
+void debugMode(SearchParameters params) {
+    SearchController SuperBoard(params);
+
     MoveList moves = SuperBoard.getMoveList();
     while (true) {
         cout << "\nWaiting for command: ";
@@ -95,7 +98,7 @@ void debugMode() {
         } else if (command == "eval") {
             cout << "Board evaluation: " << SuperBoard.evaluate() << "\n";
         } else if (command == "play") {
-            engineAgainstSelf();
+            engineAgainstSelf(SuperBoard);
         } else if (command == "zobrist") {
             cout << "Current Zobrist key: " << SuperBoard.getZobristState() << "\n";
             cout << "Calculate Zobrist key: " << SuperBoard.calculateZobristHash() << "\n";
@@ -134,8 +137,17 @@ int main() {
      * therefore 4 threads all together*/
     init();
 
-//    mainLoop();
+    /* Set the search parameters */
+    SearchParameters searchParams;
+    searchParams.ttParameters.TTSizeMb = 2;
+    searchParams.ttParameters.minTTInsertDepth = 2;
+    searchParams.ttParameters.minTTProbeDepth = 1;
+    searchParams.minSearchTime = 0.1;
+    searchParams.startingDepth = 6;
 
-    debugMode();
+    mainLoop(searchParams);
+
+//    debugMode(searchParams);
+
     return 0;
 }

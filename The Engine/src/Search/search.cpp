@@ -4,9 +4,6 @@
 #include "../misc.h"
 #include "search.h"
 
-#define STALEMATE -1 // just below zero to encourage action
-#define MIN_TT_PROBE_DEPTH 1
-#define MIN_TT_INSERT_DEPTH 3
 
 int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     /* Negamax */
@@ -31,7 +28,7 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     }
 
     // * 2.
-    if (depth >= MIN_TT_PROBE_DEPTH) {
+    if (depth >= searchParameters.ttParameters.minTTProbeDepth) {
         bool nodeExists = false; // whether we've stored a search for this position
         TTNode *node = TT.probe(zobristState, nodeExists); // probe the table, if our search is deep enough
         if (nodeExists && node->depth >= depth) {
@@ -75,7 +72,7 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
         return (-MATE - depth);
     } else if (inStalemate() | checkThreefold()) {
         // if there is a three-fold or a inStalemate, return the negative of the evaluation
-        return STALEMATE;
+        return searchParameters.stalemateEvaluation;
     }
 
     // * 4.
@@ -100,7 +97,7 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     }
 
     // * 5.
-    if (depth >= MIN_TT_INSERT_DEPTH) {
+    if (depth >= searchParameters.ttParameters.minTTInsertDepth) {
         int evaluationType;
         if (alpha <= originalAlpha) {
             evaluationType = UPPER_EVAL;
@@ -131,12 +128,12 @@ bool SearchController::search(Move &bestMove, string &FENFlag, bool DEBUG_MODE) 
 
     int eval = 0; // evaluation for this position
     float searchTime = 0; // time taken for the search
-    int searchDepth = startingDepth; // the depth at which we search
+    int searchDepth = searchParameters.startingDepth; // the depth at which we search
     searchedNodes = 0; // the number of nodes searched
     TT.clearTotals(); // clear the totals from the transposition table
 
     // * 1.
-    while (searchTime < minSearchTime) {
+    while (searchTime < searchParameters.minSearchTime) {
         Timer timer; // start the timer
 
         // * a. Run negamax

@@ -3,6 +3,7 @@
 //
 
 #include "zobrist.h"
+#include <tgmath.h> // for log2
 
 #ifndef SEARCH_ZOBRIST_H
 #define SEARCH_ZOBRIST_H
@@ -40,14 +41,14 @@ class TranspositionTable {
     // TODO ( second part of the zobrist key will be stored to check for collisions) Is it?
 
     /* The transposition table will contain 2^n elements. The key will be the first n bits. */
-    static const long TTSizePower2 = 15; // the table will be a power of 2 size (will need to be long if greater than 32)
-    static const long TTsize = 1 << TTSizePower2; // size
-    static const long TTKeyMask = TTsize - 1; // this mask is used to convert a zobrist hash to a key for the transposition table. it takes the first TTSizePower2 bits
+    long TTSizePower2; // the table will be a power of 2 size (will need to be long if greater than 32)
+    long TTsize; // size
+    long TTKeyMask; // this mask is used to convert a zobrist hash to a key for the transposition table. it takes the first TTSizePower2 bits
 
-    static const int replaceDepth = 1; // the extra depth needed to replace a node
-    static const int replaceAge = 4; // the extra age needed to replace a node
+    static const int replaceDepth = 2; // the extra depth needed to replace a node
+    static const int replaceAge = 2; // the extra age needed to replace a node
 
-    TTNode table[TTsize];  // array which holds the transposition table
+    TTNode *table;  // array which holds the transposition table
 public:
     /* These stats keep track of the access statistics */
     int totalProbeCalls = 0, totalProbeFound = 0, totalProbeExact = 0, totalProbeUpper = 0, totalProbeLower = 0; // the number of probes to the TT
@@ -56,14 +57,14 @@ public:
     int totalNodesSet = 0; // total number of nodes set. this includes new nodes, overwrites, and collisions
     int totalNewNodesSet = 0, totalOverwrittenNodesSet = 0, totalCollisionsSet = 0;
 
-    TranspositionTable() {
-        // init the table
-        for (int i = 0; i < TTsize; i++) {
-            TTNode node;
-            table[i] = node;
-        }
-    }
+    TranspositionTable(int sizeMB) {
+        TTSizePower2 = int(log2(1000000*sizeMB  / sizeof(new TTNode)));
+        TTsize = 1 << TTSizePower2;
+        TTKeyMask = TTsize - 1;
+        table = new TTNode[TTsize];
 
+        clear();
+    }
 
     inline TTNode* find(Zobrist &key) {
         // returns the entry for a zobrist key
@@ -92,8 +93,8 @@ public:
         if (found) {
             totalProbeFound += 1;
             if (node->flag == EXACT_EVAL) {
-                totalProbeExact ++
-                ;} else if (node->flag == UPPER_EVAL) {
+                totalProbeExact ++;
+            } else if (node->flag == UPPER_EVAL) {
                 totalProbeUpper++;
             } else if (node->flag == LOWER_EVAL) {
                 totalProbeLower ++;
@@ -144,6 +145,13 @@ public:
         totalNodesSet = 0; // the total number of nodes added to the TT
         totalNewNodesSet = 0, totalOverwrittenNodesSet = 0, totalCollisionsSet = 0;
         totalProbeCalls = 0, totalProbeFound = 0, totalProbeExact = 0, totalProbeUpper = 0, totalProbeLower = 0; // the number of probes to the TT
+    }
+    void clear() {
+        // init the table
+        for (int i = 0; i < TTsize; i++) {
+            TTNode node;
+            table[i] = node;
+        }
     }
 
     int getSize() {return TTsize;}
