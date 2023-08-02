@@ -84,7 +84,7 @@ protected:
 
     /* getters - a lot of these can only be used once moves have been generated */
     bool canCastle(short SIDE);
-    int getSmallestAttacker(int square);
+    void getSmallestAttacker(short attackedSquare, short &smallestAttackerSquare, short &cheapestPiece);
     U64 getEmptySquares();
 
 

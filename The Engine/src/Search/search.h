@@ -23,22 +23,26 @@ struct SearchParameters {
         bool useTT = true; // whether we are using the TT
     };
 
-
     TTParameters ttParameters;
 
     float minSearchTime = 0.1; // the minimum time of a search in the iterative deepening framework
-    int startingDepth = 6; // the depth at which iterative deepening is started
+    int startingDepth = 1; // the depth at which iterative deepening is started
 
     int stalemateEvaluation = -1000; // the evaluation of a stalemate position
+
+    bool useSEE = false;
+    bool useQuiescence = true;
 };
 
 struct SearchStats {
     int totalNodesSearched = 0;
     int totalQuiescenceSearched = 0;
+    int totalNonCaptureQSearched = 0; // count how many quiescence nodes aren't captures (ie. checks/ promos)
 
     void clear(){
         totalNodesSearched = 0;
         totalQuiescenceSearched = 0;
+        totalNonCaptureQSearched = 0;
     }
 };
 

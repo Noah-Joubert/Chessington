@@ -5,18 +5,62 @@
 #include "../SearchController.h"
 #include "evaluation.h"
 
-int dotProduct(U64 BB, const Byte weights[]) {
-    float total = 0;
 
-    while (BB) {
-        short index = popIntLSB(BB);
-        total += weights[index];
+int SearchController::SEEMove(Move m) {
+    // evaluate the SEE of a move. we assume the move has already been made, and will me immediately unmade
+
+    // decode the move
+    short fromSq, toSq, promo, flag, fromPc, toPc;
+    decodeMove(m, fromSq, toSq, promo, flag, fromPc, toPc);
+
+    int SEEEval = PieceScores[toPc] - SEE(toSq);
+
+    return SEEEval;
+}
+int SearchController::SEE(short square) {
+    /* Static exchange evaluation
+     * It returns the value of all the captures on one square.
+     * We always capture with the cheapest piece first.
+     * */
+    int SEEValue = 0;
+
+    // get the smallest attacker on the square (this actually doesn't include en-passants (or promotions). honestly I can't be asked)
+    short smallestAttackerSquare;
+    short smallestAttacker = -1;
+    getSmallestAttacker(square, smallestAttackerSquare, smallestAttacker);
+
+    // get the enemy piece
+    U64 to = toBB(square);
+    short toPiece = getPieceAt(to);
+
+    // if there are no more attackers, return 0
+    if (smallestAttackerSquare != -1) {
+        /* Manually do the move */
+        setSquare(smallestAttacker, currentSide, square); // move the taking piece
+        setSquare(smallestAttacker, currentSide, smallestAttackerSquare); // move the taking piece
+        setSquare(toPiece, otherSide, square); // remove the taken piece
+        switchSide();
+
+        SEEValue = PieceWorths[toPiece] - SEE(square);
+
+        /* Manually do the move */
+        switchSide();
+        setSquare(smallestAttacker, currentSide, square); // move the taking piece
+        setSquare(smallestAttacker, currentSide, smallestAttackerSquare); // move the taking piece
+        setSquare(toPiece, otherSide, square); // remove the taken piece
     }
 
-    return total;
+    return SEEValue;
+}
+int SearchController::evaluate() {
+    /* Right now it just does piece worth's */
+
+    /* negamax requires that the evaluation is relative to the current side */
+    //TODO THIS
+    return materialEvaluation * (currentSide == WHITE ? 1 : -1);
 }
 
-int SearchController::evaluate() {
+int SearchController::relativeLazy() {
     /* Right now it just does piece worth's */
 
     /* negamax requires that the evaluation is relative to the current side */

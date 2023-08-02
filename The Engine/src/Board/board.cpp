@@ -20,20 +20,56 @@ bool Board::canCastle(short SIDE) {
         return CastleRights & 4 || CastleRights && 8;
     }
 }
-int Board::getSmallestAttacker(int square) {
-    U64 attackers = getSquareAttackers(toBB(square), otherSide);
-    attackers &= pieceBB[friendly]; // make sure only friendly piece
+U64 Board::getSquareAttackers(U64 sq, short SIDE) {
+    // returns all the attacking pieces of square, by SIDE
 
-    if (attackers == 0) return -1;
+    short mover, enemy;
+    Side enemySide;
+
+    if (SIDE == WHITE) {
+        mover = nWhite;
+        enemySide = BLACK;
+    } else {
+        mover = nBlack;
+        enemySide = WHITE;
+    }
+
+    // treat this square as a 'super piece' and get all the possible moves from it
+    // this sort of needs to be done in the reverse direction e.g. pawn pushes opposite
+    U64 attacks = 0;
+    U64 knight, diag, horiz, king, pawn;
+    knight = genAttack<KNIGHT>(sq, emptySquares) & pieceBB[KNIGHT];
+    diag = genAttack<BISHOP>(sq, emptySquares) & (pieceBB[BISHOP] | pieceBB[QUEEN]);
+    horiz = genAttack<ROOK>(sq, emptySquares) & (pieceBB[ROOK] | pieceBB[QUEEN]);
+    king = genAttack<KING>(sq, emptySquares) & pieceBB[KING];
+    pawn = genPawnAttacks(sq, enemySide) & pieceBB[PAWN]; // pawns need to move in opposite direction
+    attacks = (knight | diag | horiz | king | pawn);
+
+    attacks &= pieceBB[mover];
+
+    return attacks;
+}
+void Board::getSmallestAttacker(short attackedSquare, short &smallestAttackerSquare, short &cheapestPiece) {
+    // gets the smallest attacker of attackedSquare from currentSide
+    // returns the attacking type and attacking square by value
+
+    U64 attackers = getSquareAttackers(toBB(attackedSquare), currentSide);
+
+    if (attackers == 0) {
+        smallestAttackerSquare = -1;
+        return;
+    }
 
     // loop through all pieces in order of worth
-    for (int piece = PAWN; piece <= KING; piece++) {
+    for (short piece = PAWN; piece <= KING; piece++) {
         // get the pieces that are also attackers
         U64 pieceAttackers = pieceBB[piece] & attackers;
 
         if (pieceAttackers == 0) continue;
 
-        return bitScanForward(pieceAttackers);
+        smallestAttackerSquare = bitScanForward(pieceAttackers);
+        cheapestPiece = piece;
+        return;
     }
 }
 U64 Board::getEmptySquares() {

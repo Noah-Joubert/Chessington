@@ -357,40 +357,16 @@ void convertPromo(short startSquare, short endSquare, short toPiece, MoveList &m
 }
 
 /* board status stuff */
-U64 Board::getSquareAttackers(U64 sq, short SIDE) {
-    short mover, enemy;
-
-    if (SIDE == WHITE) {
-        mover = nWhite;
-        enemy = nBlack;
-    } else {
-        mover = nBlack;
-        enemy = nWhite;
-    }
-
-    // treat the king as a 'super piece' and get all the possible moves from it
-    U64 attacks = 0;
-    U64 knight, diag, horiz, king, pawn;
-    knight = genAttack<KNIGHT>(sq, emptySquares) & pieceBB[KNIGHT];
-    diag = genAttack<BISHOP>(sq, emptySquares) & (pieceBB[BISHOP] | pieceBB[QUEEN]);
-    horiz = genAttack<ROOK>(sq, emptySquares) & (pieceBB[ROOK] | pieceBB[QUEEN]);
-    king = genAttack<KING>(sq, emptySquares) & pieceBB[KING];
-    pawn = genPawnAttacks(sq, SIDE) & pieceBB[PAWN];
-    attacks = (knight | diag | horiz | king | pawn);
-    attacks &= pieceBB[enemy];
-
-    return attacks;
-}
-bool Board::checkKingCheck(short SIDE) {
-    U64 king = pieceBB[KING];
-    if (SIDE == WHITE) {
-        king &= pieceBB[nWhite];
-    } else {
-        king &= pieceBB[nBlack];
-    }
-
-    return getSquareAttackers(king, SIDE);
-}
+//bool Board::checkKingCheck(short SIDE) {
+//    U64 king = pieceBB[KING];
+//    if (SIDE == WHITE) {
+//        king &= pieceBB[nWhite];
+//    } else {
+//        king &= pieceBB[nBlack];
+//    }
+//
+//    return getSquareAttackers(king, SIDE);
+//}
 short Board::getPieceAt(U64 &sq) {
     if (pieceBB[PAWN] & sq) return PAWN;
     if (pieceBB[KNIGHT] & sq) return KNIGHT;
@@ -398,6 +374,7 @@ short Board::getPieceAt(U64 &sq) {
     if (pieceBB[ROOK] & sq) return ROOK;
     if (pieceBB[QUEEN] & sq) return QUEEN;
     if (pieceBB[KING] & sq) return KING;
+    return -1;
 }
 U64 Board::getRay (U64 &from, U64 &to){
     U64 ray;
@@ -515,7 +492,7 @@ void Board::genKingMoves() {
     }
 }
 void Board::genPawnMoves(short TYPE) {
-    // TODO Try and digest the genius that I displayed in producing this code
+    //TODO Try and digest the genius that I displayed in producing this code
 
     U64 generatingPawns = pieceBB[PAWN] & pieceBB[friendly];
 
@@ -655,7 +632,7 @@ void Board::genPawnMoves(short TYPE) {
     firstPush = push(pushingPawns, currentSide) & validSquares & emptySquares;
     while (firstPush) {
         short to = popIntLSB(firstPush);
-        convertPromo(to - up, to, EMPTY, quietMoveList);
+        convertPromo(to - up, to, EMPTY, activeMoveList); // we add promos to the activeMoveList
     }
 
     /* now captures */
@@ -826,7 +803,7 @@ void Board::genAllMoves(short TYPE) {
         inCheck = true;
 
         // first we generate attackers to the king square
-        U64 attackers = getSquareAttackers(king, currentSide);
+        U64 attackers = getSquareAttackers(king, otherSide);
         numAttackers = count(attackers);
 
         // if there is a double check, only king moves are allowed

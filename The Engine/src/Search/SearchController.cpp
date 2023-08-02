@@ -10,30 +10,6 @@
 #include "search.cpp"
 #include "SearchController.h"
 
-/* What does this do? Fuck knows mate google it. */
-// TODO sort this
-int SearchController::SEE(int square) {
-    int value = 0;
-    int startSquare = getSmallestAttacker(square);
-
-
-    // if there are no more pieces return 0
-    if (startSquare != -1) {
-        U64 from = toBB(startSquare);
-        U64 to = toBB(square);
-
-        int fromPiece = getPieceAt(from);
-        int toPiece = getPieceAt(to);
-
-        Move m = encodeMove(startSquare, square, 0, 0, fromPiece, toPiece);
-        makeMove(m);
-        value = PieceWorths[toPiece] - SEE(square);
-        unMakeMove();
-    }
-
-    return value;
-}
-
 /* Constructor */
 SearchController::SearchController(SearchParameters searchParamsIn): TT(TranspositionTable(searchParamsIn)) {
     searchParameters = searchParamsIn;

@@ -38,18 +38,14 @@ private:
     TranspositionTable TT;
 
 public:
-    //TODO NON CORE - WILL BE STRIPPED
-
-    /* What does this do? Fuck knows mate google it. */
-    // TODO sort this
-    int SEE(int square);
-
-public:
     // TODO CORE STUFF - THIS IS SAFE FROM BEING STRIPPED BACK
 
     /* Evaluation */
+    int SEE(short square);
+    int SEEMove(Move m);
     int biasedMaterial();
     int evaluate();
+    int relativeLazy();
 
     /* Constructor */
     SearchController(SearchParameters searchParamsIn);

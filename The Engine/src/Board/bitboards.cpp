@@ -138,6 +138,16 @@ inline short pop8BitIntLSB(uint8_t &BB) {
     if (BB & toBB(6)) return 6;
     if (BB & toBB(7)) return 7;
 }
+int dotProduct(U64 BB, const Byte weights[]) {
+    float total = 0;
+
+    while (BB) {
+        short index = popIntLSB(BB);
+        total += weights[index];
+    }
+
+    return total;
+}
 inline U64 popLSB(U64 &BB) {
     U64 lsb = BB & -BB; // get the lsb
     BB ^= lsb; // reset the lsb

@@ -89,6 +89,7 @@ void debugMode(SearchParameters params) {
             cin >> FEN;
             getline(cin, FEN2);
             SuperBoard.readFEN(FEN + FEN2);
+            perftBoard.readFEN(FEN + FEN2);
             moves = SuperBoard.getMoveList();
         }  else if (command == "search") {
             Move m;
@@ -96,7 +97,7 @@ void debugMode(SearchParameters params) {
             SuperBoard.search(m, t, true);
             moves = SuperBoard.getMoveList();
         } else if (command == "eval") {
-            cout << "Board evaluation: " << SuperBoard.evaluate() << "\n";
+            cout << "Board evaluation: " << SuperBoard.relativeLazy() << "\n";
         } else if (command == "play") {
             engineAgainstSelf(SuperBoard);
         } else if (command == "zobrist") {
@@ -120,9 +121,10 @@ void debugMode(SearchParameters params) {
         } else if (command == "threefold") {
             cout << "Threefold?: " << SuperBoard.checkThreefold() << "\n";
         } else if (command == "test") {
-            cout << (SuperBoard.biasedMaterial()) << "\n";
-            cout << (SuperBoard.getMaterialEvaluation()) << "\n";
-            cout << (SuperBoard.biasedMaterial() == SuperBoard.getMaterialEvaluation()) << "\n";
+            string number;
+            cin >> number;
+            cout << SuperBoard.
+            SEE(stoi(number));
         }
     }
 }
@@ -140,12 +142,11 @@ int main() {
     /* Set the search parameters */
     SearchParameters searchParams;
     searchParams.ttParameters.TTSizeMb = 20; // use a big TT
-    searchParams.startingDepth = 1;
-    searchParams.minSearchTime = 0.1;
+    searchParams.minSearchTime = 0.01;
 
-//    mainLoop(searchParams);
+    mainLoop(searchParams);
 
-    debugMode(searchParams);
+//    debugMode(searchParams);
 
     return 0;
 }
