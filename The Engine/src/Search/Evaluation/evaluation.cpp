@@ -5,10 +5,22 @@
 #include "../SearchController.h"
 #include "evaluation.h"
 
+int dotProduct(U64 BB, const Byte weights[]) {
+    float total = 0;
+
+    while (BB) {
+        short index = popIntLSB(BB);
+        total += weights[index];
+    }
+
+    return total;
+}
+
 int SearchController::evaluate() {
     /* Right now it just does piece worth's */
 
     /* negamax requires that the evaluation is relative to the current side */
+    //TODO THIS
     return materialEvaluation * (currentSide == WHITE ? 1 : -1);
 }
 int SearchController::biasedMaterial() {
@@ -36,6 +48,15 @@ int SearchController::biasedMaterial() {
     U64 wPawns = getPieces(PAWN, WHITE), bPawns = getPieces(PAWN, BLACK);
     eval += PieceScores[PAWN] * (count(wPawns) - count(bPawns));
 
+    /* do PST */
+    for (Pieces piece: {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING}) {
+        for (Side side: {WHITE, BLACK}) {
+            eval += dotProduct(getPieces(piece, side), PST[piece][side]) * (side == WHITE ? 1 : -1);
+        }
+    }
+
+    //TODO add in endgame king stuff
+
     /* negamax requires that the evaluation is relative to the current side */
-    return eval ;
+    return eval;
 }

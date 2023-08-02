@@ -3,17 +3,16 @@
 //
 
 #include "zobrist.h"
+#include "../search.h"
 #include <tgmath.h> // for log2
 
-#ifndef SEARCH_ZOBRIST_H
-#define SEARCH_ZOBRIST_H
+#ifndef SEARCH_TT_CPP
+#define SEARCH_TT_CPP
 
 typedef uint16_t Zob16; // used to just hold the last 16 bits of a zobrist key to save memory
 
 // these flags are used to identify whether an evaluation is exact, or an alpha beta cut-off.
-#define EXACT_EVAL 1
-#define LOWER_EVAL 2
-#define UPPER_EVAL 3
+
 
 /* This struct is for the entry to a transposition table
  * We need to store basic information like the evaluation of the position, the best move found, and part of the zobrist key in order to identify it
@@ -45,8 +44,8 @@ class TranspositionTable {
     long TTsize; // size
     long TTKeyMask; // this mask is used to convert a zobrist hash to a key for the transposition table. it takes the first TTSizePower2 bits
 
-    static const int replaceDepth = 2; // the extra depth needed to replace a node
-    static const int replaceAge = 2; // the extra age needed to replace a node
+    int replaceDepth; // the extra depth needed to replace a node
+    int replaceAge; // the extra age needed to replace a node
 
     TTNode *table;  // array which holds the transposition table
 public:
@@ -57,15 +56,19 @@ public:
     int totalNodesSet = 0; // total number of nodes set. this includes new nodes, overwrites, and collisions
     int totalNewNodesSet = 0, totalOverwrittenNodesSet = 0, totalCollisionsSet = 0;
 
-    TranspositionTable(int sizeMB) {
-        TTSizePower2 = int(log2(1000000*sizeMB  / sizeof(new TTNode)));
+    TranspositionTable(SearchParameters params) {
+        /* Init the TT */
+        TTSizePower2 = int(log2(1000000*params.ttParameters.TTSizeMb / sizeof(new TTNode)));
         TTsize = 1 << TTSizePower2;
         TTKeyMask = TTsize - 1;
         table = new TTNode[TTsize];
 
         clear();
-    }
 
+        /* Init the parameters */
+        replaceDepth = params.ttParameters.replaceDepth;
+        replaceAge = params.ttParameters.replaceAge;
+    }
     inline TTNode* find(Zobrist &key) {
         // returns the entry for a zobrist key
         int index = zobristToTTKey(key);
@@ -88,7 +91,7 @@ public:
         TTNode* node = find(key);
 
         // compare the zobrist keys
-        found = node->key == toZob16(key);
+        found = (node->key == toZob16(key));
 
         if (found) {
             totalProbeFound += 1;
@@ -106,20 +109,21 @@ public:
 
     void set(Zobrist key, Move &move, int &depth, int &flag, short age, int &eval) {
         // takes in the results of a search and replaces the node if necessary
-
         TTNode* node = find(key);
         Zob16 shiftedKey = toZob16(key);
 
         totalSetCalls ++;
 
         if (    (   node->key == 0  ) ||
-                (   (node->key == shiftedKey)  &&   (depth > node->depth)   ) ||
-                (   (node->key != shiftedKey)  &&   ( (depth - replaceDepth > node->depth)   ||  (age - replaceAge > node->age))))
+                (   (node->key == shiftedKey)  &&   (depth > node->depth )   ) ||
+                (   (node->key != shiftedKey)  &&   (depth - node->depth >= replaceDepth) || (age - node->age >= replaceAge)))
         {
             // the node will be overwritten if
-            // a. It is empty
-            // b. the node has the same zobrist key and the search is to a higher depth
-            // c. the node has a different zobrist key and the search is at a higher depth, or is more recent
+            // 1. It is empty
+            // 2. The node has the same zobrist key (i.e. it should represent the same position, forgetting collisions exist).
+            // 3. the node has a different zobrist key (i.e. we are overwriting AND
+                // We have three factors to consider: the node type, the age the depth.
+
             totalNodesSet ++;
 
             if (node->key == 0) {
@@ -132,10 +136,10 @@ public:
             }
 
             node->key = shiftedKey;
-            node->move = (Move) move;
-            node->depth = (U8) depth;
-            node->flag = (U8) flag;
-            node->age = (U8) age;
+            node->move = move;
+            node->depth = depth;
+            node->flag = flag;
+            node->age = age;
             node->eval = (int16_t) eval;
         }
     }
@@ -158,4 +162,4 @@ public:
 };
 
 
-#endif //SEARCH_ZOBRIST_H
+#endif //SEARCH_TT_CPP

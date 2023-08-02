@@ -29,46 +29,55 @@ def getAllOutput(process):
 def endProcess(process):
     process.terminate()
 
-def runGame(firstPlayerProcess, secondPlayerProcess, FEN):
-    # run a match using the specified FEN of playerOne against playerTwo
-    giveCommand(firstPlayerProcess, "fen")
-    giveCommand(firstPlayerProcess, FEN)
+def runGame(wPlayerProcess, bPlayerProcess, FEN):
+    # plays a game of white vs black, starting from FEN, with startingSide starting
+    if "w" in FEN:
+        currentPlayer, otherPlayer = "white", "black"
+        currentPlayerProcess, otherPlayerProcess = wPlayerProcess, bPlayerProcess
+    else:
+        currentPlayer, otherPlayer = "black", "white"
+        currentPlayerProcess, otherPlayerProcess = bPlayerProcess, wPlayerProcess
+    print(currentPlayer)
 
-    giveCommand(secondPlayerProcess, "fen")
-    giveCommand(secondPlayerProcess, FEN)
+    # load in the FENs
+    giveCommand(currentPlayerProcess, "fen")
+    giveCommand(currentPlayerProcess, FEN)
+    giveCommand(otherPlayerProcess, "fen")
+    giveCommand(otherPlayerProcess, FEN)
 
     # run the game
     gameRunning = True
     moveNumber = 1
-    currentPlayer, otherPlayer = "one", "two"
     while gameRunning:
         # search for the best move
-        giveCommand(firstPlayerProcess, "search")
-        move = getOutput(firstPlayerProcess)
+        giveCommand(currentPlayerProcess, "search")
+        move = getOutput(currentPlayerProcess)
 
         # execute the move on the other players board
-        giveCommand(secondPlayerProcess, "move")
-        giveCommand(secondPlayerProcess, str(move))
+        giveCommand(otherPlayerProcess, "move")
+        giveCommand(otherPlayerProcess, str(move))
 
         # check that the game hasn't finished
-        giveCommand(firstPlayerProcess, "status")
-        gameRunning = int(getOutput(firstPlayerProcess))
+        giveCommand(currentPlayerProcess, "status")
+        gameRunning = int(getOutput(currentPlayerProcess))
 
-        # output progress
         moveNumber += 1
 
         # switch players
-        tempPlayerProcess = firstPlayerProcess
-        firstPlayerProcess = secondPlayerProcess
-        secondPlayerProcess = tempPlayerProcess
-        if currentPlayer == "one":
-            currentPlayer = "two"
+        tempPlayerProcess = currentPlayerProcess
+        currentPlayerProcess = otherPlayerProcess
+        otherPlayerProcess = tempPlayerProcess
+
+        if currentPlayer == "white":
+            currentPlayer = "black"
+            otherPlayer = "white"
         else:
-            currentPlayer = "one"
+            currentPlayer = "white"
+            otherPlayer = "black"
 
     # see if we are in checkmate
-    giveCommand(firstPlayerProcess, "checkmate")
-    inCheckmate = int(getOutput(firstPlayerProcess))
+    giveCommand(currentPlayerProcess, "checkmate")
+    inCheckmate = int(getOutput(currentPlayerProcess))
     if inCheckmate:
         # if we are in checkmate, the previous player was the winning one
         return otherPlayer
@@ -81,37 +90,48 @@ if __name__ == '__main__':
     print("This script runs two engines against each-other.")
 
     # get the name of the engine versions to compete
-    firstEngineName, secondEngineName = "", ""
+    whiteEngineName, blackEngineName = "", ""
     while True:
         nameInput = input("\tEnter the engines name: ")
         if isValidEngine(nameInput):
             print("\t\tGot it!")
-            if firstEngineName == "":
-                firstEngineName = nameInput
+            if whiteEngineName == "":
+                whiteEngineName = nameInput
             else:
-                secondEngineName = nameInput
+                blackEngineName = nameInput
                 break
         else:
             print("\t\tCouldn't find it")
 
     # create processes for the engines
-    firstPlayerProcess = startProcess(firstEngineName)
-    secondPlayerProcess = startProcess(secondEngineName)
+    whitePlayerProcess = startProcess(whiteEngineName)
+    blackPlayerProcess = startProcess(blackEngineName)
 
-    OneWins = 0
-    TwoWins = 0
+    # count the wins
+    whiteWins = 0
+    blackWins = 0
     Draws = 0
 
-    numGames = 100
-    for game in range(numGames):
+    # initial position starting from white and black
+    whiteInitialFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP§/RNBQKBNR w KQkq - 0 1"
+    blackInitialFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP§/RNBQKBNR b KQkq - 0 1"
 
-        initialFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-        result = runGame(firstPlayerProcess, secondPlayerProcess, initialFEN)
-        if result == "one":
-            OneWins += 1
-        elif result == "two":
-            TwoWins += 1
+    numGames = 100  # number of games to run
+    startingPlayer = "white"  # the player who starts the game
+    for game in range(numGames):
+        startingPlayer = "black" if startingPlayer == "white" else "white"
+        currentFEN = whiteInitialFEN if startingPlayer == "white" else blackInitialFEN
+
+        # run the game of white vs black, in the given FEN, with startingPlayer starting first
+        result = runGame(whitePlayerProcess, blackPlayerProcess, currentFEN)
+
+        # see who won
+        if result == "white":
+            whiteWins += 1
+        elif result == "black":
+            blackWins += 1
         else:
             Draws += 1
 
-        print(f"({firstEngineName}) wins {OneWins}. \t({secondEngineName}) Wins {TwoWins}. \tDraws {Draws}")
+        # print out the results
+        print(f"({whiteEngineName}) wins {whiteWins}. \t({blackEngineName}) Wins {blackWins}. \tDraws {Draws}")

@@ -47,6 +47,7 @@ typedef vector<Move> MoveList;
 #define ALL_MOVES 0
 #define QUIESENCE_MOVES 1
 
+
 enum Side {
     WHITE = 0,
     BLACK = 1
@@ -121,5 +122,7 @@ public:
         return elapsed.count();
     }
 };
+
+
 
 #endif /* !FILE_TYPES_SEEN */

@@ -9,22 +9,6 @@
 #ifndef SEARCH_CPP_SEARCHCONTROLLER_H
 #define SEARCH_CPP_SEARCHCONTROLLER_H
 
-struct SearchParameters {
-    struct TTParameters{
-        int TTSizeMb = 0; // size of the TT in mb
-        int replaceDepth = 0; // the extra depth needed to overwrite a node
-        int replaceAge = 0; // the extra age needed to overwrite a node
-
-        int minTTProbeDepth = 0; // the minimum depth at which the transposition table will be probed
-        int minTTInsertDepth = 0; // the minimum depth at which a search will be inputted into the transposition table
-    };
-
-    TTParameters ttParameters;
-    float minSearchTime = 0; // the minimum time of a search in the iterative deepening framework
-    int startingDepth = 0; // the depth at which iterative deepening is started
-
-    int stalemateEvaluation = -1000; // the evaluation of a stalemate position
-};
 
 /*
  * This is the SearchState class. It inherits the Board class, which implements chess.
@@ -47,10 +31,11 @@ private:
     /* Search parameters */
     SearchParameters searchParameters;
 
+    /* Search Statistics */
+    SearchStats searchStats;
+
     /* Transposition table */
     TranspositionTable TT;
-
-    long int searchDepth, searchedNodes;
 
 public:
     //TODO NON CORE - WILL BE STRIPPED
@@ -99,6 +84,7 @@ public:
 
     /* Search Stuff */
     int negaMax(int alpha, int beta, int depth, Move &bestMove);
+    int quiescence(int alpha, int beta, int depth);
     bool search(Move &bestMove, string &FENFlag , bool DEBUG_MODE);
 };
 

@@ -45,6 +45,8 @@ struct PRNG {
     }
 };
 void initZobristKeys() {
+    // TODO see if this can be done in a way so the zobrist keys are more spanning
+
     // used to init the zobrist keys
     PRNG rng;
 

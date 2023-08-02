@@ -139,15 +139,13 @@ int main() {
 
     /* Set the search parameters */
     SearchParameters searchParams;
-    searchParams.ttParameters.TTSizeMb = 2;
-    searchParams.ttParameters.minTTInsertDepth = 2;
-    searchParams.ttParameters.minTTProbeDepth = 1;
+    searchParams.ttParameters.TTSizeMb = 20; // use a big TT
+    searchParams.startingDepth = 1;
     searchParams.minSearchTime = 0.1;
-    searchParams.startingDepth = 6;
 
-    mainLoop(searchParams);
+//    mainLoop(searchParams);
 
-//    debugMode(searchParams);
+    debugMode(searchParams);
 
     return 0;
 }

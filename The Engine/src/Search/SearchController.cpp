@@ -35,7 +35,7 @@ int SearchController::SEE(int square) {
 }
 
 /* Constructor */
-SearchController::SearchController(SearchParameters searchParamsIn): TT(TranspositionTable(searchParamsIn.ttParameters.TTSizeMb)) {
+SearchController::SearchController(SearchParameters searchParamsIn): TT(TranspositionTable(searchParamsIn)) {
     searchParameters = searchParamsIn;
 
     /* Init the Zobrist Keys and FEN */
@@ -165,26 +165,34 @@ void SearchController::calculateAndSetZobristHash() {
     prevZobristStates.emplace_back(zobristState);
 }
 void SearchController::updateAfterMove(Move move) {
-    /* Updates the zobrist hash after a move has been made.
+    /* Updates the zobrist hash after a move has been made. We also update material evaluation
      * Switching the side is done separately, as we may want to switch sides without making a move
      * */
     short from, to, promo, flag, fromType, toType;
     decodeMove(move, from, to, promo, flag, fromType, toType);
 
+    int PSTIncriment = 0; // the change to the PST values. this needs to be multiplied by 1/ -1 depending on the currentSide
+
     if (flag == ENPASSANT) {
-        materialEvaluation += PieceWorths[PAWN + currentSide * 6]; // update material balance
+        short enPassSquare; // the square of the pawn we are taking
+        if (currentSide == WHITE) {
+            enPassSquare = to + 8;
+        } else {
+            enPassSquare = to - 8;
+        }
+
+        // update material balance
+        materialEvaluation += PieceWorths[PAWN + currentSide * 6];
+        PSTIncriment += PST[PAWN][currentSide][to];
+        PSTIncriment -= PST[PAWN][currentSide][from];
+        PSTIncriment -= PST[PAWN][otherSide][enPassSquare] * -1;
+
 
         // xor in and out our pawn
         zobristXOR(PAWN, from, currentSide);
         zobristXOR(PAWN, to, currentSide);
 
         // xor out the taken pawn
-        short enPassSquare;
-        if (currentSide == WHITE) {
-            enPassSquare = to + 8;
-        } else {
-            enPassSquare = to - 8;
-        }
         zobristXOR(PAWN, enPassSquare, otherSide); // xor out the taken pawn
     } else if (flag == CASTLING) {
         // xor out the castle and king from their old positions
@@ -197,24 +205,39 @@ void SearchController::updateAfterMove(Move move) {
         getCastleSquares(rook, newRook, newKing, currentSide);
         zobristXOR(KING, newKing, currentSide); // xor out the king
         zobristXOR(ROOK, newRook, currentSide); // xor out the rook
+
+        // update material balance
+        PSTIncriment += PST[ROOK][currentSide][newRook];
+        PSTIncriment += PST[KING][currentSide][newKing];
+        PSTIncriment -= PST[KING][currentSide][from];
+        PSTIncriment -= PST[ROOK][currentSide][to];
     } else {
         zobristXOR(fromType, from, currentSide); // xor out the start square, start player
+
+        PSTIncriment -= PST[fromType][currentSide][from];  // update material balance
 
         // xor out the end square, if occupied
         if (toType != EMPTY) {
             materialEvaluation += PieceWorths[toType + currentSide * 6]; // update material balance
+            PSTIncriment -= PST[toType][otherSide][to] * -1;
+
             zobristXOR(toType, to, otherSide); // xor out the end square, end player
         }
 
         if (flag == PROMOTION) {
             fromType = getPromoPiece(promo);
+
             materialEvaluation -= PieceWorths[PAWN + currentSide * 6]; // update material balance
-            materialEvaluation += PieceWorths[fromType + currentSide * 6]; // update material balance
+            materialEvaluation += PieceWorths[fromType + currentSide * 6];
         }
+
+        PSTIncriment += PST[fromType][currentSide][to];
 
         // xor out the end square, start player.
         zobristXOR(fromType, to, currentSide);
     }
+
+    materialEvaluation += PSTIncriment * (currentSide == WHITE ? 1 : -1); // add the PST increment to the material balance
 }
 void SearchController::updateEnPassZobrist() {
     // xor out en-pass rights

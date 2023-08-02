@@ -14,9 +14,6 @@ string getStringInput(string promptText) {
 
 /* The main commandline loop */
 void mainLoop(SearchParameters searchParams) {
-    searchParams.minSearchTime = 0.001;
-    searchParams.startingDepth = 4;
-    searchParams.ttParameters.TTSizeMb = 0;
     SearchController SuperBoard(searchParams);
 
     while (true) {
