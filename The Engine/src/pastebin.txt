@@ -1,10 +1,16 @@
----------------------=+ Search Results 5. +=---------------------
+---------------------=+ Search Results 1. +=---------------------
 Results:
-	Move: d4 | Eval: 50
-	Depth: 8 | Time: 16.5426 | mNodes: 35.9848 | Quiescence proportion: 67.4806% | Non-capture Q proportion: 33.7077% | mNodes per second: 2.17529
+	Move: Nc3 | Eval: 0
+	Depth: 9 | Time: 3.77629s | Nodes: 19.3461 million | Nodes per second: 5.12305 million | Quiescence proportion: 50.3863% | Non-capture Q proportion: 16.4795% |
 Transposition Table:
-	Fill rate: 59.0941% | Absolute size: 19.8287mb
-	Probe hit rate: 26.6312% | {Exact Probe Rate: 5.25127% | Upper Probe Rate: 15.7692% | Lower Probe Rate: 78.9795%}
-	Node set rate: 47.5546% | {Overwrite proportion: 19.6108% | Collision proportion: 7.35626% | New node proportion: 73.0329%}
-
-WITH
+	Fill rate: 39.0932% | Absolute size: 52.47mb
+	Probe hit rate: 35.4821% | {Exact Probe Rate: 0% | Upper Probe Rate: 91.4893% | Lower Probe Rate: 8.51075%}
+	Node set rate: 63.1742% | {Overwrite proportion: 7.52891% | Collision proportion: 2.73612% | New node proportion: 89.735%}
+---------------------=+ Search Results 1. +=---------------------
+Results:
+	Move: Nc3 | Eval: 0
+	Depth: 9 | Time: 3.33055s | Nodes: 21.4994 million | Nodes per second: 6.45521 million | Quiescence proportion: 49.2386% | Non-capture Q proportion: 10.4769% |
+Transposition Table:
+	Fill rate: 31.4267% | Absolute size: 42.1802mb
+	Probe hit rate: 35.3134% | {Exact Probe Rate: 0% | Upper Probe Rate: 94.1202% | Lower Probe Rate: 5.8798%}
+	Node set rate: 67.7732% | {Overwrite proportion: 7.37704% | Collision proportion: 3.19444% | New node proportion: 89.4285%}

@@ -188,6 +188,9 @@ inline short getPromoPiece(short promoCode) {
     if (promoCode == ROOKPROMO) return ROOK;
     if (promoCode == QUEENPROMO) return QUEEN;
 }
+inline short getTooPiece(Move m) {
+    return (m & toTypeMask) >> 19;
+}
 inline void getCastleSquares(U64 &to, short &newRook, short &newKing, Side &currentSide) {
     if (currentSide == WHITE) {
         if (to & castleLeftMask) {

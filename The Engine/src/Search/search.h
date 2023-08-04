@@ -16,11 +16,12 @@ struct SearchParameters {
     //TODO look into the setting of these
     struct TTParameters{
         int TTSizeMb = 0; // size of the TT in mb  (0 BY DEFAULT)
-        int replaceDepth = 1; // the extra depth needed to overwrite a node
-        int replaceAge = 5; // the extra age needed to overwrite a node
+        int replaceDepth = 1; // the extra depth needed to overwrite a node (must be at least 1)
+        int replaceAge = 7; // the extra age needed to overwrite a node (must be at least 1)
 
-        int minTTInsertDepth = 0; // the minimum depth at which a search will be inputted into the transposition table
-        bool useTT = true; // whether we are using the TT
+        int minTTInsertDepth = -50; // the minimum depth at which a search will be inputted into the transposition table
+        bool useTT = true; // whether we are using the TT in regular search
+        bool useTTInQSearch = false; // whether we are using the TT in the quiescence search
     };
 
     TTParameters ttParameters;
@@ -30,8 +31,11 @@ struct SearchParameters {
 
     int stalemateEvaluation = -1000; // the evaluation of a stalemate position
 
-    bool useSEE = false;
-    bool useQuiescence = true;
+    bool useSEE = true; // whether we use SEE/ delta pruning
+    bool useDelta = true;
+    int deltaMargin = 200; // the margin used for delta pruning
+
+    bool useQuiescence = true; // whether we use a quiescence search
 };
 
 struct SearchStats {
@@ -45,6 +49,16 @@ struct SearchStats {
         totalNonCaptureQSearched = 0;
     }
 };
+
+inline short getEvaluationType(int eval, int alpha, int beta) {
+    if (eval <= alpha) {
+        return UPPER_EVAL;
+    } else if (eval >= beta) {
+        return LOWER_EVAL;
+    } else {
+        return EXACT_EVAL;
+    }
+}
 
 
 #endif //SEARCH_CPP_SEARCH_H

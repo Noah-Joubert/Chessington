@@ -4,35 +4,134 @@
 #include "../misc.h"
 #include "../types.h"
 #include "search.h"
+#include "SearchController.h"
+
+int SearchController::SEEMove(Move m) {
+    // evaluate the SEE of a move. we assume the move has already been made, and will me immediately unmade
+
+    // decode the move
+    short fromSq, toSq, promo, flag, fromPc, toPc;
+    decodeMove(m, fromSq, toSq, promo, flag, fromPc, toPc);
+
+    int SEEEval = PieceScores[toPc] - SEE(toSq);
+
+    return SEEEval;
+}
+int SearchController::SEE(short square) {
+    /* Static exchange evaluation
+     * It returns the value of all the captures on one square.
+     * We always capture with the cheapest piece first.
+     * */
+    int SEEValue = 0;
+
+    // get the smallest attacker on the square (this actually doesn't include en-passants (or promotions). honestly I can't be asked)
+    short smallestAttackerSquare;
+    short smallestAttacker = -1;
+    getSmallestAttacker(square, smallestAttackerSquare, smallestAttacker);
+
+    // get the enemy piece
+    U64 to = toBB(square);
+    short toPiece = getPieceAt(to);
+
+    // if there are no more attackers, return 0
+    if (smallestAttackerSquare != -1) {
+        /* Manually do the move */
+        setSquare(smallestAttacker, currentSide, square); // move the taking piece
+        setSquare(smallestAttacker, currentSide, smallestAttackerSquare); // move the taking piece
+        setSquare(toPiece, otherSide, square); // remove the taken piece
+        switchSide();
+
+        SEEValue = PieceWorths[toPiece] - SEE(square);
+
+        /* Manually do the move */
+        switchSide();
+        setSquare(smallestAttacker, currentSide, square); // move the taking piece
+        setSquare(smallestAttacker, currentSide, smallestAttackerSquare); // move the taking piece
+        setSquare(toPiece, otherSide, square); // remove the taken piece
+    }
+
+    return SEEValue;
+}
 
 int SearchController::quiescence(int alpha, int beta, int depth) {
     /* What is the Quiescence Search?
-     * This is a special type of search which we enter at depth 0. It only considers captures. //TODO add in checks and promotions
+     * This is a special type of search which we enter at depth 0. It only considers captures.
      * This is to mitigate the horizon effect whereby the search stops just before a series of moves which drastically effect the game.
+     * It tends to take up at least 50% of the search, so definitely worth some thought.
      * */
 
     /* 1. Take the static evaluation as a standPat score which represents the minimum evaluation for this node.
-     * 2. Check for checkmate/ stalemate
-     * 3. Loop through all moves and continue the quiescence search
+     * 2. Probe the TT
+     * 3. Check for checkmate/ stalemate
+     * 4. Loop through all moves and continue the quiescence search
+        * a. SEE pruning. Static Exchange Evaluation gives the value of exchange of material on particular square.
+     * 5. Write to the TT
      * */
+
+    //TODO add in pawn checks
+    //TODO consider limiting quiet checks
 
     searchStats.totalNodesSearched++; // count the number of nodes searched
     searchStats.totalQuiescenceSearched ++; // count the quiescence nodes searched
+
+    Move bestMove; // best move from this node
 
     // * 1.
     // A quiescence search should always improve the board evaluation for the current player.
     // This is because the point of the quiescence search is to minimise the horizon effect, whereby the boards static evaluation is much less than the actual evaluation of the position.
     // So we take the standPat as a lower bound on our evaluation (alpha).
-    int standPat = evaluate(); // we take the current static evaluation as a lower bound on the score
+    int standPat = relativeLazy(); // we take the current static evaluation as a lower bound on the score
     if (standPat >= beta) {
         // fail hard
         return beta;
-    } else if (alpha < standPat) {
+    }
+
+    // else finally take standard pat as alpha
+    if (alpha < standPat) {
         alpha = standPat;
     }
-    
-    // * 2.
-    getMoveList(); // generate moves before checking for checkmate/ stalemate
+
+    // * 2. Probe the TT
+    if (searchParameters.ttParameters.useTTInQSearch) {
+        bool nodeExists = false; // whether we've stored a search for this position
+        TTNode *node = TT.probe(zobristState, nodeExists); // probe the table
+
+        // see if the node exists, and it is to a higher depth than the searchDepth
+        if (nodeExists && (node->depth >= depth)) {
+            // TODO if the move is a LOWER_EVAL or EXACT_EVAL, add it to the front of the moveList,
+
+            // see what type of evaluation this is
+            if (node->flag == EXACT_EVAL) {
+                // if the evaluation is exact, check the move is valid, then return it
+
+                // do a quick legality check on the move by seeing if it is in the move list, because of collision risk
+                MoveList moves = getMoveList();
+                if (find(moves.begin(), moves.end(), node->move) != moves.end()) {
+                    bestMove = node->move;
+                    return node->eval;
+                }
+
+            } else if (node->flag == LOWER_EVAL) {
+                // this is a lower evaluation, meaning we've had a fail hard beta cut-off
+                // so this evaluation is a lower bound of the node
+                alpha = node->eval > alpha ? node->eval : alpha;
+
+            } else if (node->flag == UPPER_EVAL) {
+                // this is an upper evaluation, meaning we've not had any move exceed alpha
+                // so this evaluation is an upper bound of the node
+                beta = node->eval < beta ? node->eval : beta;
+            }
+
+            if (alpha >= beta) {
+                // now check for an early fail high cutoff!
+                bestMove = node->move;
+                return node->eval; //TODO why do we return node->eval here?
+            }
+        }
+    }
+
+    // * 3.
+    getMoveList(); // annoyingly we have to generate all moves before checking for checkmate/ stalemate
     MoveList moves = activeMoveList;
     if (inCheckMate()) {
         // return static evaluation ~ do this after checking if depth == 0, to avoid generating moves
@@ -43,17 +142,42 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
         return searchParameters.stalemateEvaluation;
     }
 
-    // * 3.
+    // * 4.
     int nodeEvaluation = -INFIN;
     for (Move move: moves) {
+        if (!(move & toTypeMask)) {
+            // see if this is a non-capture quiescence move
+            searchStats.totalNonCaptureQSearched ++;
+
+            // if we are deep enough/ stop making these moves, unless promotion //TODO standardise
+//            if ((depth <= -1) && !(move & promoMask)) {
+//                continue;
+//            }
+        }
+
         // do a full depth search
-        makeMove(move); // make the move
+        makeMove(move); // make the move before doing SEE
+
+        /* a. SSE pruning/ Delta pruning
+         * As a quiescence search should improve the nodes' evaluation, we can confidently prune nodes with negative SEE.
+         * We use this together with delta pruning, where we prune a move if we don't believe it can raise alpha
+         * i.e. lazyEval() + SEE + Margin < alpha.
+         * */
+        int SEEEvaluation = SEEMove(moveHistory.back());
+        if (
+                (searchParameters.useSEE && (SEEEvaluation < 0)) ||
+                (searchParameters.useDelta && (standPat + PieceWorths[getTooPiece(move)] + searchParameters.deltaMargin < alpha))
+                ) {
+            unMakeMove();
+            continue;
+        }
+
         int subEval = -quiescence(-beta, -alpha, depth - 1);
         unMakeMove(); // unmake the move
 
-        // a. Fail low
         if (subEval > nodeEvaluation) {
             nodeEvaluation = subEval;
+            bestMove = move;
             if (nodeEvaluation > alpha) {
                 alpha = nodeEvaluation;
             }
@@ -64,6 +188,12 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
             alpha = beta; // TODO are we losing information by taking beta here?
             break;
         }
+    }
+
+    // * 5. write to the TT
+    int evaluationType = getEvaluationType(nodeEvaluation, alpha, beta);
+    if (searchParameters.ttParameters.useTTInQSearch && (depth >= searchParameters.ttParameters.minTTInsertDepth)) {
+        TT.set(zobristState, bestMove, depth, evaluationType, moveNumber, nodeEvaluation);
     }
 
     return alpha;
@@ -89,7 +219,8 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     // * 1.
     if (depth == 0) {
         /* Go into quiescence search! */
-        return quiescence(alpha, beta, depth);
+        if (searchParameters.useQuiescence) {return quiescence(alpha, beta, depth);}
+        else {return evaluate();}
     }
 
     // * 2.
@@ -131,7 +262,9 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
         }
     }
 
+
     // * 3.
+    MoveList moves = getMoveList(); // generate moves before checking for checkmate/ stalemate
     if (inCheckMate()) {
         // return static evaluation ~ do this after checking if depth == 0, to avoid generating moves
         // return -MATE as a checkmate is very bad for the current player
@@ -174,14 +307,7 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
      * But for transposition tables entries fail high nodes are great as they raise alpha, but fail low nodes are also good as they lower beta. And both can lead to a cutoff
      * All in all, exact valuations are best
      * */
-    int evaluationType;
-    if (nodeEvaluation <= originalAlpha) {
-        evaluationType = UPPER_EVAL;
-    } else if (nodeEvaluation >= originalBeta) {
-        evaluationType = LOWER_EVAL;
-    } else {
-        evaluationType = EXACT_EVAL;
-    }
+    int evaluationType = getEvaluationType(nodeEvaluation, alpha, beta);
 
     // * 6.
     if (searchParameters.ttParameters.useTT && (depth >= searchParameters.ttParameters.minTTInsertDepth)) {
@@ -199,7 +325,7 @@ bool SearchController::search(Move &bestMove, string &FENFlag, bool DEBUG_MODE) 
          * a. Run negamax
          * b. Check if the game has ended
          * c. Either exit out of iterative deepening depending on if the search took long enough, or increase the depth and keep going.
-         * d. Break out of the iterative deepening loop if we are in a depth spiral e.g. because there is only one legal move possible
+         * d. See if we must break out of iterative deepening
      * 2. See if the move could have been done by another piece for PGN notation
      * 3. Make the best move
      * 4. Print out stats
@@ -233,8 +359,9 @@ bool SearchController::search(Move &bestMove, string &FENFlag, bool DEBUG_MODE) 
         searchTime = timer.end(); // end the timer
         searchDepth = searchDepth + 1;
 
-        // * d. This breaks the iterative deepening if whatever reason the search is super-duper quick i.e. there is only one more to play
-        if (searchDepth > 50) {
+        // * d. This breaks the iterative deepening
+        // Firstly if the search is to a crazy depth, something is going wrong. Secondly, if a mate is found
+        if ((searchDepth > 50) || (abs(eval) >= MATE)) {
             break;
         }
     }
@@ -272,10 +399,11 @@ bool SearchController::search(Move &bestMove, string &FENFlag, bool DEBUG_MODE) 
         cout << "\tMove: " << moveToFEN(bestMove, "-") << " | ";
         cout << "Eval: " << eval << "\n";
         cout << "\tDepth: " << searchDepth << " | ";
-        cout << "Time: " << searchTime << " | ";
-        cout << "mNodes: " << (float) searchStats.totalNodesSearched / 1000000 << " | ";
+        cout << "Time: " << searchTime << "s | ";
+        cout << "Nodes: " << (float) searchStats.totalNodesSearched / 1000000 << " million | ";
+        cout << "Nodes per second: " << (float) searchStats.totalNodesSearched / 1000000 / searchTime << " million | ";
         cout << "Quiescence proportion: " << (float) searchStats.totalQuiescenceSearched / searchStats.totalNodesSearched * 100 << "% | ";
-        cout << "mNodes per second: " << (float) searchStats.totalNodesSearched / 1000000 / searchTime;
+        cout << "Non-capture Q proportion: " << (float) searchStats.totalNonCaptureQSearched / searchStats.totalQuiescenceSearched * 100 << "% | ";
         cout << "\n";
         cout << "Transposition Table: \n";
         cout << "\tFill rate: " << (float)TT.totalUniqueNodes / TT.getSize() * 100 << "% | ";

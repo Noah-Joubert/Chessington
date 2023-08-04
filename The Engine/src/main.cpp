@@ -141,7 +141,7 @@ int main() {
 
     /* Set the search parameters */
     SearchParameters searchParams;
-    searchParams.ttParameters.TTSizeMb = 20; // use a big TT
+    searchParams.ttParameters.TTSizeMb = 100; // use a big TT
     searchParams.minSearchTime = 0.01;
 
     mainLoop(searchParams);

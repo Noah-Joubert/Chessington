@@ -240,9 +240,6 @@ string moveToFEN(Move move, string twice) {
 
     return moveString;
 }
-inline Move encodeMove(short startSquare, short endSquare, short promoCode, short moveFlag, short startType, short endType) {
-    return (startSquare) | (endSquare << 6) | (promoCode << 12) | (moveFlag << 14) | (startType << 16) | (endType << 19);
-}
 void splitString(string str, string *arr, string brk, int num) {
     for (int i = 0; i < num; i ++) {
         int space = str.find(brk);

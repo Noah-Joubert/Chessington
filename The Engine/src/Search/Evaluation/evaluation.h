@@ -9,7 +9,7 @@
 
 
 // worths of all the pieces for each side
-const int PieceScores[6] = {100, 300, 300, 500, 900, 0};
+const int PieceScores[7] = {100, 300, 300, 500, 900, 0, 0}; // one extra for empty pieces
 const int PieceWorths[12] = {100, 300, 300, 500, 900, 0, -100, -300, -300, -500, -900, 0}; // holds the worth for all pieces
 
 /* Piece Square Tables

@@ -320,6 +320,9 @@ U64 genBulkPawnAttacks(U64 pawn, short side) {
 }
 
 /* move encoding */
+inline Move encodeMove(short startSquare, short endSquare, short promoCode, short moveFlag, short startType, short endType) {
+    return (startSquare) | (endSquare << 6) | (promoCode << 12) | (moveFlag << 14) | (startType << 16) | (endType << 19);
+}
 void convertActiveBitboard(short &startSquare, short startType, U64 moveBB, MoveList &activeMoveList, U64 *pieceBB) {
     if (moveBB == 0) return;
 
