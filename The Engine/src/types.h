@@ -16,7 +16,8 @@ using namespace std;
 typedef uint64_t U64;
 typedef uint32_t U32;
 typedef uint16_t U16;
-typedef uint8_t U8;
+typedef uint8_t U8; // unsigned 8 but
+typedef int8_t S8; // signed 8 bit
 typedef int8_t Byte;
 
 /* datatype used for moves. A 32 bit integer

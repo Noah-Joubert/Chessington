@@ -11,8 +11,6 @@
 
 typedef uint16_t Zob16; // used to just hold the last 16 bits of a zobrist key to save memory
 
-// these flags are used to identify whether an evaluation is exact, or an alpha beta cut-off.
-
 
 /* This struct is for the entry to a transposition table
  * We need to store basic information like the evaluation of the position, the best move found, and part of the zobrist key in order to identify it
@@ -21,7 +19,7 @@ typedef uint16_t Zob16; // used to just hold the last 16 bits of a zobrist key t
 struct TTNode {
     Zob16 key = 0; // top half of the zobrist key, used to identify a chess position.
     Move move = 0; // the move code of the best move found
-    U8 depth = 0; // the depth at which the position was searched
+    S8 depth = 0; // the depth at which the position was searched (Use signed int as negative depth)
     U8 flag = 0; // holds whether the evaluation is exact, or an alpha-beta cut off
     U8 age = 0; // holds the moveNumber at which this search was done
     int16_t eval = 0; // evaluation of this node
@@ -48,6 +46,22 @@ class TranspositionTable {
     int replaceAge; // the extra age needed to replace a node
 
     TTNode *table;  // array which holds the transposition table
+
+    inline int zobristToTTKey(Zobrist &key) {
+        // converts a zobrist key, to a TT key
+        return key & TTKeyMask;
+    }
+    inline Zob16 toZob16(Zobrist &key) {
+        // takes the final 16 bits of the zobrist key. this is stored in the transposition node, and used to check for collisions
+        return (Zob16) (key >> 48);
+    }
+    inline TTNode* find(Zobrist &key) {
+        // returns the entry for a zobrist key
+        int index = zobristToTTKey(key);
+
+        return &table[index];
+    }
+
 public:
     /* These stats keep track of the access statistics */
     int totalProbeCalls = 0, totalProbeFound = 0, totalProbeExact = 0, totalProbeUpper = 0, totalProbeLower = 0; // the number of probes to the TT
@@ -69,20 +83,7 @@ public:
         replaceDepth = params.ttParameters.replaceDepth;
         replaceAge = params.ttParameters.replaceAge;
     }
-    inline TTNode* find(Zobrist &key) {
-        // returns the entry for a zobrist key
-        int index = zobristToTTKey(key);
 
-        return &table[index];
-    }
-    inline int zobristToTTKey(Zobrist &key) {
-        // converts a zobrist key, to a TT key
-        return key & TTKeyMask;
-    }
-    inline Zob16 toZob16(Zobrist &key) {
-        // takes the final 16 bits of the zobrist key. this is stored in the transposition node, and used to check for collisions
-        return (Zob16) (key >> 48);
-    }
     inline TTNode* probe(Zobrist key, bool &found) {
         // this function gets the entry referenced by this zobrist hash, and checks whether the match is exact
         totalProbeCalls ++;
@@ -106,7 +107,6 @@ public:
 
         return node;
     }
-
     void set(Zobrist key, Move &move, int &depth, int &flag, short age, int &eval) {
         // takes in the results of a search and replaces the node if necessary
         TTNode* node = find(key);
@@ -115,7 +115,7 @@ public:
         totalSetCalls ++;
 
         if (    (   node->key == 0  ) ||
-                (   (node->key == shiftedKey)  &&   (depth > node->depth )   ) ||
+                (   (node->key == shiftedKey)  &&   (depth > node->depth)   ) ||
                 (   (node->key != shiftedKey)  &&   (depth - node->depth >= replaceDepth) || (age - node->age >= replaceAge)))
         {
             // the node will be overwritten if
@@ -143,6 +143,7 @@ public:
             node->eval = (int16_t) eval;
         }
     }
+
     void clearTotals() {
         totalProbeCalls = 0, totalProbeFound = 0; // the number of probes to the TT
         totalSetCalls = 0; // total number of calls to add a search to the TT
@@ -151,6 +152,8 @@ public:
         totalProbeCalls = 0, totalProbeFound = 0, totalProbeExact = 0, totalProbeUpper = 0, totalProbeLower = 0; // the number of probes to the TT
     }
     void clear() {
+        clearTotals();
+
         // init the table
         for (int i = 0; i < TTsize; i++) {
             TTNode node;

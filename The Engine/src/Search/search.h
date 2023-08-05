@@ -9,8 +9,8 @@
 #define LOWER_EVAL 2
 #define UPPER_EVAL 0
 
-#define INFIN 1000000
-#define MATE 100000
+#define INFIN 100000
+#define MATE 10000
 
 struct SearchParameters {
     //TODO look into the setting of these
@@ -59,6 +59,10 @@ inline short getEvaluationType(int eval, int alpha, int beta) {
         return EXACT_EVAL;
     }
 }
-
+inline string evaltypeToString(short evalType) {
+    if (evalType == EXACT_EVAL) {return "Exact";}
+    else if (evalType == LOWER_EVAL) {return "Lower";}
+    else {return "Upper";}
+}
 
 #endif //SEARCH_CPP_SEARCH_H

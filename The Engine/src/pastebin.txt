@@ -1,16 +1,29 @@
+Only exacts
 ---------------------=+ Search Results 1. +=---------------------
 Results:
-	Move: Nc3 | Eval: 0
-	Depth: 9 | Time: 3.77629s | Nodes: 19.3461 million | Nodes per second: 5.12305 million | Quiescence proportion: 50.3863% | Non-capture Q proportion: 16.4795% |
+	Move: Nc3 | Eval: 50
+	Depth: 8 | Time: 0.682648s | Nodes: 2.53986 million | Nodes per second: 3.72059 million | Quiescence proportion: 50.9889% | Non-capture Q proportion: 10.0393% |
 Transposition Table:
-	Fill rate: 39.0932% | Absolute size: 52.47mb
-	Probe hit rate: 35.4821% | {Exact Probe Rate: 0% | Upper Probe Rate: 91.4893% | Lower Probe Rate: 8.51075%}
-	Node set rate: 63.1742% | {Overwrite proportion: 7.52891% | Collision proportion: 2.73612% | New node proportion: 89.735%}
+	Fill rate: 0.0781298% | Absolute size: 0.104864mb
+	Probe hit rate: 7.41114% | {Exact Probe Rate: 99.9923% | Upper Probe Rate: 0.0076799% | Lower Probe Rate: 0%}
+	Node set rate: 99.935% | {Overwrite proportion: 14.6837% | Collision proportion: 0% | New node proportion: 85.3163%}
+
+No TT
 ---------------------=+ Search Results 1. +=---------------------
 Results:
-	Move: Nc3 | Eval: 0
-	Depth: 9 | Time: 3.33055s | Nodes: 21.4994 million | Nodes per second: 6.45521 million | Quiescence proportion: 49.2386% | Non-capture Q proportion: 10.4769% |
+	Move: Nc3 | Eval: 50
+	Depth: 8 | Time: 0.740443s | Nodes: 3.27408 million | Nodes per second: 4.42178 million | Quiescence proportion: 51.1228% | Non-capture Q proportion: 9.55047% |
 Transposition Table:
-	Fill rate: 31.4267% | Absolute size: 42.1802mb
-	Probe hit rate: 35.3134% | {Exact Probe Rate: 0% | Upper Probe Rate: 94.1202% | Lower Probe Rate: 5.8798%}
-	Node set rate: 67.7732% | {Overwrite proportion: 7.37704% | Collision proportion: 3.19444% | New node proportion: 89.4285%}
+	Fill rate: 0% | Absolute size: 0mb
+	Probe hit rate: nan% | {Exact Probe Rate: nan% | Upper Probe Rate: nan% | Lower Probe Rate: nan%}
+	Node set rate: nan% | {Overwrite proportion: nan% | Collision proportion: nan% | New node proportion: nan%}
+
+All TT stuff
+---------------------=+ Search Results 1. +=---------------------
+Results:
+	Move: Nc3 | Eval: 50
+	Depth: 8 | Time: 0.450687s | Nodes: 1.74087 million | Nodes per second: 3.8627 million | Quiescence proportion: 50.2917% | Non-capture Q proportion: 10.5792% |
+Transposition Table:
+	Fill rate: 0.930512% | Absolute size: 1.24891mb
+	Probe hit rate: 45.4123% | {Exact Probe Rate: 9.59153% | Upper Probe Rate: 15.3049% | Lower Probe Rate: 75.1036%}
+	Node set rate: 87.6959% | {Overwrite proportion: 18.3079% | Collision proportion: 0.0177878% | New node proportion: 81.6744%}

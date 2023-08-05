@@ -71,6 +71,8 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
     //TODO add in pawn checks
     //TODO consider limiting quiet checks
 
+    int originalAlpha = alpha, originalBeta = beta; // store the original alpha/ beta so we can identify this node type
+
     searchStats.totalNodesSearched++; // count the number of nodes searched
     searchStats.totalQuiescenceSearched ++; // count the quiescence nodes searched
 
@@ -102,8 +104,6 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
 
             // see what type of evaluation this is
             if (node->flag == EXACT_EVAL) {
-                // if the evaluation is exact, check the move is valid, then return it
-
                 // do a quick legality check on the move by seeing if it is in the move list, because of collision risk
                 MoveList moves = getMoveList();
                 if (find(moves.begin(), moves.end(), node->move) != moves.end()) {
@@ -123,9 +123,10 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
             }
 
             if (alpha >= beta) {
-                // now check for an early fail high cutoff!
-                bestMove = node->move;
-                return node->eval; //TODO why do we return node->eval here?
+                // now check for an early fail high cutoff
+                // TODO think through the logic of brining beta down, vs raising alpha
+
+                return alpha;
             }
         }
     }
@@ -143,7 +144,7 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
     }
 
     // * 4.
-    int nodeEvaluation = -INFIN;
+    int nodeEvaluation = standPat; // need to set as standPat not -infinity, in-case there are no moves (i.e. leaf node)
     for (Move move: moves) {
         if (!(move & toTypeMask)) {
             // see if this is a non-capture quiescence move
@@ -185,18 +186,17 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
 
         // b. Fail hard beta cut off.
         if (alpha >= beta) {
-            alpha = beta; // TODO are we losing information by taking beta here?
             break;
         }
     }
 
     // * 5. write to the TT
-    int evaluationType = getEvaluationType(nodeEvaluation, alpha, beta);
+    int evaluationType = getEvaluationType(nodeEvaluation, originalAlpha, originalBeta);
     if (searchParameters.ttParameters.useTTInQSearch && (depth >= searchParameters.ttParameters.minTTInsertDepth)) {
         TT.set(zobristState, bestMove, depth, evaluationType, moveNumber, nodeEvaluation);
     }
 
-    return alpha;
+    return nodeEvaluation; // return nodeEvaluation as we use a fail soft alpha beta framework
 }
 int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     /* Negamax */
@@ -214,7 +214,7 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
 
     searchStats.totalNodesSearched++; // count the number of nodes searched
     int originalAlpha = alpha, originalBeta = beta; // store the original alpha/ beta so we can identify this node type
-    int nodeEvaluation = -INFIN;
+    int nodeEvaluation = -INFIN; // stores the calculated evaluation of this node, as we use Fail Soft alpha/beta framework
 
     // * 1.
     if (depth == 0) {
@@ -224,6 +224,9 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     }
 
     // * 2.
+    bool ttEvaluationFound = false;
+    Move ttMove;
+    int ttEval;
     if (searchParameters.ttParameters.useTT) {
         bool nodeExists = false; // whether we've stored a search for this position
         TTNode *node = TT.probe(zobristState, nodeExists); // probe the table
@@ -234,34 +237,17 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
 
             // see what type of evaluation this is
             if (node->flag == EXACT_EVAL) {
-                // if the evaluation is exact, check the move is valid, then return it
-
                 // do a quick legality check on the move by seeing if it is in the move list, because of collision risk
                 MoveList moves = getMoveList();
                 if (find(moves.begin(), moves.end(), node->move) != moves.end()) {
-                    bestMove = node->move;
-                    return node->eval;
+                    ttMove = node->move;
+                    ttEval = node->eval;
+                    ttEvaluationFound = true;
                 }
 
-            } else if (node->flag == LOWER_EVAL) {
-                // this is a lower evaluation, meaning we've had a fail hard beta cut-off
-                // so this evaluation is a lower bound of the node
-                alpha = node->eval > alpha ? node->eval : alpha;
-
-            } else if (node->flag == UPPER_EVAL) {
-                // this is an upper evaluation, meaning we've not had any move exceed alpha
-                // so this evaluation is an upper bound of the node
-                beta = node->eval < beta ? node->eval : beta;
-            }
-
-            if (alpha >= beta) {
-                // now check for an early fail high cutoff!
-                bestMove = node->move;
-                return node->eval; //TODO why do we return node->eval here?
             }
         }
     }
-
 
     // * 3.
     MoveList moves = getMoveList(); // generate moves before checking for checkmate/ stalemate
@@ -294,7 +280,6 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
 
         // b. Fail hard beta cut off.
         if (alpha >= beta) {
-            alpha = beta; // TODO are we losing information by taking beta here?
             break;
         }
     }
@@ -307,15 +292,38 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
      * But for transposition tables entries fail high nodes are great as they raise alpha, but fail low nodes are also good as they lower beta. And both can lead to a cutoff
      * All in all, exact valuations are best
      * */
-    int evaluationType = getEvaluationType(nodeEvaluation, alpha, beta);
+    int evaluationType = getEvaluationType(nodeEvaluation, originalAlpha, originalBeta);
 
     // * 6.
-    if (searchParameters.ttParameters.useTT && (depth >= searchParameters.ttParameters.minTTInsertDepth)) {
+    if (searchParameters.ttParameters.useTT &&
+            (depth >= searchParameters.ttParameters.minTTInsertDepth)
+    ) {
         TT.set(zobristState, bestMove, depth, evaluationType, moveNumber, nodeEvaluation);
     }
 
+    if (ttEvaluationFound) {
+        bool evaluationAsExpected = ((nodeEvaluation == ttEval) && (evaluationType == EXACT_EVAL)) + ((nodeEvaluation <= ttEval) && (evaluationType == LOWER_EVAL)) + ((nodeEvaluation >= ttEval) && (evaluationType == UPPER_EVAL));
+        bool moveAsExpected = !(evaluationType == EXACT_EVAL) || bestMove == ttMove;
+
+        cout << "a";
+
+        if (!(moveAsExpected && evaluationAsExpected)) {
+
+            // If we had an exact TT match, print out the two searches
+            cout << "\n";
+            cout << "Search results: Eval " << nodeEvaluation << " | Evaluation Type: "
+                 << evaltypeToString(evaluationType) << "\n";
+            cout << "TT results: Eval " << ttEval << "\n";
+            cout << "Same move: " << (bestMove == ttMove) << "\n";
+            cout << "As expected? " << ((nodeEvaluation == ttEval) && (evaluationType == EXACT_EVAL)) +
+                                       ((nodeEvaluation <= ttEval) && (evaluationType == LOWER_EVAL)) +
+                                       ((nodeEvaluation >= ttEval) && (evaluationType == UPPER_EVAL));
+            cout << "\n";
+        }
+    }
+
     // * 7.
-    return alpha; // return the evaluation for the best move
+    return nodeEvaluation; // return nodeEvaluation as we use a fail soft alpha beta framework
 }
 
 bool SearchController::search(Move &bestMove, string &FENFlag, bool DEBUG_MODE) {
