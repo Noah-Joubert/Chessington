@@ -1,0 +1,14 @@
+8. bxc3 Bf5 
+9. O-O e6 
+10. Ne5 c5 
+11. c4 Bd6 
+12. cxd5 exd5 
+13. Bg3 O-O 
+14. Bf4 c4 
+15. Bg3 c3 
+16. Bf4 Bxe5 
+17. dxe5 Be6 
+18. Bg3 Bf5 
+19. Bf4 Be6 
+20. Bg3 Bf5 
+21. Bf4 

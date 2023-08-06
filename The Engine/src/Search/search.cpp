@@ -85,7 +85,7 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
     int standPat = relativeLazy(); // we take the current static evaluation as a lower bound on the score
     if (standPat >= beta) {
         // fail hard
-        return beta;
+        return standPat;
     }
 
     // else finally take standard pat as alpha
@@ -95,39 +95,14 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
 
     // * 2. Probe the TT
     if (searchParameters.ttParameters.useTTInQSearch) {
-        bool nodeExists = false; // whether we've stored a search for this position
-        TTNode *node = TT.probe(zobristState, nodeExists); // probe the table
+        bool useNode = false; // whether we've stored a search for this position
+        TTNode *node = TT.probe(zobristState, useNode, alpha, beta, depth); // probe the table
 
         // see if the node exists, and it is to a higher depth than the searchDepth
-        if (nodeExists && (node->depth >= depth)) {
-            // TODO if the move is a LOWER_EVAL or EXACT_EVAL, add it to the front of the moveList,
-
-            // see what type of evaluation this is
-            if (node->flag == EXACT_EVAL) {
-                // do a quick legality check on the move by seeing if it is in the move list, because of collision risk
-                MoveList moves = getMoveList();
-                if (find(moves.begin(), moves.end(), node->move) != moves.end()) {
-                    bestMove = node->move;
-                    return node->eval;
-                }
-
-            } else if (node->flag == LOWER_EVAL) {
-                // this is a lower evaluation, meaning we've had a fail hard beta cut-off
-                // so this evaluation is a lower bound of the node
-                alpha = node->eval > alpha ? node->eval : alpha;
-
-            } else if (node->flag == UPPER_EVAL) {
-                // this is an upper evaluation, meaning we've not had any move exceed alpha
-                // so this evaluation is an upper bound of the node
-                beta = node->eval < beta ? node->eval : beta;
-            }
-
-            if (alpha >= beta) {
-                // now check for an early fail high cutoff
-                // TODO think through the logic of brining beta down, vs raising alpha
-
-                return alpha;
-            }
+        if (useNode) {
+            // TODO if the move is a BETA_EVAL or EXACT_EVAL, add it to the front of the moveList,
+            bestMove = node->move;
+            return node->flag == EXACT_EVAL ? node->eval: node->flag == ALPHA_EVAL ? alpha : beta;
         }
     }
 
@@ -228,24 +203,14 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     Move ttMove;
     int ttEval;
     if (searchParameters.ttParameters.useTT) {
-        bool nodeExists = false; // whether we've stored a search for this position
-        TTNode *node = TT.probe(zobristState, nodeExists); // probe the table
+        bool shouldUse = false; // whether we will use the TT probe results
+        TTNode *node = TT.probe(zobristState, shouldUse, alpha, beta, depth); // probe the table
 
         // see if the node exists, and it is to a higher depth than the searchDepth
-        if (nodeExists && (node->depth >= depth)) {
-            // TODO if the move is a LOWER_EVAL or EXACT_EVAL, add it to the front of the moveList,
-
-            // see what type of evaluation this is
-            if (node->flag == EXACT_EVAL) {
-                // do a quick legality check on the move by seeing if it is in the move list, because of collision risk
-                MoveList moves = getMoveList();
-                if (find(moves.begin(), moves.end(), node->move) != moves.end()) {
-                    ttMove = node->move;
-                    ttEval = node->eval;
-                    ttEvaluationFound = true;
-                }
-
-            }
+        if (shouldUse) {
+            // TODO if the move is a BETA_EVAL or EXACT_EVAL, add it to the front of the moveList,
+            bestMove = node->move;
+            return node->flag == EXACT_EVAL ? node->eval: node->flag == ALPHA_EVAL ? alpha : beta;
         }
     }
 
@@ -287,8 +252,8 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     // * 5.
     /* Discussion: How should we treat each evaluation type?
      * First consider vanilla alpha/beta pruning. Until we fail high, every single move needs to be considered.
-     * So fail high e.g. LOWER_EVAL nodes should be searched first. This leads into move ordering principles i.e. search captures first as they are more likely to fail high.
-     * So for more ordering, we prioritise fail high, exact, then fail low. (LOWER_EVAL, EXACT_EVAL, UPPER_EVAL)
+     * So fail high e.g. BETA_EVAL nodes should be searched first. This leads into move ordering principles i.e. search captures first as they are more likely to fail high.
+     * So for more ordering, we prioritise fail high, exact, then fail low. (BETA_EVAL, EXACT_EVAL, ALPHA_EVAL)
      * But for transposition tables entries fail high nodes are great as they raise alpha, but fail low nodes are also good as they lower beta. And both can lead to a cutoff
      * All in all, exact valuations are best
      * */
@@ -302,10 +267,8 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     }
 
     if (ttEvaluationFound) {
-        bool evaluationAsExpected = ((nodeEvaluation == ttEval) && (evaluationType == EXACT_EVAL)) + ((nodeEvaluation <= ttEval) && (evaluationType == LOWER_EVAL)) + ((nodeEvaluation >= ttEval) && (evaluationType == UPPER_EVAL));
+        bool evaluationAsExpected = ((nodeEvaluation == ttEval) && (evaluationType == EXACT_EVAL)) + ((nodeEvaluation <= ttEval) && (evaluationType == BETA_EVAL)) + ((nodeEvaluation >= ttEval) && (evaluationType == ALPHA_EVAL));
         bool moveAsExpected = !(evaluationType == EXACT_EVAL) || bestMove == ttMove;
-
-        cout << "a";
 
         if (!(moveAsExpected && evaluationAsExpected)) {
 
@@ -316,8 +279,8 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
             cout << "TT results: Eval " << ttEval << "\n";
             cout << "Same move: " << (bestMove == ttMove) << "\n";
             cout << "As expected? " << ((nodeEvaluation == ttEval) && (evaluationType == EXACT_EVAL)) +
-                                       ((nodeEvaluation <= ttEval) && (evaluationType == LOWER_EVAL)) +
-                                       ((nodeEvaluation >= ttEval) && (evaluationType == UPPER_EVAL));
+                                       ((nodeEvaluation <= ttEval) && (evaluationType == BETA_EVAL)) +
+                                       ((nodeEvaluation >= ttEval) && (evaluationType == ALPHA_EVAL));
             cout << "\n";
         }
     }
@@ -417,9 +380,10 @@ bool SearchController::search(Move &bestMove, string &FENFlag, bool DEBUG_MODE) 
         cout << "\tFill rate: " << (float)TT.totalUniqueNodes / TT.getSize() * 100 << "% | ";
         cout << "Absolute size: " << (float)TT.totalUniqueNodes * sizeof(TTNode) / 1000000 << "mb\n";
         cout << "\tProbe hit rate: " << (float)TT.totalProbeFound / TT.totalProbeCalls * 100 << "% | ";
-        cout << "{Exact Probe Rate: " << (float)TT.totalProbeExact / TT.totalProbeFound * 100 << "% | ";
-        cout << "Upper Probe Rate: " << (float)TT.totalProbeUpper / TT.totalProbeFound * 100 << "% | ";
-        cout << "Lower Probe Rate: " << (float)TT.totalProbeLower / TT.totalProbeFound * 100 << "%}\n";
+        cout << "Probe right depth rate: " << (float)TT.totalProbeRightDepth / TT.totalProbeFound * 100 << "% | ";
+        cout << "{Exact Probe Rate: " << (float)TT.totalProbeExact / TT.totalProbeRightDepth * 100 << "% | ";
+        cout << "Upper Probe Rate: " << (float)TT.totalProbeUpper / TT.totalProbeRightDepth * 100 << "% | ";
+        cout << "Lower Probe Rate: " << (float)TT.totalProbeLower / TT.totalProbeRightDepth * 100 << "%}\n";
         cout << "\tNode set rate: " << (float)TT.totalNodesSet / TT.totalSetCalls * 100 << "% | ";
         cout << "{Overwrite proportion: " << (float)TT.totalOverwrittenNodesSet / TT.totalNodesSet * 100 << "% | ";
         cout << "Collision proportion: " << (float)TT.totalCollisionsSet / TT.totalNodesSet * 100 << "% | ";

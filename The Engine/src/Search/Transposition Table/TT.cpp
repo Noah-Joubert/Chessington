@@ -64,7 +64,7 @@ class TranspositionTable {
 
 public:
     /* These stats keep track of the access statistics */
-    int totalProbeCalls = 0, totalProbeFound = 0, totalProbeExact = 0, totalProbeUpper = 0, totalProbeLower = 0; // the number of probes to the TT
+    int totalProbeCalls = 0, totalProbeFound = 0, totalProbeRightDepth = 0, totalProbeExact = 0, totalProbeUpper = 0, totalProbeLower = 0; // the number of probes to the TT
     int totalSetCalls = 0; // total number of calls to add a search to the TT
     int totalUniqueNodes = 0; // the total number of nodes added to the TT
     int totalNodesSet = 0; // total number of nodes set. this includes new nodes, overwrites, and collisions
@@ -84,7 +84,7 @@ public:
         replaceAge = params.ttParameters.replaceAge;
     }
 
-    inline TTNode* probe(Zobrist key, bool &found) {
+    inline TTNode* probe(Zobrist key, bool &shouldUse, int alpha, int beta, int depth) {
         // this function gets the entry referenced by this zobrist hash, and checks whether the match is exact
         totalProbeCalls ++;
 
@@ -92,18 +92,26 @@ public:
         TTNode* node = find(key);
 
         // compare the zobrist keys
-        found = (node->key == toZob16(key));
+        shouldUse = (node->key == toZob16(key));
 
-        if (found) {
+        if (shouldUse) {
             totalProbeFound += 1;
-            if (node->flag == EXACT_EVAL) {
-                totalProbeExact ++;
-            } else if (node->flag == UPPER_EVAL) {
-                totalProbeUpper++;
-            } else if (node->flag == LOWER_EVAL) {
-                totalProbeLower ++;
+            if (node->depth >= depth) {
+                totalProbeRightDepth ++;
+                if (node->flag == EXACT_EVAL) {
+                    totalProbeExact++;
+                } else if (node->flag == ALPHA_EVAL) {
+                    totalProbeUpper++;
+                } else if (node->flag == BETA_EVAL) {
+                    totalProbeLower++;
+                }
             }
         }
+
+        shouldUse &= (node->depth >= depth);
+        shouldUse &= (node->flag == EXACT_EVAL) |
+                     ((node->flag == ALPHA_EVAL) & (node->eval <= alpha)) |
+                     ((node->flag == BETA_EVAL) & (node->eval >= beta));
 
         return node;
     }
@@ -145,11 +153,10 @@ public:
     }
 
     void clearTotals() {
-        totalProbeCalls = 0, totalProbeFound = 0; // the number of probes to the TT
         totalSetCalls = 0; // total number of calls to add a search to the TT
         totalNodesSet = 0; // the total number of nodes added to the TT
         totalNewNodesSet = 0, totalOverwrittenNodesSet = 0, totalCollisionsSet = 0;
-        totalProbeCalls = 0, totalProbeFound = 0, totalProbeExact = 0, totalProbeUpper = 0, totalProbeLower = 0; // the number of probes to the TT
+        totalProbeCalls = 0, totalProbeFound = 0, totalProbeRightDepth = 0, totalProbeExact = 0, totalProbeUpper = 0, totalProbeLower = 0; // the number of probes to the TT
     }
     void clear() {
         clearTotals();
