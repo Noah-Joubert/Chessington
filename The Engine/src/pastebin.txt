@@ -1,16 +1,18 @@
----------------------=+ Search Results 1. +=---------------------
+---------------------=+ Search Results 2. +=---------------------
 Results:
-	Move: Nc3 | Eval: 0
-	Depth: 9 | Time: 3.77629s | Nodes: 19.3461 million | Nodes per second: 5.12305 million | Quiescence proportion: 50.3863% | Non-capture Q proportion: 16.4795% |
+	Move: Nc6 | Eval: -5
+	Depth: 8 | Time: 0.482626s | Nodes: 1.35803 million | Nodes per second: 2.81384 million | Quiescence proportion: 49.6754% | Non-capture Q proportion: 15.3969% |
 Transposition Table:
-	Fill rate: 39.0932% | Absolute size: 52.47mb
-	Probe hit rate: 35.4821% | {Exact Probe Rate: 0% | Upper Probe Rate: 91.4893% | Lower Probe Rate: 8.51075%}
-	Node set rate: 63.1742% | {Overwrite proportion: 7.52891% | Collision proportion: 2.73612% | New node proportion: 89.735%}
----------------------=+ Search Results 1. +=---------------------
+	Fill rate: 1.49063% | Absolute size: 2.00069mb
+	Probe hit rate: 25.8861% | {Exact Probe Rate: 0.879235% | Upper Probe Rate: 12.7263% | Lower Probe Rate: 86.3945%}
+	Node set rate: 95.473% | {Overwrite proportion: 10.7873% | Collision proportion: 0.0844904% | New node proportion: 89.1282%}
+	Returned move validation rate: 87.2737%
+---------------------=+ Search Results 2. +=---------------------
 Results:
-	Move: Nc3 | Eval: 0
-	Depth: 9 | Time: 3.33055s | Nodes: 21.4994 million | Nodes per second: 6.45521 million | Quiescence proportion: 49.2386% | Non-capture Q proportion: 10.4769% |
+	Move: Nc6 | Eval: 0
+	Depth: 8 | Time: 0.582775s | Nodes: 1.87588 million | Nodes per second: 3.21888 million | Quiescence proportion: 49.3804% | Non-capture Q proportion: 12.9638% |
 Transposition Table:
-	Fill rate: 31.4267% | Absolute size: 42.1802mb
-	Probe hit rate: 35.3134% | {Exact Probe Rate: 0% | Upper Probe Rate: 94.1202% | Lower Probe Rate: 5.8798%}
-	Node set rate: 67.7732% | {Overwrite proportion: 7.37704% | Collision proportion: 3.19444% | New node proportion: 89.4285%}
+	Fill rate: 1.44871% | Absolute size: 1.94443mb
+	Probe hit rate: 38.4421% | {Exact Probe Rate: 0.841685% | Upper Probe Rate: 21.8582% | Lower Probe Rate: 77.3001%}
+	Node set rate: 67.029% | {Overwrite proportion: 9.18437% | Collision proportion: 0.0871438% | New node proportion: 90.7285%}
+	Returned move validation rate: 78.1418%

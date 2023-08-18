@@ -104,31 +104,38 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
         return searchParameters.stalemateEvaluation;
     }
 
+    if (moves.empty()) {
+        return evaluate();
+    }
+
     // * 3. Probe the TT
-    if (searchParameters.ttParameters.useTTInQSearch) {
+    TTNode *node;
+    if (searchParameters.ttParameters.useTT) {
         bool nodeExists = false; // whether we've stored a search for this position
-        TTNode *node = TT.probe(zobristState, nodeExists); // probe the table
+        node = TT.probe(zobristState, nodeExists); // probe the table
 
         if (nodeExists) {
+            // see if the node exists and put it to the front of the move list
             Move TTMove = node->move;
             auto pos = std::remove(moves.begin(), moves.end(), TTMove);
             TT.totalTTMovesFound ++;
+
+            // see if the move is actually valid
             if (pos != moves.end()) {
                 TT.totalTTMovesInMoveList ++;
                 moves.insert(moves.begin(), TTMove);
 
-                // update alpha/beta accordingly
-                if (node->depth >= depth) {
+                // try using the results to improve alpha/ beta
+                if ((node->depth >= depth) && searchParameters.ttParameters.useTTPruning) {
                     if (node->flag == EXACT_EVAL) {
-                        bestMove = node->move;
+                        bestMove = TTMove;
                         return node->eval;
                     } else if (node->flag == LOWER_EVAL) {
-                        alpha = alpha > node->eval ? alpha : node->eval;
+                        alpha = alpha > node->eval ? alpha: node->eval;
                     } else if (node->flag == UPPER_EVAL) {
-                        beta = beta < node->eval ? beta : node->eval;
+                        beta = beta < node->eval ? beta: node->eval;
                     }
 
-                    // check for alpha/beta cutoff
                     if (alpha >= beta) {
                         return alpha;
                     }
@@ -186,7 +193,7 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
     }
 
     // * 5. write to the TT
-    int evaluationType = getEvaluationType(nodeEvaluation, originalAlpha, originalBeta);
+    int evaluationType = getEvaluationType(nodeEvaluation, originalAlpha, beta);
     if (searchParameters.ttParameters.useTTInQSearch) {
         TT.set(zobristState, bestMove, depth, evaluationType, moveNumber, nodeEvaluation);
     }
@@ -245,18 +252,17 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
                 TT.totalTTMovesInMoveList ++;
                 moves.insert(moves.begin(), TTMove);
 
-                // update alpha/beta accordingly
-                if (node->depth >= depth) {
+                // try using the results to improve alpha/ beta
+                if ((node->depth >= depth) && searchParameters.ttParameters.useTTPruning) {
                     if (node->flag == EXACT_EVAL) {
-                        bestMove = node->move;
+                        bestMove = TTMove;
                         return node->eval;
                     } else if (node->flag == LOWER_EVAL) {
-                        alpha = alpha > node->eval ? alpha : node->eval;
+                        alpha = alpha > node->eval ? alpha: node->eval;
                     } else if (node->flag == UPPER_EVAL) {
-                        beta = beta < node->eval ? beta : node->eval;
+                        beta = beta < node->eval ? beta: node->eval;
                     }
 
-                    // check for alpha/beta cutoff
                     if (alpha >= beta) {
                         return alpha;
                     }
@@ -298,7 +304,7 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
      * All in all, exact valuations are best
      * */
     // * 5. write to the TT
-    int evaluationType = getEvaluationType(nodeEvaluation, originalAlpha, originalBeta);
+    int evaluationType = getEvaluationType(nodeEvaluation, originalAlpha,  beta); // we pass the original alpha, and the new beta
     if (searchParameters.ttParameters.useTT) {
         TT.set(zobristState, bestMove, depth, evaluationType, moveNumber, nodeEvaluation);
     }
