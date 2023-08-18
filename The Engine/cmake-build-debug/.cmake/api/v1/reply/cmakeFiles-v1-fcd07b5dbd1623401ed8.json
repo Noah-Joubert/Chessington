@@ -54,21 +54,6 @@
 		{
 			"isCMake" : true,
 			"isExternal" : true,
-			"path" : "/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeFindCodeBlocks.cmake"
-		},
-		{
-			"isCMake" : true,
-			"isExternal" : true,
-			"path" : "/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs.cmake"
-		},
-		{
-			"isCMake" : true,
-			"isExternal" : true,
-			"path" : "/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/ProcessorCount.cmake"
-		},
-		{
-			"isCMake" : true,
-			"isExternal" : true,
 			"path" : "/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeCInformation.cmake"
 		},
 		{

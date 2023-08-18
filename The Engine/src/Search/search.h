@@ -19,7 +19,6 @@ struct SearchParameters {
         int replaceDepth = 1; // the extra depth needed to overwrite a node (must be at least 1)
         int replaceAge = 7; // the extra age needed to overwrite a node (must be at least 1)
 
-        int minTTInsertDepth = -50; // the minimum depth at which a search will be inputted into the transposition table
         bool useTT = true; // whether we are using the TT in regular search
         bool useTTInQSearch = false; // whether we are using the TT in the quiescence search
     };

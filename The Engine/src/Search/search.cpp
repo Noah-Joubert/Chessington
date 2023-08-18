@@ -61,11 +61,10 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
      * */
 
     /* 1. Take the static evaluation as a standPat score which represents the minimum evaluation for this node.
-     * 2. Probe the TT
-     * 3. Check for checkmate/ stalemate
+     * 2. Check for checkmate/ stalemate
+     * 3. Try probing TT
      * 4. Loop through all moves and continue the quiescence search
         * a. SEE pruning. Static Exchange Evaluation gives the value of exchange of material on particular square.
-     * 5. Write to the TT
      * */
 
     //TODO add in pawn checks
@@ -73,6 +72,8 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
 
     searchStats.totalNodesSearched++; // count the number of nodes searched
     searchStats.totalQuiescenceSearched ++; // count the quiescence nodes searched
+
+    int originalAlpha = alpha, originalBeta = beta; // store the original alpha/ beta so we can identify this node type
 
     Move bestMove; // best move from this node
 
@@ -91,46 +92,7 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
         alpha = standPat;
     }
 
-    // * 2. Probe the TT
-    if (searchParameters.ttParameters.useTTInQSearch) {
-        bool nodeExists = false; // whether we've stored a search for this position
-        TTNode *node = TT.probe(zobristState, nodeExists); // probe the table
-
-        // see if the node exists, and it is to a higher depth than the searchDepth
-        if (nodeExists && (node->depth >= depth)) {
-            // TODO if the move is a LOWER_EVAL or EXACT_EVAL, add it to the front of the moveList,
-
-            // see what type of evaluation this is
-            if (node->flag == EXACT_EVAL) {
-                // if the evaluation is exact, check the move is valid, then return it
-
-                // do a quick legality check on the move by seeing if it is in the move list, because of collision risk
-                MoveList moves = getMoveList();
-                if (find(moves.begin(), moves.end(), node->move) != moves.end()) {
-                    bestMove = node->move;
-                    return node->eval;
-                }
-
-            } else if (node->flag == LOWER_EVAL) {
-                // this is a lower evaluation, meaning we've had a fail hard beta cut-off
-                // so this evaluation is a lower bound of the node
-                alpha = node->eval > alpha ? node->eval : alpha;
-
-            } else if (node->flag == UPPER_EVAL) {
-                // this is an upper evaluation, meaning we've not had any move exceed alpha
-                // so this evaluation is an upper bound of the node
-                beta = node->eval < beta ? node->eval : beta;
-            }
-
-            if (alpha >= beta) {
-                // now check for an early fail high cutoff!
-                bestMove = node->move;
-                return node->eval; //TODO why do we return node->eval here?
-            }
-        }
-    }
-
-    // * 3.
+    // * 2.
     getMoveList(); // annoyingly we have to generate all moves before checking for checkmate/ stalemate
     MoveList moves = activeMoveList;
     if (inCheckMate()) {
@@ -140,6 +102,22 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
     } else if (inStalemate() | checkThreefold()) {
         // if there is a three-fold or a inStalemate, return the negative of the evaluation
         return searchParameters.stalemateEvaluation;
+    }
+
+    // * 3. Probe the TT
+    if (searchParameters.ttParameters.useTTInQSearch) {
+        bool nodeExists = false; // whether we've stored a search for this position
+        TTNode *node = TT.probe(zobristState, nodeExists); // probe the table
+
+        if (nodeExists) {
+            Move TTMove = node->move;
+            auto pos = std::remove(moves.begin(), moves.end(), TTMove);
+            TT.totalTTMovesFound ++;
+            if (pos != moves.end()) {
+                TT.totalTTMovesInMoveList ++;
+                moves.insert(moves.begin(), TTMove);
+            }
+        }
     }
 
     // * 4.
@@ -191,10 +169,11 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
     }
 
     // * 5. write to the TT
-    int evaluationType = getEvaluationType(nodeEvaluation, alpha, beta);
-    if (searchParameters.ttParameters.useTTInQSearch && (depth >= searchParameters.ttParameters.minTTInsertDepth)) {
+    int evaluationType = getEvaluationType(nodeEvaluation, originalAlpha, originalBeta);
+    if (searchParameters.ttParameters.useTTInQSearch) {
         TT.set(zobristState, bestMove, depth, evaluationType, moveNumber, nodeEvaluation);
     }
+
 
     return alpha;
 }
@@ -202,14 +181,13 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     /* Negamax */
     /* How does it work?
      * 1. The depth counts down to 0. At which point we enter the quiescence search
-     * 2. Probe the TT, if our search is deep enough
-     * 3. We then generate moves, so we can check for checkmates/stalemates/three-folds. It returns a massive negative number in the case of check-mate (as it would be bad for the current player).
+     * 2. We then generate moves, so we can check for checkmates/stalemates/three-folds. It returns a massive negative number in the case of check-mate (as it would be bad for the current player).
+     * 3. Probe the TT
      * 4. Loop through all moves, execute negamax. If a move is better than our best search so far, save it as the best move. I use alpha beta pruning
          * a. Beta represents the maximum score that the minimising player is assured of. So if the evaluation is greater than beta, the minimising player won't take this path.
          * b. Alpha represents the minimum score that the maximising player is assured of. So if the evaluation is greater than alpha, this becomes new alpha!
-     * 5. Work out the alpha/beta evaluation type. Either we have hard failed high, in which case the evaluation is a lower bound - beta. Or we have failed low, so the evaluation is an upper bound - alpha.
-     * 6. Store the search in the TT, if our search is deep enough.
-     * 7. Return the score from the best move searched.
+     * 5. Work out the alpha/beta evaluation type. Either we have hard failed high, in which case the evaluation is a lower bound - beta. Or we have failed low, so the evaluation is an upper bound - alpha. Then write to TT
+     * 6. Return the score from the best move searched.
      * */
 
     searchStats.totalNodesSearched++; // count the number of nodes searched
@@ -224,46 +202,6 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     }
 
     // * 2.
-    if (searchParameters.ttParameters.useTT) {
-        bool nodeExists = false; // whether we've stored a search for this position
-        TTNode *node = TT.probe(zobristState, nodeExists); // probe the table
-
-        // see if the node exists, and it is to a higher depth than the searchDepth
-        if (nodeExists && (node->depth >= depth)) {
-            // TODO if the move is a LOWER_EVAL or EXACT_EVAL, add it to the front of the moveList,
-
-            // see what type of evaluation this is
-            if (node->flag == EXACT_EVAL) {
-                // if the evaluation is exact, check the move is valid, then return it
-
-                // do a quick legality check on the move by seeing if it is in the move list, because of collision risk
-                MoveList moves = getMoveList();
-                if (find(moves.begin(), moves.end(), node->move) != moves.end()) {
-                    bestMove = node->move;
-                    return node->eval;
-                }
-
-            } else if (node->flag == LOWER_EVAL) {
-                // this is a lower evaluation, meaning we've had a fail hard beta cut-off
-                // so this evaluation is a lower bound of the node
-                alpha = node->eval > alpha ? node->eval : alpha;
-
-            } else if (node->flag == UPPER_EVAL) {
-                // this is an upper evaluation, meaning we've not had any move exceed alpha
-                // so this evaluation is an upper bound of the node
-                beta = node->eval < beta ? node->eval : beta;
-            }
-
-            if (alpha >= beta) {
-                // now check for an early fail high cutoff!
-                bestMove = node->move;
-                return node->eval; //TODO why do we return node->eval here?
-            }
-        }
-    }
-
-
-    // * 3.
     MoveList moves = getMoveList(); // generate moves before checking for checkmate/ stalemate
     if (inCheckMate()) {
         // return static evaluation ~ do this after checking if depth == 0, to avoid generating moves
@@ -272,6 +210,23 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     } else if (inStalemate() | checkThreefold()) {
         // if there is a three-fold or a inStalemate, return the negative of the evaluation
         return searchParameters.stalemateEvaluation;
+    }
+
+    // * 3. Probe the TT
+    if (searchParameters.ttParameters.useTT) {
+        bool nodeExists = false; // whether we've stored a search for this position
+        TTNode *node = TT.probe(zobristState, nodeExists); // probe the table
+
+        if (nodeExists) {
+            // see if the node exists and put it to the front of the movelist
+            Move TTMove = node->move;
+            auto pos = std::remove(moves.begin(), moves.end(), TTMove);
+            TT.totalTTMovesFound ++;
+            if (pos != moves.end()) {
+                TT.totalTTMovesInMoveList ++;
+                moves.insert(moves.begin(), TTMove);
+            }
+        }
     }
 
     // * 4.
@@ -299,7 +254,6 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
         }
     }
 
-    // * 5.
     /* Discussion: How should we treat each evaluation type?
      * First consider vanilla alpha/beta pruning. Until we fail high, every single move needs to be considered.
      * So fail high e.g. LOWER_EVAL nodes should be searched first. This leads into move ordering principles i.e. search captures first as they are more likely to fail high.
@@ -307,14 +261,13 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
      * But for transposition tables entries fail high nodes are great as they raise alpha, but fail low nodes are also good as they lower beta. And both can lead to a cutoff
      * All in all, exact valuations are best
      * */
-    int evaluationType = getEvaluationType(nodeEvaluation, alpha, beta);
-
-    // * 6.
-    if (searchParameters.ttParameters.useTT && (depth >= searchParameters.ttParameters.minTTInsertDepth)) {
+    // * 5. write to the TT
+    int evaluationType = getEvaluationType(nodeEvaluation, originalAlpha, originalBeta);
+    if (searchParameters.ttParameters.useTT) {
         TT.set(zobristState, bestMove, depth, evaluationType, moveNumber, nodeEvaluation);
     }
 
-    // * 7.
+    // * 6.
     return alpha; // return the evaluation for the best move
 }
 
@@ -416,6 +369,7 @@ bool SearchController::search(Move &bestMove, string &FENFlag, bool DEBUG_MODE) 
         cout << "{Overwrite proportion: " << (float)TT.totalOverwrittenNodesSet / TT.totalNodesSet * 100 << "% | ";
         cout << "Collision proportion: " << (float)TT.totalCollisionsSet / TT.totalNodesSet * 100 << "% | ";
         cout << "New node proportion: " << (float)TT.totalNewNodesSet / TT.totalNodesSet * 100 << "%}\n";
+        cout << "\tReturned move validation rate: " << (float) TT.totalTTMovesInMoveList / TT.totalTTMovesFound * 100 << "%\n";
         printBoardPrettily();
     }
 

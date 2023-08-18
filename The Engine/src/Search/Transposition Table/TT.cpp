@@ -55,6 +55,7 @@ public:
     int totalUniqueNodes = 0; // the total number of nodes added to the TT
     int totalNodesSet = 0; // total number of nodes set. this includes new nodes, overwrites, and collisions
     int totalNewNodesSet = 0, totalOverwrittenNodesSet = 0, totalCollisionsSet = 0;
+    int totalTTMovesFound = 0, totalTTMovesInMoveList = 0; // checks whether the move returned is in the move-list (or we have a full on collision)
 
     TranspositionTable(SearchParameters params) {
         /* Init the TT */
@@ -149,6 +150,7 @@ public:
         totalNodesSet = 0; // the total number of nodes added to the TT
         totalNewNodesSet = 0, totalOverwrittenNodesSet = 0, totalCollisionsSet = 0;
         totalProbeCalls = 0, totalProbeFound = 0, totalProbeExact = 0, totalProbeUpper = 0, totalProbeLower = 0; // the number of probes to the TT
+        totalTTMovesFound = 0, totalTTMovesInMoveList = 0; // checks whether the move returned is in the move-list (or we have a full on collision)
     }
     void clear() {
         // init the table

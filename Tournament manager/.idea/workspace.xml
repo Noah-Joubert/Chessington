@@ -69,7 +69,9 @@
       <workItem from="1690839438411" duration="3374000" />
       <workItem from="1690911865264" duration="6207000" />
       <workItem from="1690967781541" duration="2935000" />
-      <workItem from="1691151525553" duration="1192000" />
+      <workItem from="1691151525553" duration="12661000" />
+      <workItem from="1691695242379" duration="7000" />
+      <workItem from="1692371371168" duration="1280000" />
     </task>
     <servers />
   </component>
@@ -77,6 +79,6 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Tournament_manager$main.coverage" NAME="main Coverage Results" MODIFIED="1691013086716" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/CLionProjects/Chessington/Tournament manager" />
+    <SUITE FILE_PATH="coverage/Tournament_manager$main.coverage" NAME="main Coverage Results" MODIFIED="1692382292517" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/CLionProjects/Chessington/Tournament manager" />
   </component>
 </project>
