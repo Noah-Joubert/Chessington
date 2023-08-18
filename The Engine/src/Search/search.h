@@ -20,7 +20,7 @@ struct SearchParameters {
         int replaceAge = 7; // the extra age needed to overwrite a node (must be at least 1)
 
         bool useTT = true; // whether we are using the TT in regular search
-        bool useTTInQSearch = false; // whether we are using the TT in the quiescence search
+        bool useTTInQSearch = true; // whether we are using the TT in the quiescence search
     };
 
     TTParameters ttParameters;

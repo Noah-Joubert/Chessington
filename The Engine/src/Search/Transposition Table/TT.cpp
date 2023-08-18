@@ -111,6 +111,7 @@ public:
     void set(Zobrist key, Move &move, int &depth, int &flag, short age, int &eval) {
         // takes in the results of a search and replaces the node if necessary
         TTNode* node = find(key);
+
         Zob16 shiftedKey = toZob16(key);
 
         totalSetCalls ++;
@@ -159,8 +160,9 @@ public:
             table[i] = node;
         }
     }
-
-    int getSize() {return TTsize;}
+    int getSize() {
+        return TTsize;
+    }
 };
 
 

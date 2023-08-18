@@ -116,6 +116,23 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
             if (pos != moves.end()) {
                 TT.totalTTMovesInMoveList ++;
                 moves.insert(moves.begin(), TTMove);
+
+                // update alpha/beta accordingly
+                if (node->depth >= depth) {
+                    if (node->flag == EXACT_EVAL) {
+                        bestMove = node->move;
+                        return node->eval;
+                    } else if (node->flag == LOWER_EVAL) {
+                        alpha = alpha > node->eval ? alpha : node->eval;
+                    } else if (node->flag == UPPER_EVAL) {
+                        beta = beta < node->eval ? beta : node->eval;
+                    }
+
+                    // check for alpha/beta cutoff
+                    if (alpha >= beta) {
+                        return alpha;
+                    }
+                }
             }
         }
     }
@@ -174,8 +191,7 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
         TT.set(zobristState, bestMove, depth, evaluationType, moveNumber, nodeEvaluation);
     }
 
-
-    return alpha;
+    return nodeEvaluation;
 }
 int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     /* Negamax */
@@ -213,18 +229,38 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     }
 
     // * 3. Probe the TT
+    TTNode *node;
     if (searchParameters.ttParameters.useTT) {
         bool nodeExists = false; // whether we've stored a search for this position
-        TTNode *node = TT.probe(zobristState, nodeExists); // probe the table
+        node = TT.probe(zobristState, nodeExists); // probe the table
 
         if (nodeExists) {
-            // see if the node exists and put it to the front of the movelist
+            // see if the node exists and put it to the front of the move list
             Move TTMove = node->move;
             auto pos = std::remove(moves.begin(), moves.end(), TTMove);
             TT.totalTTMovesFound ++;
+
+            // see if the move is actually valid
             if (pos != moves.end()) {
                 TT.totalTTMovesInMoveList ++;
                 moves.insert(moves.begin(), TTMove);
+
+                // update alpha/beta accordingly
+                if (node->depth >= depth) {
+                    if (node->flag == EXACT_EVAL) {
+                        bestMove = node->move;
+                        return node->eval;
+                    } else if (node->flag == LOWER_EVAL) {
+                        alpha = alpha > node->eval ? alpha : node->eval;
+                    } else if (node->flag == UPPER_EVAL) {
+                        beta = beta < node->eval ? beta : node->eval;
+                    }
+
+                    // check for alpha/beta cutoff
+                    if (alpha >= beta) {
+                        return alpha;
+                    }
+                }
             }
         }
     }
@@ -268,7 +304,7 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     }
 
     // * 6.
-    return alpha; // return the evaluation for the best move
+    return nodeEvaluation; // return the evaluation for the best move
 }
 
 bool SearchController::search(Move &bestMove, string &FENFlag, bool DEBUG_MODE) {

@@ -1,5 +1,6 @@
 import subprocess
 import os
+from scipy.stats import norm
 
 engineSubpath = "/Engine executables/"
 
@@ -116,9 +117,9 @@ if __name__ == '__main__':
     whiteInitialFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP§/RNBQKBNR w KQkq - 0 1"
     blackInitialFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP§/RNBQKBNR b KQkq - 0 1"
 
-    numGames = 100  # number of games to run
+    n = 100  # number of games to run
     startingPlayer = "white"  # the player who starts the game
-    for game in range(numGames):
+    for game in range(n):
         startingPlayer = "black" if startingPlayer == "white" else "white"
         currentFEN = whiteInitialFEN if startingPlayer == "white" else blackInitialFEN
 
@@ -135,3 +136,18 @@ if __name__ == '__main__':
 
         # print out the results
         print(f"({whiteEngineName}) wins {whiteWins}. \t({blackEngineName}) Wins {blackWins}. \tDraws {Draws}")
+
+    """
+    Say we model probability of white winning as Ber(p).
+    Consider 
+        H_0: p = 0.5   
+        H_1: p > 0.5
+        
+    How can we form a test? Number of wins X ~ Bin(n, 1/2). 
+    So set p_value as P(X >= x_obs), where we observe x wins.
+    (X-n/2) / sqrt(n) * sqrt(1/4) = (X-n/2) / sqrt(n/4)
+    So do 
+    """
+    n = whiteWins + blackWins
+    p_value = norm.cdf((whiteWins - n/2) / ((n/4)) ** (1/2))
+    print(f"P-Value {p_value * 100}% (larger indicates {whiteEngineName} is better)")
