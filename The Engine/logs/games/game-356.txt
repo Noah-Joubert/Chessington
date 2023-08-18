@@ -1,0 +1,17 @@
+Bxd7 
+5. Nf3 O-O-O 
+6. Bd3 g6 
+7. Qc5 Bc6 
+8. O-O b6 
+9. Ba6 Kb8 
+10. Qc3 g5 
+11. Qxf6 Bxf3 
+12. Bdc3 Bxg2 
+13. Be5 Bxf1 
+14. Be7 Qxe5 
+15. Qxe5 Ka8 
+16. Bxf1 Kb7 
+17. Bg2 Kc8 
+18. Qe4 Rd1 
+19. Rxd1 Re8 
+20. Qb7 

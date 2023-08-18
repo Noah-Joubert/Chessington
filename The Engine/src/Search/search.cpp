@@ -65,6 +65,9 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
      * 3. Try probing TT
      * 4. Loop through all moves and continue the quiescence search
         * a. SEE pruning. Static Exchange Evaluation gives the value of exchange of material on particular square.
+     * 5. In the case that we don't search any moves, we are at the bottom of the tree, so return the evaluation
+     * 6. Save the search to the TT
+     *
      * */
 
     //TODO add in pawn checks
@@ -104,10 +107,6 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
         return searchParameters.stalemateEvaluation;
     }
 
-    if (moves.empty()) {
-        return evaluate();
-    }
-
     // * 3. Probe the TT
     TTNode *node;
     if (searchParameters.ttParameters.useTT) {
@@ -124,37 +123,22 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
             if (pos != moves.end()) {
                 TT.totalTTMovesInMoveList ++;
                 moves.insert(moves.begin(), TTMove);
-
-                // try using the results to improve alpha/ beta
-                if ((node->depth >= depth) && searchParameters.ttParameters.useTTPruning) {
-                    if (node->flag == EXACT_EVAL) {
-                        bestMove = TTMove;
-                        return node->eval;
-                    } else if (node->flag == LOWER_EVAL) {
-                        alpha = alpha > node->eval ? alpha: node->eval;
-                    } else if (node->flag == UPPER_EVAL) {
-                        beta = beta < node->eval ? beta: node->eval;
-                    }
-
-                    if (alpha >= beta) {
-                        return alpha;
-                    }
-                }
             }
         }
     }
 
     // * 4.
     int nodeEvaluation = -INFIN;
+    int movesSearched = 0; // keep track of the number of moves properly searched, as if none we will need to do a proper evaluation
     for (Move move: moves) {
         if (!(move & toTypeMask)) {
             // see if this is a non-capture quiescence move
             searchStats.totalNonCaptureQSearched ++;
 
-            // if we are deep enough/ stop making these moves, unless promotion //TODO standardise
-//            if ((depth <= -1) && !(move & promoMask)) {
-//                continue;
-//            }
+            // if we are deep enough stop making these moves, unless promotion
+            if ((depth <= searchParameters.maxDepthForChecks) && !(move & promoMask)) {
+                continue;
+            }
         }
 
         // do a full depth search
@@ -174,6 +158,8 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
             continue;
         }
 
+        movesSearched ++;
+
         int subEval = -quiescence(-beta, -alpha, depth - 1);
         unMakeMove(); // unmake the move
 
@@ -192,7 +178,12 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
         }
     }
 
-    // * 5. write to the TT
+    // * 5. In the case that we don't search any moves, we are at the bottom of the tree, so return the evaluation
+    if (!movesSearched) {
+        return evaluate();
+    }
+
+    // * 6. write to the TT
     int evaluationType = getEvaluationType(nodeEvaluation, originalAlpha, beta);
     if (searchParameters.ttParameters.useTTInQSearch) {
         TT.set(zobristState, bestMove, depth, evaluationType, moveNumber, nodeEvaluation);

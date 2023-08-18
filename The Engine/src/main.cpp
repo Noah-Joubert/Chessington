@@ -52,8 +52,8 @@ void engineAgainstSelf(SearchController SuperBoard) {
         }
 
         if (!SuperBoard.validateZobrist()) {
-            cout << "Oh no :( \n";
-            break;
+            cout << "Oh no :( Zobrist error!? \n";
+//            break;
         }
 
 //        if (SuperBoard.getMoveNumber() > 100) break; // break if the game goes on too long
@@ -142,11 +142,11 @@ int main() {
     /* Set the search parameters */
     SearchParameters searchParams;
     searchParams.ttParameters.TTSizeMb = 100; // use a big TT
-    searchParams.minSearchTime = 0.01;
+    searchParams.minSearchTime = 0.1;
 
-    mainLoop(searchParams);
+//    mainLoop(searchParams);
 
-//    debugMode(searchParams);
+    debugMode(searchParams);
 
     return 0;
 }

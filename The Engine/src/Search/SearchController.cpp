@@ -40,7 +40,7 @@ void SearchController::makeMove(Move &move) {
     updateCastlingZobrist();
     updateSideZobrist();
 
-    /* ACUTALLY MAKE THE MOVE */
+    /* ACTUALLY MAKE THE MOVE */
     innerMakeMove(move);
 
     /* These functions are called twice to xor our the existing rights, and xor in the new ones */
