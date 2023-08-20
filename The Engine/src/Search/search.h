@@ -32,10 +32,10 @@ struct SearchParameters {
     int stalemateEvaluation = -1000; // the evaluation of a stalemate position
 
     /* Quiescence parameters */
-    bool useSEE = true; // whether we use SEE/ delta pruning
+    bool useSEE = true; // whether we use SEE
     bool useDelta = true;
     int deltaMargin = 200; // the margin used for delta pruning
-    int maxDepthForChecks = -3;
+    int maxDepthForChecks = -2;
 
     bool useQuiescence = true; // whether we use a quiescence search
 };

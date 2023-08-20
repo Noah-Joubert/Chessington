@@ -59,8 +59,11 @@ def runGame(wPlayerProcess, bPlayerProcess, FEN):
         giveCommand(otherPlayerProcess, str(move))
 
         # check that the game hasn't finished
-        giveCommand(currentPlayerProcess, "status")
-        gameRunning = int(getOutput(currentPlayerProcess))
+        try:
+            giveCommand(currentPlayerProcess, "status")
+            gameRunning = int(getOutput(currentPlayerProcess))
+        except BrokenPipeError:
+            print(f"Oh no. The pipe is broken :(")
 
         moveNumber += 1
 

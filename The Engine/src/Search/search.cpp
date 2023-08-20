@@ -52,7 +52,32 @@ int SearchController::SEE(short square) {
 
     return SEEValue;
 }
+void SearchController::extractPV(MoveList &moves) {
+    /* Extract the principle variation from the TT */
 
+    // generate legal moves
+    genAllMoves(ALL_MOVES);
+    MoveList legalMoves = combinedMoveList;
+    if (inCheckMate() | inStalemate() | checkThreefold()) {
+        // check if the game is over
+        return;
+    }
+
+    // probe the TT
+    bool found = false;
+    TTNode *ttEntry = TT.probe(zobristState, found);
+    auto pos = std::find(legalMoves.begin(), legalMoves.end(), ttEntry->move);
+
+    // check the move is legal, and the TT entry is found
+    if (found && (pos != legalMoves.end())) {
+        moves.insert(moves.begin(), ttEntry->move);
+        makeMove(ttEntry->move);
+        extractPV(moves);
+        unMakeMove();
+    } else {
+        return;
+    }
+};
 int SearchController::quiescence(int alpha, int beta, int depth) {
     /* What is the Quiescence Search?
      * This is a special type of search which we enter at depth 0. It only considers captures.
@@ -109,7 +134,7 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
 
     // * 3. Probe the TT
     TTNode *node;
-    if (searchParameters.ttParameters.useTT) {
+    if (searchParameters.ttParameters.useTTInQSearch) {
         bool nodeExists = false; // whether we've stored a search for this position
         node = TT.probe(zobristState, nodeExists); // probe the table
 
@@ -135,13 +160,14 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
             // see if this is a non-capture quiescence move
             searchStats.totalNonCaptureQSearched ++;
 
+            //TODO chek if this works
+
             // if we are deep enough stop making these moves, unless promotion
             if ((depth <= searchParameters.maxDepthForChecks) && !(move & promoMask)) {
                 continue;
             }
         }
 
-        // do a full depth search
         makeMove(move); // make the move before doing SEE
 
         /* a. SSE pruning/ Delta pruning
@@ -152,7 +178,7 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
         int SEEEvaluation = SEEMove(moveHistory.back());
         if (
                 (searchParameters.useSEE && (SEEEvaluation < 0)) ||
-                (searchParameters.useDelta && (standPat + PieceWorths[getTooPiece(move)] + searchParameters.deltaMargin < alpha))
+                (searchParameters.useDelta && (standPat + PieceScores[getTooPiece(move)] + searchParameters.deltaMargin < alpha))
                 ) {
             unMakeMove();
             continue;
@@ -160,6 +186,7 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
 
         movesSearched ++;
 
+        // do a full depth search
         int subEval = -quiescence(-beta, -alpha, depth - 1);
         unMakeMove(); // unmake the move
 
@@ -173,7 +200,7 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
 
         // b. Fail hard beta cut off.
         if (alpha >= beta) {
-            alpha = beta; // TODO are we losing information by taking beta here?
+            alpha = beta;
             break;
         }
     }
@@ -274,15 +301,15 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
         // a. Fail low
         if (subEval > nodeEvaluation) {
             nodeEvaluation = subEval;
+            bestMove = move; // (this used to be in the following if statement and that caused a bug!)
             if (nodeEvaluation > alpha) {
                 alpha = nodeEvaluation;
-                bestMove = move;
             }
         }
 
         // b. Fail hard beta cut off.
         if (alpha >= beta) {
-            alpha = beta; // TODO are we losing information by taking beta here?
+            alpha = beta;
             break;
         }
     }
@@ -303,7 +330,6 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     // * 6.
     return nodeEvaluation; // return the evaluation for the best move
 }
-
 bool SearchController::search(Move &bestMove, string &FENFlag, bool DEBUG_MODE) {
     /* This is the search function. It executes a search */
     /* How does it do it?
@@ -313,7 +339,7 @@ bool SearchController::search(Move &bestMove, string &FENFlag, bool DEBUG_MODE) 
          * c. Either exit out of iterative deepening depending on if the search took long enough, or increase the depth and keep going.
          * d. See if we must break out of iterative deepening
      * 2. See if the move could have been done by another piece for PGN notation
-     * 3. Make the best move
+     * 3. Make the best move, and extract the PV
      * 4. Print out stats
      * */
 
@@ -376,11 +402,14 @@ bool SearchController::search(Move &bestMove, string &FENFlag, bool DEBUG_MODE) 
     }
 
     // * 3.
+    MoveList pv;
+    extractPV(pv);
     makeMove(bestMove);
 
     // * 4.
     if (DEBUG_MODE) {
         cout << "---------------------=+ Search Results " << moveNumber - 1 << ". +=---------------------\n";
+        printMovesPrettily(pv);
         cout << "Results: \n";
         cout << "\tMove: " << moveToFEN(bestMove, "-") << " | ";
         cout << "Eval: " << eval << "\n";

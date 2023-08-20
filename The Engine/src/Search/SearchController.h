@@ -79,6 +79,7 @@ public:
     void printBoardPrettily();
 
     /* Search Stuff */
+    void extractPV(MoveList &moves);
     int negaMax(int alpha, int beta, int depth, Move &bestMove);
     int quiescence(int alpha, int beta, int depth);
     bool search(Move &bestMove, string &FENFlag , bool DEBUG_MODE);
