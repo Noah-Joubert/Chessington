@@ -1,0 +1,35 @@
+---------------------=+ Search Results 1. +=---------------------
+_-~-_ Pretty move printing _-~-_
+From type   |       P |       P |       K |       K |       P |       B |
+To type     |         |         |         |         |         |         |
+From square |      e2 |      e7 |      g1 |      b8 |      d2 |      f8 |
+To square   |      e4 |      e5 |      f3 |      c6 |      d4 |      b4 |
+Promo piece |       0 |       0 |       0 |       0 |       0 |       0 |
+Move code   |       0 |       0 |       0 |       0 |       0 |       0 |
+Move ID     |       5 |       4 |       3 |       2 |       1 |       0 |
+Results:
+	Move: e4 | Eval: 5
+	Depth: 8 | Time: 0.139921s | Nodes: 0.341258 million | Nodes per second: 2.43893 million | Quiescence proportion: 49.9276% | Non-capture Q proportion: 10.4947% |
+Transposition Table:
+	Fill rate: 0.487792% | Absolute size: 0.654704mb
+	Probe hit rate: 14.5369% | {Exact Probe Rate: 11.9018% | Upper Probe Rate: 14.6033% | Lower Probe Rate: 73.4949%}
+	Node set rate: 91.5273% | {Overwrite proportion: 8.55573% | Collision proportion: 0.0602988% | New node proportion: 91.384%}
+	Returned move validation rate: 97.7683%
+
+---------------------=+ Search Results 1. +=---------------------
+_-~-_ Pretty move printing _-~-_
+From type   |       K |       K |       K |       K |       P |       P |       B |
+To type     |         |         |         |         |         |         |         |
+From square |      b1 |      b8 |      g1 |      g8 |      d2 |      d7 |      c1 |
+To square   |      c3 |      c6 |      f3 |      f6 |      d4 |      d5 |      f4 |
+Promo piece |       0 |       0 |       0 |       0 |       0 |       0 |       0 |
+Move code   |       0 |       0 |       0 |       0 |       0 |       0 |       0 |
+Move ID     |       6 |       5 |       4 |       3 |       2 |       1 |       0 |
+Results:
+	Move: Nc3 | Eval: 50
+	Depth: 8 | Time: 0.182297s | Nodes: 0.561909 million | Nodes per second: 3.08238 million | Quiescence proportion: 51.059% | Non-capture Q proportion: 8.90504% |
+Transposition Table:
+	Fill rate: 0.750363% | Absolute size: 1.00712mb
+	Probe hit rate: 20.3002% | {Exact Probe Rate: 14.4704% | Upper Probe Rate: 16.9637% | Lower Probe Rate: 68.5659%}
+	Node set rate: 88.0995% | {Overwrite proportion: 14.574% | Collision proportion: 0.0583177% | New node proportion: 85.3677%}
+	Returned move validation rate: 99.8894%

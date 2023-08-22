@@ -56,7 +56,7 @@ void SearchController::extractPV(MoveList &moves) {
     /* Extract the principle variation from the TT */
 
     // generate legal moves
-    genAllMoves(ALL_MOVES);
+    genAllMoves();
     MoveList legalMoves = combinedMoveList;
     if (inCheckMate() | inStalemate() | checkThreefold()) {
         // check if the game is over
@@ -225,8 +225,9 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
      * 2. We then generate moves, so we can check for checkmates/stalemates/three-folds. It returns a massive negative number in the case of check-mate (as it would be bad for the current player).
      * 3. Probe the TT
      * 4. Loop through all moves, execute negamax. If a move is better than our best search so far, save it as the best move. I use alpha beta pruning
-         * a. Beta represents the maximum score that the minimising player is assured of. So if the evaluation is greater than beta, the minimising player won't take this path.
-         * b. Alpha represents the minimum score that the maximising player is assured of. So if the evaluation is greater than alpha, this becomes new alpha!
+         * a. Try a late move reduction. This is where we reduced the depth of the search. We only do it under certain circumstances.
+         * b. Beta represents the maximum score that the minimising player is assured of. So if the evaluation is greater than beta, the minimising player won't take this path.
+         * c. Alpha represents the minimum score that the maximising player is assured of. So if the evaluation is greater than alpha, this becomes new alpha!
      * 5. Work out the alpha/beta evaluation type. Either we have hard failed high, in which case the evaluation is a lower bound - beta. Or we have failed low, so the evaluation is an upper bound - alpha. Then write to TT
      * 6. Return the score from the best move searched.
      * */
@@ -236,7 +237,7 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     int nodeEvaluation = -INFIN;
 
     // * 1.
-    if (depth == 0) {
+    if (depth <= 0) {
         /* Go into quiescence search! */
         if (searchParameters.useQuiescence) {return quiescence(alpha, beta, depth);}
         else {return evaluate();}
@@ -290,15 +291,36 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
     }
 
     // * 4.
+    int posInMoveList = 0; // how far we are into the move-list
+    int fullMovesSearched = 0; // the number of full searches we have carried out
     for (Move move: moves) {
+        posInMoveList ++;
         Move subBestMove = 0;
+
+        // a. Late move reduction.
+        int subEval;
+        if (
+                (searchParameters.useLMR) && // LMR is available
+                (fullMovesSearched >= searchParameters.minMovesBeforeLMR) &&  // we've searched some moves to full depth
+                (depth <= searchParameters.useLMRDepth) && // we are deep enough
+                (posInMoveList > activeMoveList.size()) && // move is not tactical
+                (!inCheck) // not in check
+                ) {
+            // do a search at a reduced depth to see if we fail low, if we do, then we prune this node
+            subEval = -negaMax(-alpha - 100, -alpha, depth - 2, subBestMove);
+            if (subEval <= alpha) {
+                continue;
+            }
+        } 
+
+        fullMovesSearched ++;
 
         // do a full depth search
         makeMove(move); // make the move
-        int subEval = -negaMax(-beta, -alpha, depth - 1, subBestMove);
+        subEval = -negaMax(-beta, -alpha, depth - 1, subBestMove);
         unMakeMove(); // unmake the move
 
-        // a. Fail low
+        // b. Fail low
         if (subEval > nodeEvaluation) {
             nodeEvaluation = subEval;
             bestMove = move; // (this used to be in the following if statement and that caused a bug!)
@@ -307,7 +329,7 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
             }
         }
 
-        // b. Fail hard beta cut off.
+        // c. Fail hard beta cut off.
         if (alpha >= beta) {
             alpha = beta;
             break;

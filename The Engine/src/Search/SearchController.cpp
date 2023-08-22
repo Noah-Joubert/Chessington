@@ -62,14 +62,7 @@ void SearchController::unMakeMove() {
 MoveList SearchController::getMoveList() {
     // returns the regular move list
 
-    genAllMoves(ALL_MOVES);
-
-    return combinedMoveList;
-}
-MoveList SearchController::getQMoveList() {
-    // returns the quiescence move list
-
-    genAllMoves(QUIESENCE_MOVES);
+    genAllMoves();
 
     return combinedMoveList;
 }

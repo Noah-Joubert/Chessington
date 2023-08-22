@@ -26,18 +26,24 @@ struct SearchParameters {
 
     TTParameters ttParameters;
 
+    /* Iterative deepening parameters */
     float minSearchTime = 0.1; // the minimum time of a search in the iterative deepening framework
     int startingDepth = 1; // the depth at which iterative deepening is started
 
-    int stalemateEvaluation = -1000; // the evaluation of a stalemate position
-
     /* Quiescence parameters */
+    bool useQuiescence = true; // whether we use a quiescence search
     bool useSEE = true; // whether we use SEE
     bool useDelta = true;
     int deltaMargin = 200; // the margin used for delta pruning
     int maxDepthForChecks = -2;
 
-    bool useQuiescence = true; // whether we use a quiescence search
+    /* Evaluation parameters */
+    int stalemateEvaluation = -1000; // the evaluation of a stalemate position
+
+    /* Main search parameters */
+    bool useLMR = false;
+    int useLMRDepth = 5; // the minimum depth we must be at for LMR
+    int minMovesBeforeLMR = 3; // the minimum full searches needed before a LMR
 };
 
 struct SearchStats {

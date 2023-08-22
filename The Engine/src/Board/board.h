@@ -23,6 +23,8 @@ protected:
     U64 attackMap; // map of attacked squares, used to stop king from moving into check
     U64 checkingRay; // holds the acceptable squares for a move to land
 
+//    U64 checkingSquares; // the set of squares that
+
     /* History stuff. This is needed for undoing moves */
     MoveList activeMoveList; // stores the active moves
     MoveList quietMoveList; // stores the quiet moves
@@ -53,14 +55,14 @@ protected:
     void genBishopMoves();
     void genQueenMoves();
     void genKnightMoves();
-    void genLegal(short pieceType, short TYPE);
+    void genLegal(short pieceType);
     U64 genPieceLegal(U64 piece, short pieceType);
     U64 genBishopLegal(U64 piece);
     U64 genKnightLegal(U64 piece);
     U64 genRookLegal(U64 piece);
-    void genPawnMoves(short TYPE);
+    void genPawnMoves();
     void genCastlingNew();
-    void genAllMoves(short TYPE);
+    void genAllMoves();
     bool checkKingCheck(short SIDE);
     short getPieceAt(U64 &sq);
     U64 getSquareAttackers(U64 sq, short SIDE);

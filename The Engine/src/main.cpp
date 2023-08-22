@@ -125,6 +125,27 @@ void debugMode(SearchParameters params) {
             cin >> number;
             cout << SuperBoard.
             SEE(stoi(number));
+        } else if (command == "movecode") {
+            string fromS, toS;
+            cout << "   From: ";
+            cin >> fromS;
+            cout << "   To: ";
+            cin >> toS;
+
+            short from, to;
+            for (int i = 0; i < 64; i++) {
+                if (fromS == SquareStrings[i]) from = i;
+                if (toS == SquareStrings[i]) to = i;
+            }
+            for (Move move: moves) {
+                short f, t, x;
+                decodeMove(move, f, t, x, x, x, x);
+                if (f == from && t == to) {
+                    SuperBoard.makeMove(move);
+                    SuperBoard.printBoardPrettily();
+                    moves = SuperBoard.getMoveList();
+                }
+            }
         }
     }
 }
@@ -142,7 +163,7 @@ int main() {
     /* Set the search parameters */
     SearchParameters searchParams;
     searchParams.ttParameters.TTSizeMb = 100; // use a big TT
-    searchParams.minSearchTime = 0.1;
+    searchParams.minSearchTime = 0.2;
 
 //    mainLoop(searchParams);
 

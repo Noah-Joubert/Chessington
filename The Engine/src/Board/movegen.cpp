@@ -379,7 +379,7 @@ short Board::getPieceAt(U64 &sq) {
     if (pieceBB[KING] & sq) return KING;
     return -1;
 }
-U64 Board::getRay (U64 &from, U64 &to){
+U64 Board::getRay(U64 &from, U64 &to){
     U64 ray;
     ray = genNorthMoves(from, emptySquares);
     if (ray & to) return ray | from;
@@ -479,6 +479,7 @@ void Board::genAttackMap() {
 
     emptySquares ^= friendlyKing; // set the king square to occupied
 }
+
 void Board::genKingMoves() {
     U64 moves = 0, actives = 0, quiets = 0;
     U64 generatingPiece = pieceBB[friendly] & pieceBB[KING]; // get the king
@@ -494,7 +495,7 @@ void Board::genKingMoves() {
         convertActiveBitboard(generatingPieceIndex, KING, actives, activeMoveList, pieceBB);
     }
 }
-void Board::genPawnMoves(short TYPE) {
+void Board::genPawnMoves() {
     //TODO Try and digest the genius that I displayed in producing this code
 
     U64 generatingPawns = pieceBB[PAWN] & pieceBB[friendly];
@@ -518,16 +519,8 @@ void Board::genPawnMoves(short TYPE) {
         upRight = 7;
     }
 
-    // if we are generating quiescence moves, AND the validSquares with squares which put the enemy in check
-    // and the enemy pieces, and the promotion rank (rank 1 or rank 8)
-    // or promotions
-    U64 validSquares = checkingRay;
-    if (TYPE == QUIESENCE_MOVES) {
-        U64 enemyKing = getPieces(KING, otherSide);
-        U64 checkingSquares = shift(enemyKing, - upRight) | shift(enemyKing, - upLeft);
-        
-        validSquares &= (push(promotionRank, currentSide) | pieceBB[enemy]);
-    }
+    U64 checkingSquares = push(getPieces(KING, otherSide), otherSide);
+    U64 validSquares = checkingRay; // if we are in check there might be only a few squares we can move to
 
     // split up the promotion and regular pawns
     U64 regPawns = generatingPawns & (~promotionRank);
@@ -540,16 +533,44 @@ void Board::genPawnMoves(short TYPE) {
     U64 secondPush = push(firstPush & doublePushRank, currentSide)  & emptySquares;
     firstPush &= validSquares;
     secondPush &= validSquares;
-    while (firstPush) {
-        short to = popIntLSB(firstPush);
+
+    // separate into checking and no-checking moves
+    U64 quietFirstPush = firstPush & (~checkingSquares);
+    U64 checkingFirstPush = firstPush & checkingSquares;
+    U64 quietSecondPush = secondPush & (~checkingSquares);
+    U64 checkingSecondPush = secondPush & checkingSquares;
+    while (quietFirstPush) {
+        short to = popIntLSB(quietFirstPush);
         Move move = encodeMove(to - up, to, 0, 0, PAWN, EMPTY);
         quietMoveList.emplace_back(move);
     }
-    while (secondPush) {
-        short to = popIntLSB(secondPush);
+    while (checkingFirstPush) {
+        short to = popIntLSB(checkingFirstPush);
+        Move move = encodeMove(to - up, to, 0, 0, PAWN, EMPTY);
+        activeMoveList.emplace_back(move);
+    }
+
+    while (quietSecondPush) {
+        short to = popIntLSB(quietSecondPush);
         Move move = encodeMove(to - up - up, to, 0, 0, PAWN, EMPTY);
         quietMoveList.emplace_back(move);
     }
+    while (checkingSecondPush) {
+        short to = popIntLSB(checkingSecondPush);
+        Move move = encodeMove(to - up - up, to, 0, 0, PAWN, EMPTY);
+        activeMoveList.emplace_back(move);
+    }
+
+//    while (firstPush) {
+//        short to = popIntLSB(firstPush);
+//        Move move = encodeMove(to - up, to, 0, 0, PAWN, EMPTY);
+//        quietMoveList.emplace_back(move);
+//    }
+//    while (secondPush) {
+//        short to = popIntLSB(secondPush);
+//        Move move = encodeMove(to - up - up, to, 0, 0, PAWN, EMPTY);
+//        quietMoveList.emplace_back(move);
+//    }
 
     /* now captures */
     /* note that up-left and upright is relative to the side moving */
@@ -638,7 +659,7 @@ void Board::genPawnMoves(short TYPE) {
         convertPromo(to - up, to, EMPTY, activeMoveList); // we add promos to the activeMoveList
     }
 
-    /* now captures */
+    /* now captures for promotion pawns */
     /* note that up-left and upright is relative to the side moving */
     capturingPawns = promoPawns & ~(blockersNS | blockersEW);
     leftCaptures = shift(capturingPawns & ~(blockersNE), upLeft) & pieceBB[enemy] & validSquares;
@@ -656,7 +677,6 @@ void Board::genPawnMoves(short TYPE) {
         }
     }
 }
-
 U64 Board::genBishopLegal(U64 piece) {
     U64 horizontalBlockers = ~(blockersNS | blockersEW);
     U64 generatingPiece = piece & horizontalBlockers;
@@ -704,7 +724,7 @@ U64 Board::genPieceLegal(U64 piece, short pieceType) {
 
     }
 }
-void Board::genLegal(short pieceType, short TYPE) {
+void Board::genLegal(short pieceType) {
     // used to generate moves for all pieces except pawns/king
     assert((pieceType != PAWN) && (pieceType != KING));
 
@@ -741,14 +761,9 @@ void Board::genLegal(short pieceType, short TYPE) {
         quiets = moves & emptySquares; // get the passive moves
 
         // convert the move bitboards into arrays of moves
-        if (TYPE == ALL_MOVES) {
-            convertQuietBitboard(generatingPieceIndex, pieceType, quiets, quietMoveList);
-            convertQuietBitboard(generatingPieceIndex, pieceType, quietChecks, activeMoveList);
-            convertActiveBitboard(generatingPieceIndex, pieceType, captures, activeMoveList, pieceBB);
-        } else if (TYPE == QUIESENCE_MOVES) {
-//            convertQuietBitboard(generatingPieceIndex, pieceType, quietChecks, activeMoveList);
-            convertActiveBitboard(generatingPieceIndex, pieceType, captures, activeMoveList, pieceBB);
-        }
+        convertQuietBitboard(generatingPieceIndex, pieceType, quiets, quietMoveList);
+        convertQuietBitboard(generatingPieceIndex, pieceType, quietChecks, activeMoveList);
+        convertActiveBitboard(generatingPieceIndex, pieceType, captures, activeMoveList, pieceBB);
     }
 }
 void Board::genCastlingNew() {
@@ -780,7 +795,7 @@ void Board::genCastlingNew() {
         quietMoveList.emplace_back(encodeMove(king, right, 0, 3, KING, ROOK));
     }
 }
-void Board::genAllMoves(short TYPE) {
+void Board::genAllMoves() {
     // this function generates all the moves for the current position
     // the type can be all moves, or quiesence moves for the quiesence search ie. checks and captures, or check evasions
 
@@ -826,34 +841,20 @@ void Board::genAllMoves(short TYPE) {
 
             // now generate the moves
             for (short pieceType: {BISHOP, KNIGHT, ROOK, QUEEN}) {
-                genLegal(pieceType, ALL_MOVES);
+                genLegal(pieceType);
             }
-            genPawnMoves(ALL_MOVES);
+            genPawnMoves();
             genKingMoves();
         }
     } else {
-        // if not in check, and only generating active moves, AND checkingRay with enemy squares
-
-        if (TYPE == ALL_MOVES) {
-            // generate all moves normally
-            for (short pieceType: {BISHOP, KNIGHT, ROOK, QUEEN}) {
-                genLegal(pieceType, ALL_MOVES);
-            }
-
-            genPawnMoves(ALL_MOVES);
-            genKingMoves();
-            genCastlingNew();
-
-        } else if (TYPE == QUIESENCE_MOVES) {
-            // only generate captures/ checks
-            for (short pieceType: {BISHOP, KNIGHT, ROOK, QUEEN}) {
-                genLegal(pieceType, QUIESENCE_MOVES);
-            }
-
-            genPawnMoves(QUIESENCE_MOVES);
-            genCastlingNew();
+        // generate all moves normally
+        for (short pieceType: {BISHOP, KNIGHT, ROOK, QUEEN}) {
+            genLegal(pieceType);
         }
 
+        genPawnMoves();
+        genKingMoves();
+        genCastlingNew();
     }
 
     combinedMoveList.insert(combinedMoveList.begin(), quietMoveList.begin(), quietMoveList.end());
