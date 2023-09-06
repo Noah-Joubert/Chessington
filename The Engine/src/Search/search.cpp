@@ -298,6 +298,7 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
         Move subBestMove = 0;
 
         // a. Late move reduction.
+        //TODO this doesn't actually work. so yeah maybe work that one out. why aren't any of these techniques easy! :)
         int subEval;
         if (
                 (searchParameters.useLMR) && // LMR is available
@@ -307,7 +308,7 @@ int SearchController::negaMax(int alpha, int beta, int depth, Move &bestMove) {
                 (!inCheck) // not in check
                 ) {
             // do a search at a reduced depth to see if we fail low, if we do, then we prune this node
-            subEval = -negaMax(-alpha - 100, -alpha, depth - 2, subBestMove);
+            subEval = -negaMax(-alpha - 1, -alpha, depth - 2, subBestMove);
             if (subEval <= alpha) {
                 continue;
             }

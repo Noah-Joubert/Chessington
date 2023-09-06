@@ -5,8 +5,6 @@
 #include "../SearchController.h"
 #include "evaluation.h"
 
-
-
 int SearchController::evaluate() {
     /* Right now it just does piece worth's */
 
@@ -14,12 +12,10 @@ int SearchController::evaluate() {
     //TODO THIS
     return materialEvaluation * (currentSide == WHITE ? 1 : -1);
 }
-
 int SearchController::relativeLazy() {
     /* Right now it just does piece worth's */
 
     /* negamax requires that the evaluation is relative to the current side */
-    //TODO THIS
     return materialEvaluation * (currentSide == WHITE ? 1 : -1);
 }
 int SearchController::biasedMaterial() {

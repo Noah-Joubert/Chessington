@@ -7,6 +7,7 @@
 #include "Search/SearchController.cpp"
 #include "API.cpp"
 #include "perft.cpp"
+#include "UCI.cpp"
 
 using namespace std;
 const string logsPath = getCWDString() + "/logs/";
@@ -57,7 +58,7 @@ void engineAgainstSelf(SearchController SuperBoard) {
         }
 
 //        if (SuperBoard.getMoveNumber() > 100) break; // break if the game goes on too long
-    };
+    }
 
     // write the PGN string to the file
     ofstream gameFile;
@@ -121,10 +122,10 @@ void debugMode(SearchParameters params) {
         } else if (command == "threefold") {
             cout << "Threefold?: " << SuperBoard.checkThreefold() << "\n";
         } else if (command == "test") {
-            string number;
-            cin >> number;
-            cout << SuperBoard.
-            SEE(stoi(number));
+            string move;
+            cin >> move;
+            cout << move << ".\n";
+            printMoveBitboard(FENLongToMove(move));
         } else if (command == "movecode") {
             string fromS, toS;
             cout << "   From: ";
@@ -155,19 +156,18 @@ void init() {
 }
 
 int main() {
-    /* computer has two cores
-     * two threads for each core
-     * therefore 4 threads all together*/
     init();
 
     /* Set the search parameters */
     SearchParameters searchParams;
     searchParams.ttParameters.TTSizeMb = 100; // use a big TT
-    searchParams.minSearchTime = 0.2;
+    searchParams.minSearchTime = 1;
 
 //    mainLoop(searchParams);
 
-    debugMode(searchParams);
+//    debugMode(searchParams);
+
+    mainLoopUCI(searchParams);
 
     return 0;
 }

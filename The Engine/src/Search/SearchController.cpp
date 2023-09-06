@@ -28,7 +28,7 @@ SearchController::SearchController(SearchParameters searchParamsIn): TT(Transpos
 }
 
 /* Make Move */
-void SearchController::makeMove(Move &move) {
+void SearchController::makeMove(Move move) {
     //TODO add in the god damn evaluation stuff
     //TODO Zobrist needs to changed based on enpassant right and castle rights. And in SetSquare. And in SwitchPlayer. ANd updated enpassant rights in inner move on fdouble pawn push.
 
@@ -171,7 +171,7 @@ void SearchController::updateAfterMove(Move move) {
         // xor them into their new positions
         short newRook, newKing;
         U64 rook = toBB(to); // all 0's from the to square a 1
-        getCastleSquares(rook, newRook, newKing, currentSide);
+        getCastleSquares(rook, newRook, newKing);
         zobristXOR(KING, newKing, currentSide); // xor out the king
         zobristXOR(ROOK, newRook, currentSide); // xor out the rook
 

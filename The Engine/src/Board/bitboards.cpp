@@ -14,7 +14,6 @@
 U64 knightMasks[64];
 U64 kingMasks[64];
 U64 pawnCaptureMask[2][64]; // first for white attacks, second for black attacks
-U64 castleLeftMask, castleRightMask;
 
 /*
  * These masks are for decoding a Move bitboard.
@@ -107,9 +106,6 @@ void initStaticMasks() {
         pawnCaptureMask[WHITE][a] = initPawnAttackPattern(C64(1) << a, WHITE);
         pawnCaptureMask[BLACK][a] = initPawnAttackPattern(C64(1) << a, BLACK);
     }
-
-    castleLeftMask = C64(1) << A1 | C64(1) << A8;
-    castleRightMask = C64(1) << H1 | C64(1) << H8;
 }
 
 /*
@@ -191,23 +187,22 @@ inline short getPromoPiece(short promoCode) {
 inline short getTooPiece(Move m) {
     return (m & toTypeMask) >> 19;
 }
-inline void getCastleSquares(U64 &to, short &newRook, short &newKing, Side &currentSide) {
-    if (currentSide == WHITE) {
-        if (to & castleLeftMask) {
-            newRook = D1;
-            newKing = C1;
-        } else {
-            newRook = F1;
-            newKing = G1;
-        }
-    } else {
-        if (to & castleLeftMask) {
-            newRook = D8;
-            newKing = C8;
-        } else {
-            newRook = F8;
-            newKing = G8;
-        }
+inline void getCastleSquares(U64 to, short &newRook, short &newKing) {
+    if (to & toBB(A1)) {
+        newRook = D1;
+        newKing = C1;
+    }
+    if (to & toBB(H1)) {
+        newRook = F1;
+        newKing = G1;
+    }
+    if (to & toBB(A8)) {
+        newRook = D8;
+        newKing = C8;
+    }
+    if (to & toBB(H8)) {
+        newRook = F8;
+        newKing = G8;
     }
 }
 

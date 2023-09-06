@@ -50,7 +50,7 @@ public:
     /* Constructor */
     SearchController(SearchParameters searchParamsIn);
 
-    void makeMove(Move &move);
+    void makeMove(Move move);
     void unMakeMove();
     MoveList getMoveList();
     MoveList getQMoveList();
@@ -83,6 +83,12 @@ public:
     int negaMax(int alpha, int beta, int depth, Move &bestMove);
     int quiescence(int alpha, int beta, int depth);
     bool search(Move &bestMove, string &FENFlag , bool DEBUG_MODE);
+
+    /* Interface stuff */
+    void setDepth(int depth) {
+        // because i use iterative deepening, i'll actually start from depth - 1!
+        searchParameters.startingDepth = depth - 1;
+    }
 };
 
 #endif //SEARCH_CPP_SEARCHCONTROLLER_H

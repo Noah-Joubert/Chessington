@@ -23,8 +23,6 @@ protected:
     U64 attackMap; // map of attacked squares, used to stop king from moving into check
     U64 checkingRay; // holds the acceptable squares for a move to land
 
-//    U64 checkingSquares; // the set of squares that
-
     /* History stuff. This is needed for undoing moves */
     MoveList activeMoveList; // stores the active moves
     MoveList quietMoveList; // stores the quiet moves
@@ -45,8 +43,7 @@ protected:
 
     /* Move gen stuff (completely self-contained) */
     /* How does move generation work?
-     * Call genAllMoves() with the type of move being generate (ie. all/ quiet moves)
-     * You don't need to worry about how it generates these :)
+     * Call genAllMoves(). You don't need to worry about how it works (i don't know how i did it honestly) :)
      */
     void genBlockers();
     void genAttackMap();

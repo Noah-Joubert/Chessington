@@ -17,7 +17,7 @@ bool Board::canCastle(short SIDE) {
     if (SIDE == WHITE) {
         return CastleRights & 1 || CastleRights & 2;
     } else if (SIDE == BLACK) {
-        return CastleRights & 4 || CastleRights && 8;
+        return CastleRights & 4 || CastleRights & 8;
     }
 }
 U64 Board::getSquareAttackers(U64 sq, short SIDE) {
@@ -201,4 +201,4 @@ void Board::innerSwitchSide() {
     }
 }
 
-#endif !FILE_board_SEEN
+#endif //!FILE_board_SEEN

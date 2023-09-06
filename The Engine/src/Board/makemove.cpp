@@ -181,7 +181,7 @@ inline void Board::doCastle(short &fromType, short &toType, short &from, short &
 
     short newRook, newKing;
     U64 rook = toBB(to); // all 0's from the to square a 1
-    getCastleSquares(rook, newRook, newKing, currentSide);
+    getCastleSquares(rook, newRook, newKing);
 
     // now set the new castle and king squares
     setSquare(fromType, currentSide, newKing);
