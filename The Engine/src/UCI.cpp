@@ -12,7 +12,8 @@ using namespace std;
 
 bool useDebugMode = false;
 
-SearchController UCIBoard = SearchController(SearchParameters());
+SearchParameters _s;
+SearchController UCIBoard(_s);
 
 template <typename T> T popFront(vector<T> &vec) {
     if (vec.empty()) return T();

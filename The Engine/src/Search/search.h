@@ -19,7 +19,7 @@ struct SearchParameters {
         int replaceDepth = 1; // the extra depth needed to overwrite a node (must be at least 1)
         int replaceAge = 7; // the extra age needed to overwrite a node (must be at least 1)
 
-        bool useTT = true; // whether we are using the TT in regular search
+        bool useTT = false; // whether we are using the TT in regular search //todo dont forget this is turned off!
         bool useTTPruning = true; // whether we use the TT for pruning (move-ordering used by default)
         bool useTTInQSearch = true; // whether we are using the TT in the quiescence search
     };
@@ -27,7 +27,7 @@ struct SearchParameters {
     TTParameters ttParameters;
 
     /* Iterative deepening parameters */
-    float minSearchTime = 0.1; // the minimum time of a search in the iterative deepening framework
+    float minSearchTime = 1; // the minimum time of a search in the iterative deepening framework
     int startingDepth = 1; // the depth at which iterative deepening is started
 
     /* Quiescence parameters */
@@ -44,6 +44,9 @@ struct SearchParameters {
     bool useLMR = false;
     int useLMRDepth = 5; // the minimum depth we must be at for LMR
     int minMovesBeforeLMR = 3; // the minimum full searches needed before a LMR
+
+    /* Multithreading parameters */
+    int numThreads = 2;
 };
 
 struct SearchStats {
@@ -56,6 +59,16 @@ struct SearchStats {
         totalQuiescenceSearched = 0;
         totalNonCaptureQSearched = 0;
     }
+    void add(SearchStats s) {
+        totalNodesSearched += s.totalNodesSearched;
+        totalQuiescenceSearched += s.totalQuiescenceSearched;
+        totalNonCaptureQSearched += s.totalNonCaptureQSearched;
+    }
+};
+
+struct SearchResults {
+    int evaluation;
+    Move bestMove;
 };
 
 inline short getEvaluationType(int eval, int alpha, int beta) {

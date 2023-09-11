@@ -11,8 +11,8 @@
 #include "SearchController.h"
 
 /* Constructor */
-SearchController::SearchController(SearchParameters searchParamsIn): TT(TranspositionTable(searchParamsIn)) {
-    searchParameters = searchParamsIn;
+SearchController::SearchController(SearchParameters &searchParamsIn): TT(nullptr) {
+    searchParameters = &searchParamsIn;
 
     /* Init the Zobrist Keys and FEN */
     initZobristKeys();
@@ -69,8 +69,10 @@ MoveList SearchController::getMoveList() {
 void SearchController::readFEN(string FEN) {
     readFENInner(FEN);
 
-    /* Clear the TT table */
-    TT.clear();
+    /* Clear the TT table, if initialised */
+    if (TT != nullptr) {
+        TT->clear();
+    }
 
     /* clear the search's history */
     prevZobristStates.clear();

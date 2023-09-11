@@ -11,8 +11,8 @@ bool parallel = true;
 bool useLogs = true;
 int maxDepth = 6;
 
-SearchParameters perftParams; // the default values for SearchParameters are all zero. This is suitable for a perft instance
-SearchController perftBoard(perftParams);
+SearchParameters s;
+SearchController perftBoard(s); // the default values for SearchParameters are all zero. This is suitable for a perft instance
 mutex mtx;
 
 /* Perft stuff. Don't need to touch this */

@@ -29,13 +29,14 @@ private:
     inline void zobristXOR(short piece, short square, Side side);
 
     /* Search parameters */
-    SearchParameters searchParameters;
+    SearchParameters *searchParameters;
 
     /* Search Statistics */
-    SearchStats searchStats;
+    SearchStats searchStats; // store internal stats and add them on to global stats at the end to avoid data-races
+    SearchStats *globalStats; // store a reference to the global SearchStats
 
     /* Transposition table */
-    TranspositionTable TT;
+    TranspositionTable *TT;
 
 public:
     // TODO CORE STUFF - THIS IS SAFE FROM BEING STRIPPED BACK
@@ -48,7 +49,7 @@ public:
     int relativeLazy();
 
     /* Constructor */
-    SearchController(SearchParameters searchParamsIn);
+    SearchController(SearchParameters &searchParamsIn);
 
     void makeMove(Move move);
     void unMakeMove();
@@ -67,6 +68,18 @@ public:
     short getCurrentSide();
     short getOtherSide();
     int getMaterialEvaluation() {return materialEvaluation;}
+    MoveList getMoveHistory() {return moveHistory;}
+
+    /* Linking to Global data stores */
+    void joinTT(TranspositionTable *TTIn) {TT = TTIn;}
+    void joinSearchStats(SearchStats &stats) {globalStats = &stats;}
+    void joinSearchParams(SearchParameters &params) {searchParameters = &params;}
+    TranspositionTable* getTT() {return TT;}
+    SearchStats getStats() {return searchStats;}
+    void flushStats() {
+        // flushes the locally stored stats to the global store
+        globalStats->add(searchStats);
+    }
 
     /* Zobrist stuff */
     bool validateZobrist();
@@ -80,15 +93,11 @@ public:
 
     /* Search Stuff */
     void extractPV(MoveList &moves);
-    int negaMax(int alpha, int beta, int depth, Move &bestMove);
     int quiescence(int alpha, int beta, int depth);
+    int negaMax(int alpha, int beta, int depth, Move &bestMove);
+    int firstPly(MoveList moves, int depth, Move &bestMove);
     bool search(Move &bestMove, string &FENFlag , bool DEBUG_MODE);
 
-    /* Interface stuff */
-    void setDepth(int depth) {
-        // because i use iterative deepening, i'll actually start from depth - 1!
-        searchParameters.startingDepth = depth - 1;
-    }
 };
 
 #endif //SEARCH_CPP_SEARCHCONTROLLER_H

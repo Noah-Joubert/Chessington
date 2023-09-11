@@ -360,16 +360,6 @@ void convertPromo(short startSquare, short endSquare, short toPiece, MoveList &m
 }
 
 /* board status stuff */
-//bool Board::checkKingCheck(short SIDE) {
-//    U64 king = pieceBB[KING];
-//    if (SIDE == WHITE) {
-//        king &= pieceBB[nWhite];
-//    } else {
-//        king &= pieceBB[nBlack];
-//    }
-//
-//    return getSquareAttackers(king, SIDE);
-//}
 short Board::getPieceAt(U64 &sq) {
     if (pieceBB[PAWN] & sq) return PAWN;
     if (pieceBB[KNIGHT] & sq) return KNIGHT;

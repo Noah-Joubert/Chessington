@@ -5,7 +5,7 @@
 #include <thread>
 #include <fstream>
 #include "Search/SearchController.cpp"
-#include "API.cpp"
+#include "(OLD) API.cpp"
 #include "perft.cpp"
 #include "UCI.cpp"
 
@@ -95,7 +95,8 @@ void debugMode(SearchParameters params) {
         }  else if (command == "search") {
             Move m;
             string t;
-            SuperBoard.search(m, t, true);
+            search(SuperBoard, params, m, t, true);
+//            SuperBoard.search(m, t, true);
             moves = SuperBoard.getMoveList();
         } else if (command == "eval") {
             cout << "Board evaluation: " << SuperBoard.relativeLazy() << "\n";
@@ -161,13 +162,12 @@ int main() {
     /* Set the search parameters */
     SearchParameters searchParams;
     searchParams.ttParameters.TTSizeMb = 100; // use a big TT
-    searchParams.minSearchTime = 1;
 
 //    mainLoop(searchParams);
 
-//    debugMode(searchParams);
+    debugMode(searchParams);
 
-    mainLoopUCI(searchParams);
+//    mainLoopUCI(searchParams);
 
     return 0;
 }

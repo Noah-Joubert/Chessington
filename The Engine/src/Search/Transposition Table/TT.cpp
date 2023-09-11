@@ -75,6 +75,7 @@ public:
         int index = zobristToTTKey(key);
 
         return &table[index];
+
     }
     inline int zobristToTTKey(Zobrist &key) {
         // converts a zobrist key, to a TT key
