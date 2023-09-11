@@ -2,6 +2,7 @@
 // Created by Noah Joubert on 29/07/2023.
 //
 #include "Search/SearchController.cpp"
+#include <thread>
 
 double moveTimer = 0;
 long long int nodeCount = 0;

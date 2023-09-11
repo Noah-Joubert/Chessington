@@ -1,18 +1,8 @@
-Results: 
-	Move: e4 | Eval: 30
-	Depth: 10 | Time: 10.1612s | Nodes: 47.3067 million | Nodes per second: 4.65563 million | Quiescence proportion: 52.6295% | Non-capture Q proportion: 20.5825% |
-Transposition Table:
-	Fill rate: 51.8359% | Absolute size: 69.5729mb
-	Probe hit rate: 15.4046% | {Exact Probe Rate: 6.87159% | Upper Probe Rate: 20.2179% | Lower Probe Rate: 73.2872%}
-	Node set rate: 61.821% | {Overwrite proportion: 6.0676% | Collision proportion: 6.70364% | New node proportion: 87.5056%}
-	Returned move validation rate: 98.5186%
-
 Results:
 	Move: e4 | Eval: 30
-	Depth: 10 | Time: 4.42612s | Nodes: 26.8262 million | Nodes per second: 6.06088 million | Quiescence proportion: 51.8367% | Non-capture Q proportion: 17.9582% |
+	Depth: 10 | Time: 4.57424s | Nodes: 31.1021 million | Nodes per second: 6.7994 million | Quiescence proportion: 51.8192% | Non-capture Q proportion: 18.0874% |
 Transposition Table:
 	Fill rate: 32.9494% | Absolute size: 44.2239mb
 	Probe hit rate: 16.5981% | {Exact Probe Rate: 6.03745% | Upper Probe Rate: 20.8588% | Lower Probe Rate: 73.1037%}
 	Node set rate: 72.1562% | {Overwrite proportion: 7.44187% | Collision proportion: 3.48625% | New node proportion: 89.0719%}
 	Returned move validation rate: 98.7137%
-_

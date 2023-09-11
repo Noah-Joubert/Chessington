@@ -228,7 +228,8 @@ void go(vector<string> &commandQueue) {
     Move bestMove;
     string twice;
 
-    UCIBoard.search(bestMove, twice, false);
+    //TODO yeah
+//    UCIBoard.search(bestMove, twice, false);
     string fen = moveToFENLong(bestMove);
 
     bestmove(fen);

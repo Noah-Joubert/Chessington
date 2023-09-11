@@ -109,7 +109,7 @@ public:
         return node;
     }
 
-    void set(Zobrist key, Move &move, int &depth, int &flag, short age, int &eval) {
+    void set(Zobrist key, Move &move, int &depth, int flag, short age, int &eval) {
         // takes in the results of a search and replaces the node if necessary
         TTNode* node = find(key);
 

@@ -13,13 +13,12 @@
 #define MATE 100000
 
 struct SearchParameters {
-    //TODO look into the setting of these
     struct TTParameters{
         int TTSizeMb = 0; // size of the TT in mb  (0 BY DEFAULT)
         int replaceDepth = 1; // the extra depth needed to overwrite a node (must be at least 1)
         int replaceAge = 7; // the extra age needed to overwrite a node (must be at least 1)
 
-        bool useTT = false; // whether we are using the TT in regular search //todo dont forget this is turned off!
+        bool useTT = true; // whether we are using the TT in regular search
         bool useTTPruning = true; // whether we use the TT for pruning (move-ordering used by default)
         bool useTTInQSearch = true; // whether we are using the TT in the quiescence search
     };
@@ -27,7 +26,7 @@ struct SearchParameters {
     TTParameters ttParameters;
 
     /* Iterative deepening parameters */
-    float minSearchTime = 1; // the minimum time of a search in the iterative deepening framework
+    float minSearchTime = 0.1; // the minimum time of a search in the iterative deepening framework
     int startingDepth = 1; // the depth at which iterative deepening is started
 
     /* Quiescence parameters */
@@ -46,7 +45,8 @@ struct SearchParameters {
     int minMovesBeforeLMR = 3; // the minimum full searches needed before a LMR
 
     /* Multithreading parameters */
-    int numThreads = 2;
+    bool useMultiThreading = false;
+    int numThreads = 4;
 };
 
 struct SearchStats {
@@ -68,7 +68,12 @@ struct SearchStats {
 
 struct SearchResults {
     int evaluation;
+    int depth;
+    float searchTime;
     Move bestMove;
+    MoveList principleVariation;
+    SearchStats stats;
+    bool searchCompleted; // whether the search was completed or it failed e.g. because we are in check-mate.
 };
 
 inline short getEvaluationType(int eval, int alpha, int beta) {

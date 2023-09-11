@@ -11,7 +11,10 @@
 #include "SearchController.h"
 
 /* Constructor */
-SearchController::SearchController(SearchParameters &searchParamsIn): TT(nullptr) {
+SearchController::SearchController(SearchParameters &searchParamsIn): nativeTT(searchParamsIn) {
+    /* init the TT */
+    joinTT(&nativeTT);
+
     searchParameters = &searchParamsIn;
 
     /* Init the Zobrist Keys and FEN */
@@ -70,9 +73,7 @@ void SearchController::readFEN(string FEN) {
     readFENInner(FEN);
 
     /* Clear the TT table, if initialised */
-    if (TT != nullptr) {
-        TT->clear();
-    }
+    TT->clear();
 
     /* clear the search's history */
     prevZobristStates.clear();

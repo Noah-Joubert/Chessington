@@ -32,11 +32,12 @@ private:
     SearchParameters *searchParameters;
 
     /* Search Statistics */
-    SearchStats searchStats; // store internal stats and add them on to global stats at the end to avoid data-races
+    SearchStats searchStats; // we store internal stats and flush them on to global stats when required
     SearchStats *globalStats; // store a reference to the global SearchStats
 
     /* Transposition table */
-    TranspositionTable *TT;
+    TranspositionTable *TT; // the TT is accessed through a pointer, so we can link to an external one as required
+    TranspositionTable nativeTT; // we store a native TT
 
 public:
     // TODO CORE STUFF - THIS IS SAFE FROM BEING STRIPPED BACK
@@ -75,7 +76,11 @@ public:
     void joinSearchStats(SearchStats &stats) {globalStats = &stats;}
     void joinSearchParams(SearchParameters &params) {searchParameters = &params;}
     TranspositionTable* getTT() {return TT;}
+    SearchParameters* getSearchParameters() {return searchParameters;}
     SearchStats getStats() {return searchStats;}
+    void clearStats() {
+        searchStats.clear();
+    }
     void flushStats() {
         // flushes the locally stored stats to the global store
         globalStats->add(searchStats);
@@ -96,8 +101,6 @@ public:
     int quiescence(int alpha, int beta, int depth);
     int negaMax(int alpha, int beta, int depth, Move &bestMove);
     int firstPly(MoveList moves, int depth, Move &bestMove);
-    bool search(Move &bestMove, string &FENFlag , bool DEBUG_MODE);
-
 };
 
 #endif //SEARCH_CPP_SEARCHCONTROLLER_H

@@ -1,8 +1,6 @@
 #include <iostream>
-#include <chrono>  // for high_resolution_clock
 #include <string>
 #include <iomanip>
-#include <thread>
 #include <fstream>
 #include "Search/SearchController.cpp"
 #include "(OLD) API.cpp"
@@ -12,6 +10,69 @@
 using namespace std;
 const string logsPath = getCWDString() + "/logs/";
 
+void printSearchResults(SearchResults results, SearchController SuperBoard) {
+    SearchStats searchStats = results.stats;
+    TranspositionTable *TT = SuperBoard.getTT();
+
+    cout << "---------------------=+ Search Results " << SuperBoard.getMoveNumber() - 1 << ". +=---------------------\n";
+    printMovesPrettily(results.principleVariation);
+    cout << "Results: \n";
+    cout << "\tMove: " << moveToFEN(results.principleVariation[0], "-") << " | ";
+    cout << "Eval: " << results.evaluation << "\n";
+    cout << "\tDepth: " << results.depth << " | ";
+    cout << "Time: " << results.searchTime << "s | ";
+    cout << "Nodes: " << (float) searchStats.totalNodesSearched / 1000000 << " million | ";
+    cout << "Nodes per second: " << (float) searchStats.totalNodesSearched / 1000000 / results.searchTime << " million | ";
+    cout << "Quiescence proportion: " << (float) searchStats.totalQuiescenceSearched / searchStats.totalNodesSearched * 100 << "% | ";
+    cout << "Non-capture Q proportion: " << (float) searchStats.totalNonCaptureQSearched / searchStats.totalQuiescenceSearched * 100 << "% | ";
+    cout << "\n";
+    cout << "Transposition Table: \n";
+    cout << "\tFill rate: " << (float)TT->totalUniqueNodes / TT->getSize() * 100 << "% | ";
+    cout << "Absolute size: " << (float)TT->totalUniqueNodes * sizeof(TTNode) / 1000000 << "mb\n";
+    cout << "\tProbe hit rate: " << (float)TT->totalProbeFound / TT->totalProbeCalls * 100 << "% | ";
+    cout << "{Exact Probe Rate: " << (float)TT->totalProbeExact / TT->totalProbeFound * 100 << "% | ";
+    cout << "Upper Probe Rate: " << (float)TT->totalProbeUpper / TT->totalProbeFound * 100 << "% | ";
+    cout << "Lower Probe Rate: " << (float)TT->totalProbeLower / TT->totalProbeFound * 100 << "%}\n";
+    cout << "\tNode set rate: " << (float)TT->totalNodesSet / TT->totalSetCalls * 100 << "% | ";
+    cout << "{Overwrite proportion: " << (float)TT->totalOverwrittenNodesSet / TT->totalNodesSet * 100 << "% | ";
+    cout << "Collision proportion: " << (float)TT->totalCollisionsSet / TT->totalNodesSet * 100 << "% | ";
+    cout << "New node proportion: " << (float)TT->totalNewNodesSet / TT->totalNodesSet * 100 << "%}\n";
+    cout << "\tReturned move validation rate: " << (float) TT->totalTTMovesInMoveList / TT->totalTTMovesFound * 100 << "%\n";
+    SuperBoard.printBoardPrettily();
+}
+string getFENPrefix(SearchController SuperBoard) {
+    string FENFlag = "";
+
+    Move move = SuperBoard.getMoveHistory().back();
+    SuperBoard.unMakeMove();
+    MoveList moveList = SuperBoard.getMoveList();
+    SuperBoard.makeMove(move);
+
+    // * 2.
+    short fromSq, toSq, promo, flag, fromPc, toPc;
+    FENFlag = "-";
+    decodeMove(move, fromSq, toSq, promo, flag, fromPc, toPc);
+    for (Move m: moveList) {
+        if (m == move) continue;
+
+        short fromSq1, toSq1, promo1, flag1, fromPc1, toPc1;
+        decodeMove(move, fromSq1, toSq1, promo1, flag1, fromPc1, toPc1);
+
+        if (toSq == toSq1 && fromPc == fromPc1) {
+            // get the files
+            int file = fromSq % 8, file1 = fromSq1 % 8;
+            int rank = fromSq / 8, rank1 = fromSq1 / 8;
+
+            if (file != file1) {
+                FENFlag = 'a' + file;
+            } else if (rank != rank1) {
+                FENFlag = '0' + (8 - rank);
+            }
+        }
+    }
+
+    return FENFlag;
+}
 void engineAgainstSelf(SearchController SuperBoard) {
 
     // see what game 'number' this is
@@ -42,7 +103,16 @@ void engineAgainstSelf(SearchController SuperBoard) {
     // run the game, and generate the PGN string
     Move m;
     string FENString;
-    while (SuperBoard.search(m, FENString, true)) {
+    SearchParameters params; // todo fix this
+    SearchResults results;
+    while (true) {
+        results = search(SuperBoard);
+        if (!results.searchCompleted) break;
+
+        FENString = getFENPrefix(SuperBoard);
+        SuperBoard.makeMove(results.bestMove);
+        printSearchResults(results, SuperBoard);
+
         if (SuperBoard.getMoveNumber() % 2 == 0) {
             MatchString += to_string(SuperBoard.getMoveNumber() / 2) + ". ";
         }
@@ -54,10 +124,7 @@ void engineAgainstSelf(SearchController SuperBoard) {
 
         if (!SuperBoard.validateZobrist()) {
             cout << "Oh no :( Zobrist error!? \n";
-//            break;
         }
-
-//        if (SuperBoard.getMoveNumber() > 100) break; // break if the game goes on too long
     }
 
     // write the PGN string to the file
@@ -93,10 +160,10 @@ void debugMode(SearchParameters params) {
             perftBoard.readFEN(FEN + FEN2);
             moves = SuperBoard.getMoveList();
         }  else if (command == "search") {
-            Move m;
             string t;
-            search(SuperBoard, params, m, t, true);
-//            SuperBoard.search(m, t, true);
+            SearchResults results = search(SuperBoard);
+            SuperBoard.makeMove(results.bestMove);
+            printSearchResults(results, SuperBoard);
             moves = SuperBoard.getMoveList();
         } else if (command == "eval") {
             cout << "Board evaluation: " << SuperBoard.relativeLazy() << "\n";

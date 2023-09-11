@@ -30,7 +30,8 @@ void mainLoop(SearchParameters searchParams) {
         } else if (command == "search") {
             Move move;
             string t;
-            SuperBoard.search(move, t, false);
+            //todo this
+//            SuperBoard.search(move, t, false);
             cout << move << "\n";
         } else if (command == "print") {
             SuperBoard.printBoardPrettily();
