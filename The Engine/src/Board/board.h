@@ -5,6 +5,7 @@
 #ifndef SEARCH_CPP_BOARD_H
 #define SEARCH_CPP_BOARD_H
 
+
 /*
  * This is the board class. It runs the game of chess, in a bare-bones form.
  * It only contains methods and attributes that are essential for chess to run.
@@ -13,8 +14,6 @@
  * */
 class Board {
 protected:
-    // TODO CORE - THESE WON'T BE STRIPPED BACK
-
     /* These are the bitboards */
     U64 pieceBB[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; // main BB, one redundant
     U64 occupiedSquares, emptySquares; // emptySquares and it's compliment
@@ -43,9 +42,9 @@ protected:
 
     /* Move gen stuff (completely self-contained) */
     /* How does move generation work?
-     * Call genAllMoves(). You don't need to worry about how it works (i don't know how i did it honestly) :)
+     * Call genMoves(). You don't need to worry about how it works (i don't know how i did it honestly) :)
      */
-    void genBlockers();
+    void genKingBlockers();
     void genAttackMap();
     void genKingMoves();
     void genRookMoves();
@@ -59,7 +58,7 @@ protected:
     U64 genRookLegal(U64 piece);
     void genPawnMoves();
     void genCastlingNew();
-    void genAllMoves();
+    void genMoves();
     bool checkKingCheck(short SIDE);
     short getPieceAt(U64 &sq);
     U64 getSquareAttackers(U64 sq, short SIDE);

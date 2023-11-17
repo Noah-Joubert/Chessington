@@ -19,12 +19,12 @@ typedef uint16_t Zob16; // used to just hold the last 16 bits of a zobrist key t
  * But we also need to store less obvious information in order to optimise the space in the transposition table like depth, flag, age.
  * */
 struct TTNode {
-    Zob16 key = 0; // top half of the zobrist key, used to identify a chess position.
     Move move = 0; // the move code of the best move found
+    Zob16 key = 0; // top half of the zobrist key, used to identify a chess position.
+    int16_t eval = 0; // evaluation of this node
     U8 depth = 0; // the depth at which the position was searched
     U8 flag = 0; // holds whether the evaluation is exact, or an alpha-beta cut off
     U8 age = 0; // holds the moveNumber at which this search was done
-    int16_t eval = 0; // evaluation of this node
 };
 
 /* The actual transposition table. It is essentially a wrapper around an array of TTNodes.
@@ -83,7 +83,7 @@ public:
     }
     inline Zob16 toZob16(Zobrist &key) {
         // takes the final 16 bits of the zobrist key. this is stored in the transposition node, and used to check for collisions
-        return (Zob16) (key >> 48);
+        return (Zob16) (key >> 48); //FIXME: this!
     }
     inline TTNode* probe(Zobrist key, bool &found) {
         // this function gets the entry referenced by this zobrist hash, and checks whether the match is exact

@@ -61,6 +61,7 @@ enum Pieces {
     nBlack = 8,
     nPiece = 9
 };
+
 enum Square {
     // the board is flipped
     A8, B8, C8, D8, E8, F8, G8, H8,

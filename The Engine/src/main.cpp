@@ -17,7 +17,7 @@ void printSearchResults(SearchResults results, SearchController SuperBoard) {
     cout << "---------------------=+ Search Results " << SuperBoard.getMoveNumber() - 1 << ". +=---------------------\n";
     printMovesPrettily(results.principleVariation);
     cout << "Results: \n";
-    cout << "\tMove: " << moveToFEN(results.principleVariation[0], "-") << " | ";
+    cout << "\tMove: " << moveToFEN(results.bestMove, "-") << " | ";
     cout << "Eval: " << results.evaluation << "\n";
     cout << "\tDepth: " << results.depth << " | ";
     cout << "Time: " << results.searchTime << "s | ";
@@ -103,15 +103,14 @@ void engineAgainstSelf(SearchController SuperBoard) {
     // run the game, and generate the PGN string
     Move m;
     string FENString;
-    SearchParameters params; // todo fix this
     SearchResults results;
     while (true) {
         results = search(SuperBoard);
         if (!results.searchCompleted) break;
 
-        FENString = getFENPrefix(SuperBoard);
         SuperBoard.makeMove(results.bestMove);
         printSearchResults(results, SuperBoard);
+        FENString = getFENPrefix(SuperBoard);
 
         if (SuperBoard.getMoveNumber() % 2 == 0) {
             MatchString += to_string(SuperBoard.getMoveNumber() / 2) + ". ";
@@ -228,13 +227,13 @@ int main() {
 
     /* Set the search parameters */
     SearchParameters searchParams;
-    searchParams.ttParameters.TTSizeMb = 100; // use a big TT
+    searchParams.ttParameters.TTSizeMb = 99; // use a big TT
 
 //    mainLoop(searchParams);
 
-    debugMode(searchParams);
+//    debugMode(searchParams);
 
-//    mainLoopUCI(searchParams);
+    mainLoopUCI(searchParams);
 
     return 0;
 }

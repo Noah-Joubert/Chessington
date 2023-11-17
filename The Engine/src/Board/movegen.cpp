@@ -259,7 +259,7 @@ template<> inline U64 genAttack<KING>(U64 generatingKing, U64 &emptySquares) {
 }
 U64 genAttackWrapper(U64 TEMPLATE, U64 generatingPiece, U64 &emptySquares) {
     // a function used to get past annoying template issues
-
+    //TODO try a switch -> bitwise
     if (TEMPLATE == ROOK) {
         return genAttack<ROOK>(generatingPiece, emptySquares);
 
@@ -339,7 +339,7 @@ void convertActiveBitboard(short &startSquare, short startType, U64 moveBB, Move
         }
     }
 }
-void convertQuietBitboard(short &startSquare,short  startType, U64 moveBB, MoveList &quietMoveList) {
+void convertQuietBitboard(short &startSquare, short startType, U64 moveBB, MoveList &quietMoveList) {
     // take all the bits out of the move bitboard
     while (moveBB) {
         const short endSquare = popIntLSB(moveBB); // get the end square
@@ -397,7 +397,7 @@ U64 Board::getRay(U64 &from, U64 &to){
 }
 
 /* move generation stuff */
-void Board::genBlockers() {
+void Board::genKingBlockers() {
     // used when generating legal moves
     // Returns the set of pieces which prevent a check. Includes both players' pieces for en-passant gen.
     U64 king = pieceBB[KING];
@@ -550,17 +550,6 @@ void Board::genPawnMoves() {
         Move move = encodeMove(to - up - up, to, 0, 0, PAWN, EMPTY);
         activeMoveList.emplace_back(move);
     }
-
-//    while (firstPush) {
-//        short to = popIntLSB(firstPush);
-//        Move move = encodeMove(to - up, to, 0, 0, PAWN, EMPTY);
-//        quietMoveList.emplace_back(move);
-//    }
-//    while (secondPush) {
-//        short to = popIntLSB(secondPush);
-//        Move move = encodeMove(to - up - up, to, 0, 0, PAWN, EMPTY);
-//        quietMoveList.emplace_back(move);
-//    }
 
     /* now captures */
     /* note that up-left and upright is relative to the side moving */
@@ -785,25 +774,21 @@ void Board::genCastlingNew() {
         quietMoveList.emplace_back(encodeMove(king, right, 0, 3, KING, ROOK));
     }
 }
-void Board::genAllMoves() {
+void Board::genMoves() {
     // this function generates all the moves for the current position
-    // the type can be all moves, or quiesence moves for the quiesence search ie. checks and captures, or check evasions
 
-    genBlockers();
-    genAttackMap();
+    genKingBlockers(); // the pieces which are preventing our king from being 'checked'
+    genAttackMap(); // to see if we are in check
+    checkingRay = ~(0); // this is the valid destination squares of a move
 
     quietMoveList.clear();
     activeMoveList.clear();
     combinedMoveList.clear();
 
-    // this is the valid destination squares of a move
-    checkingRay = ~(0); // all 1's
-
-    U64 king = pieceBB[KING] & pieceBB[friendly];
-
     // We need to see if it is a single check or a double check
     // If it is a double check, only generate king moves
     // If it is a single check, generate moves which block or capture the checking piece.
+    U64 king = pieceBB[KING] & pieceBB[friendly];
     short numAttackers = 0;
     inCheck = false;
     // if king is in check

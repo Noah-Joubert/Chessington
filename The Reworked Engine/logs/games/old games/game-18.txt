@@ -1,0 +1,5 @@
+1. e4 Rc6
+2. Rc3 e6
+3. Rb5 Rb4
+4. a3 Rxc3
+5. dxc3 Rh4
