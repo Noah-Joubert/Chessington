@@ -229,8 +229,9 @@ void go(vector<string> &commandQueue) {
     string twice;
 
     //TODO yeah
-//    UCIBoard.search(bestMove, twice, false);
-    string fen = moveToFENLong(bestMove);
+
+    SearchResults results = search(UCIBoard);
+    string fen = moveToFENLong(results.bestMove);
 
     bestmove(fen);
 }

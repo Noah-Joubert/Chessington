@@ -65,7 +65,7 @@ void SearchController::unMakeMove() {
 MoveList SearchController::getMoveList() {
     // returns the regular move list
 
-    genAllMoves();
+    genMoves();
 
     return combinedMoveList;
 }

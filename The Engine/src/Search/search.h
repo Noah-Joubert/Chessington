@@ -26,7 +26,7 @@ struct SearchParameters {
     TTParameters ttParameters;
 
     /* Iterative deepening parameters */
-    float minSearchTime = 0.1; // the minimum time of a search in the iterative deepening framework
+    float minSearchTime = 0.5; // the minimum time of a search in the iterative deepening framework
     int startingDepth = 1; // the depth at which iterative deepening is started
 
     /* Quiescence parameters */

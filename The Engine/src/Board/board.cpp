@@ -179,8 +179,6 @@ void Board::readFENInner(string FEN) {
     }
     enPassantRights = enPassantRights;
 
-
-
     moveHistory.clear();
     enPassantHistory.clear();
     CastleRightsHistory.clear();

@@ -5,21 +5,21 @@
 		<Option title="Improve_chess"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\Boost_tests\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/Users/noahjoubert/CLionProjects/Chessington/The Engine/cmake-build-debug"/>
+				<Option working_dir="/Users/noahjoubert/Programming/C++/Chessington/The Engine/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Improve_chess">
-				<Option output="/Users/noahjoubert/CLionProjects/Chessington/The Engine/cmake-build-debug/Improve_chess" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/noahjoubert/CLionProjects/Chessington/The Engine/cmake-build-debug"/>
+				<Option output="/Users/noahjoubert/Programming/C++/Chessington/The Engine/cmake-build-debug/Improve_chess" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/noahjoubert/Programming/C++/Chessington/The Engine/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -32,15 +32,15 @@
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 Improve_chess"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 Improve_chess"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Improve_chess/fast">
-				<Option output="/Users/noahjoubert/CLionProjects/Chessington/The Engine/cmake-build-debug/Improve_chess" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/noahjoubert/CLionProjects/Chessington/The Engine/cmake-build-debug"/>
+				<Option output="/Users/noahjoubert/Programming/C++/Chessington/The Engine/cmake-build-debug/Improve_chess" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/noahjoubert/Programming/C++/Chessington/The Engine/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -53,38 +53,88 @@
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 Improve_chess/fast"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 Improve_chess/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/Users/noahjoubert/CLionProjects/Chessington/The Engine/cmake-build-debug"/>
+				<Option working_dir="/Users/noahjoubert/Programming/C++/Chessington/The Engine/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/Users/noahjoubert/CLionProjects/Chessington/The Engine/cmake-build-debug"/>
+				<Option working_dir="/Users/noahjoubert/Programming/C++/Chessington/The Engine/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/CLionProjects/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Boost_Tests_run">
+				<Option output="/Users/noahjoubert/Programming/C++/Chessington/The Engine/cmake-build-debug/Boost_tests/Boost_Tests_run" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/noahjoubert/Programming/C++/Chessington/The Engine/cmake-build-debug/Boost_tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/local/include/boost_1_74_0"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Boost_tests/Makefile&quot;  VERBOSE=1 Boost_Tests_run"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Boost_tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Boost_tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Boost_tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Boost_Tests_run/fast">
+				<Option output="/Users/noahjoubert/Programming/C++/Chessington/The Engine/cmake-build-debug/Boost_tests/Boost_Tests_run" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/noahjoubert/Programming/C++/Chessington/The Engine/cmake-build-debug/Boost_tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/local/include/boost_1_74_0"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Boost_tests/Makefile&quot;  VERBOSE=1 Boost_Tests_run/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Boost_tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Boost_tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/noahjoubert/Programming/C++/Chessington/The\ Engine/cmake-build-debug/Boost_tests/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/noahjoubert/CLionProjects/Chessington/The Engine/src/main.cpp">
+		<Unit filename="/Users/noahjoubert/Programming/C++/Chessington/The Engine/Boost_tests/[Move Generation] Unit Tests/genKingBlockers.cpp">
+			<Option target="Boost_Tests_run"/>
+		</Unit>
+		<Unit filename="/Users/noahjoubert/Programming/C++/Chessington/The Engine/reworked-src/new_main.cpp">
 			<Option target="Improve_chess"/>
 		</Unit>
-		<Unit filename="/Users/noahjoubert/CLionProjects/Chessington/The Engine/CMakeLists.txt">
+		<Unit filename="/Users/noahjoubert/Programming/C++/Chessington/The Engine/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/Users/noahjoubert/Programming/C++/Chessington/The Engine/Boost_tests/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\Boost_tests\"/>
 		</Unit>
 	</Project>
 </CodeBlocks_project_file>

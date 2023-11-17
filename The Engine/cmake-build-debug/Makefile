@@ -57,10 +57,10 @@ RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "/Users/noahjoubert/CLionProjects/Chessington/The Engine"
+CMAKE_SOURCE_DIR = "/Users/noahjoubert/Programming/C++/Chessington/The Engine"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "/Users/noahjoubert/CLionProjects/Chessington/The Engine/cmake-build-debug"
+CMAKE_BINARY_DIR = "/Users/noahjoubert/Programming/C++/Chessington/The Engine/cmake-build-debug"
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/noahjoubert/CLionProjects/Chessington/The Engine/cmake-build-debug/CMakeFiles" "/Users/noahjoubert/CLionProjects/Chessington/The Engine/cmake-build-debug//CMakeFiles/progress.marks"
+	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/noahjoubert/Programming/C++/Chessington/The Engine/cmake-build-debug/CMakeFiles" "/Users/noahjoubert/Programming/C++/Chessington/The Engine/cmake-build-debug//CMakeFiles/progress.marks"
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/noahjoubert/CLionProjects/Chessington/The Engine/cmake-build-debug/CMakeFiles" 0
+	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/noahjoubert/Programming/C++/Chessington/The Engine/cmake-build-debug/CMakeFiles" 0
 .PHONY : all
 
 # The main clean target
@@ -129,29 +129,42 @@ Improve_chess/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/build
 .PHONY : Improve_chess/fast
 
-src/main.o: src/main.cpp.o
-.PHONY : src/main.o
+#=============================================================================
+# Target rules for targets named Boost_Tests_run
+
+# Build rule for target.
+Boost_Tests_run: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Boost_Tests_run
+.PHONY : Boost_Tests_run
+
+# fast build rule for target.
+Boost_Tests_run/fast:
+	$(MAKE) $(MAKESILENT) -f Boost_tests/CMakeFiles/Boost_Tests_run.dir/build.make Boost_tests/CMakeFiles/Boost_Tests_run.dir/build
+.PHONY : Boost_Tests_run/fast
+
+reworked-src/new_main.o: reworked-src/new_main.cpp.o
+.PHONY : reworked-src/new_main.o
 
 # target to build an object file
-src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/src/main.cpp.o
-.PHONY : src/main.cpp.o
+reworked-src/new_main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/reworked-src/new_main.cpp.o
+.PHONY : reworked-src/new_main.cpp.o
 
-src/main.i: src/main.cpp.i
-.PHONY : src/main.i
+reworked-src/new_main.i: reworked-src/new_main.cpp.i
+.PHONY : reworked-src/new_main.i
 
 # target to preprocess a source file
-src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/src/main.cpp.i
-.PHONY : src/main.cpp.i
+reworked-src/new_main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/reworked-src/new_main.cpp.i
+.PHONY : reworked-src/new_main.cpp.i
 
-src/main.s: src/main.cpp.s
-.PHONY : src/main.s
+reworked-src/new_main.s: reworked-src/new_main.cpp.s
+.PHONY : reworked-src/new_main.s
 
 # target to generate assembly for a file
-src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/src/main.cpp.s
-.PHONY : src/main.cpp.s
+reworked-src/new_main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Improve_chess.dir/build.make CMakeFiles/Improve_chess.dir/reworked-src/new_main.cpp.s
+.PHONY : reworked-src/new_main.cpp.s
 
 # Help Target
 help:
@@ -161,10 +174,11 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... Boost_Tests_run"
 	@echo "... Improve_chess"
-	@echo "... src/main.o"
-	@echo "... src/main.i"
-	@echo "... src/main.s"
+	@echo "... reworked-src/new_main.o"
+	@echo "... reworked-src/new_main.i"
+	@echo "... reworked-src/new_main.s"
 .PHONY : help
 
 

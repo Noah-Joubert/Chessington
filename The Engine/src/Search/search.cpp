@@ -56,7 +56,7 @@ void SearchController::extractPV(MoveList &moves) {
     /* Extract the principle variation from the TT */
 
     // generate legal moves
-    genAllMoves();
+    genMoves();
     MoveList legalMoves = combinedMoveList;
     if (inCheckMate() | inStalemate() | checkThreefold()) {
         // check if the game is over
@@ -118,8 +118,8 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
     }
 
     // * 2.
+    //TODO. side effects! implicit data dependence
     getMoveList(); // annoyingly we have to generate all moves before checking for checkmate/ stalemate
-    MoveList moves = activeMoveList;
     if (inCheckMate()) {
         // return static evaluation ~ do this after checking if depth == 0, to avoid generating moves
         // return -MATE as a checkmate is very bad for the current player
@@ -131,6 +131,8 @@ int SearchController::quiescence(int alpha, int beta, int depth) {
 
     // * 3. Probe the TT
     TTNode *node;
+    MoveList moves = activeMoveList;
+    //TODO get move from hash table if exists
     if (searchParameters->ttParameters.useTTInQSearch) {
         bool nodeExists = false; // whether we've stored a search for this position
         node = TT->probe(zobristState, nodeExists); // probe the table
