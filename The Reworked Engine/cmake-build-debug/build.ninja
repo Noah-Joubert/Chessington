@@ -38,35 +38,36 @@ include CMakeFiles/rules.ninja
 
 cmake_ninja_workdir = /Users/noahjoubert/Programming/C++/Chessington/The$ Reworked$ Engine/cmake-build-debug/
 # =============================================================================
-# Object build statements for EXECUTABLE target Improve_chess
+# Object build statements for EXECUTABLE target app
 
 
 #############################################
-# Order-only phony target for Improve_chess
+# Order-only phony target for app
 
-build cmake_object_order_depends_target_Improve_chess: phony || CMakeFiles/Improve_chess.dir
+build cmake_object_order_depends_target_app: phony || cmake_object_order_depends_target_Board
 
-build CMakeFiles/Improve_chess.dir/src/main.cpp.o: CXX_COMPILER__Improve_chess_Debug /Users/noahjoubert/Programming/C++/Chessington/The$ Reworked$ Engine/src/main.cpp || cmake_object_order_depends_target_Improve_chess
-  DEP_FILE = CMakeFiles/Improve_chess.dir/src/main.cpp.o.d
+build CMakeFiles/app.dir/src/main.cpp.o: CXX_COMPILER__app_Debug /Users/noahjoubert/Programming/C++/Chessington/The$ Reworked$ Engine/src/main.cpp || cmake_object_order_depends_target_app
+  DEP_FILE = CMakeFiles/app.dir/src/main.cpp.o.d
   FLAGS = -O3 -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -fcolor-diagnostics -std=gnu++20
-  OBJECT_DIR = CMakeFiles/Improve_chess.dir
-  OBJECT_FILE_DIR = CMakeFiles/Improve_chess.dir/src
+  OBJECT_DIR = CMakeFiles/app.dir
+  OBJECT_FILE_DIR = CMakeFiles/app.dir/src
 
 
 # =============================================================================
-# Link build statements for EXECUTABLE target Improve_chess
+# Link build statements for EXECUTABLE target app
 
 
 #############################################
-# Link the executable Improve_chess
+# Link the executable app
 
-build Improve_chess: CXX_EXECUTABLE_LINKER__Improve_chess_Debug CMakeFiles/Improve_chess.dir/src/main.cpp.o
+build app: CXX_EXECUTABLE_LINKER__app_Debug CMakeFiles/app.dir/src/main.cpp.o | src/Board/libBoard.a || src/Board/libBoard.a
   FLAGS = -O3 -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk
-  OBJECT_DIR = CMakeFiles/Improve_chess.dir
+  LINK_LIBRARIES = src/Board/libBoard.a
+  OBJECT_DIR = CMakeFiles/app.dir
   POST_BUILD = :
   PRE_LINK = :
-  TARGET_FILE = Improve_chess
-  TARGET_PDB = Improve_chess.dbg
+  TARGET_FILE = app
+  TARGET_PDB = app.dbg
 
 
 #############################################
@@ -92,7 +93,134 @@ build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
 build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 
 # =============================================================================
+# Write statements declared in CMakeLists.txt:
+# /Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/CMakeLists.txt
+# =============================================================================
+
+# =============================================================================
+# Object build statements for STATIC_LIBRARY target Board
+
+
+#############################################
+# Order-only phony target for Board
+
+build cmake_object_order_depends_target_Board: phony || src/Board/CMakeFiles/Board.dir
+
+build src/Board/CMakeFiles/Board.dir/board.cpp.o: CXX_COMPILER__Board_Debug /Users/noahjoubert/Programming/C++/Chessington/The$ Reworked$ Engine/src/Board/board.cpp || cmake_object_order_depends_target_Board
+  DEP_FILE = src/Board/CMakeFiles/Board.dir/board.cpp.o.d
+  FLAGS = -O3 -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -fcolor-diagnostics -std=gnu++20
+  OBJECT_DIR = src/Board/CMakeFiles/Board.dir
+  OBJECT_FILE_DIR = src/Board/CMakeFiles/Board.dir
+
+
+# =============================================================================
+# Link build statements for STATIC_LIBRARY target Board
+
+
+#############################################
+# Link the static library src/Board/libBoard.a
+
+build src/Board/libBoard.a: CXX_STATIC_LIBRARY_LINKER__Board_Debug src/Board/CMakeFiles/Board.dir/board.cpp.o
+  ARCH_FLAGS = -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk
+  LANGUAGE_COMPILE_FLAGS = -O3 -g
+  OBJECT_DIR = src/Board/CMakeFiles/Board.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = src/Board/libBoard.a
+  TARGET_PDB = Board.a.dbg
+
+
+#############################################
+# Utility command for edit_cache
+
+build src/Board/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cd "/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/cmake-build-debug/src/Board" && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  DESC = No interactive CMake dialog available...
+  restat = 1
+
+build src/Board/edit_cache: phony src/Board/CMakeFiles/edit_cache.util
+
+
+#############################################
+# Utility command for rebuild_cache
+
+build src/Board/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
+  COMMAND = cd "/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/cmake-build-debug/src/Board" && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake --regenerate-during-build -S"/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine" -B"/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/cmake-build-debug"
+  DESC = Running CMake to regenerate build system...
+  pool = console
+  restat = 1
+
+build src/Board/rebuild_cache: phony src/Board/CMakeFiles/rebuild_cache.util
+
+# =============================================================================
+# Write statements declared in CMakeLists.txt:
+# /Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/CMakeLists.txt
+# =============================================================================
+
+# =============================================================================
+# Object build statements for EXECUTABLE target Boost_Tests_run
+
+
+#############################################
+# Order-only phony target for Boost_Tests_run
+
+build cmake_object_order_depends_target_Boost_Tests_run: phony || cmake_object_order_depends_target_Board
+
+build Boost_tests/CMakeFiles/Boost_Tests_run.dir/movegenTests.cpp.o: CXX_COMPILER__Boost_Tests_run_Debug /Users/noahjoubert/Programming/C++/Chessington/The$ Reworked$ Engine/Boost_tests/movegenTests.cpp || cmake_object_order_depends_target_Boost_Tests_run
+  DEP_FILE = Boost_tests/CMakeFiles/Boost_Tests_run.dir/movegenTests.cpp.o.d
+  FLAGS = -O3 -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -fcolor-diagnostics -std=gnu++20
+  INCLUDES = -I/usr/local/include/boost_1_74_0
+  OBJECT_DIR = Boost_tests/CMakeFiles/Boost_Tests_run.dir
+  OBJECT_FILE_DIR = Boost_tests/CMakeFiles/Boost_Tests_run.dir
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target Boost_Tests_run
+
+
+#############################################
+# Link the executable Boost_tests/Boost_Tests_run
+
+build Boost_tests/Boost_Tests_run: CXX_EXECUTABLE_LINKER__Boost_Tests_run_Debug Boost_tests/CMakeFiles/Boost_Tests_run.dir/movegenTests.cpp.o | /usr/local/include/boost_1_74_0/lib/libboost_unit_test_framework.dylib src/Board/libBoard.a || src/Board/libBoard.a
+  FLAGS = -O3 -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk
+  LINK_LIBRARIES = -Wl,-rpath,/usr/local/include/boost_1_74_0/lib  /usr/local/include/boost_1_74_0/lib/libboost_unit_test_framework.dylib  src/Board/libBoard.a
+  OBJECT_DIR = Boost_tests/CMakeFiles/Boost_Tests_run.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = Boost_tests/Boost_Tests_run
+  TARGET_PDB = Boost_Tests_run.dbg
+
+
+#############################################
+# Utility command for edit_cache
+
+build Boost_tests/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cd "/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/cmake-build-debug/Boost_tests" && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  DESC = No interactive CMake dialog available...
+  restat = 1
+
+build Boost_tests/edit_cache: phony Boost_tests/CMakeFiles/edit_cache.util
+
+
+#############################################
+# Utility command for rebuild_cache
+
+build Boost_tests/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
+  COMMAND = cd "/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/cmake-build-debug/Boost_tests" && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake --regenerate-during-build -S"/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine" -B"/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/cmake-build-debug"
+  DESC = Running CMake to regenerate build system...
+  pool = console
+  restat = 1
+
+build Boost_tests/rebuild_cache: phony Boost_tests/CMakeFiles/rebuild_cache.util
+
+# =============================================================================
 # Target aliases.
+
+build Board: phony src/Board/libBoard.a
+
+build Boost_Tests_run: phony Boost_tests/Boost_Tests_run
+
+build libBoard.a: phony src/Board/libBoard.a
 
 # =============================================================================
 # Folder targets.
@@ -102,7 +230,21 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 #############################################
 # Folder: /Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/cmake-build-debug
 
-build all: phony Improve_chess
+build all: phony app src/Board/all Boost_tests/all
+
+# =============================================================================
+
+#############################################
+# Folder: /Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/cmake-build-debug/Boost_tests
+
+build Boost_tests/all: phony Boost_tests/Boost_Tests_run
+
+# =============================================================================
+
+#############################################
+# Folder: /Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/cmake-build-debug/src/Board
+
+build src/Board/all: phony src/Board/libBoard.a
 
 # =============================================================================
 # Built-in targets
@@ -111,14 +253,14 @@ build all: phony Improve_chess
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeCInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeCXXInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeCommonLanguageInclude.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeGenericSystem.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeInitializeConfigs.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeLanguageInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeSystemSpecificInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeSystemSpecificInitialize.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/AppleClang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/AppleClang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/CMakeCommonCompilerMacros.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/Clang.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/GNU.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-AppleClang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-AppleClang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-Clang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-Clang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-Clang.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Darwin-Initialize.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Darwin.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/UnixPaths.cmake /Users/noahjoubert/Programming/C++/Chessington/The$ Reworked$ Engine/CMakeLists.txt CMakeCache.txt CMakeFiles/3.24.2/CMakeCCompiler.cmake CMakeFiles/3.24.2/CMakeCXXCompiler.cmake CMakeFiles/3.24.2/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE | /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeCInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeCXXInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeCommonLanguageInclude.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeGenericSystem.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeInitializeConfigs.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeLanguageInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeSystemSpecificInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeSystemSpecificInitialize.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/AppleClang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/AppleClang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/CMakeCommonCompilerMacros.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/Clang.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/GNU.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/FindBoost.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/FindPackageHandleStandardArgs.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/FindPackageMessage.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-AppleClang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-AppleClang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-Clang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-Clang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-Clang.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Darwin-Initialize.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Darwin.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/UnixPaths.cmake /Users/noahjoubert/Programming/C++/Chessington/The$ Reworked$ Engine/Boost_tests/CMakeLists.txt /Users/noahjoubert/Programming/C++/Chessington/The$ Reworked$ Engine/CMakeLists.txt /Users/noahjoubert/Programming/C++/Chessington/The$ Reworked$ Engine/src/Board/CMakeLists.txt CMakeCache.txt CMakeFiles/3.24.2/CMakeCCompiler.cmake CMakeFiles/3.24.2/CMakeCXXCompiler.cmake CMakeFiles/3.24.2/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeCInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeCXXInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeCommonLanguageInclude.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeGenericSystem.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeInitializeConfigs.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeLanguageInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeSystemSpecificInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeSystemSpecificInitialize.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/AppleClang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/AppleClang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/CMakeCommonCompilerMacros.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/Clang.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/GNU.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-AppleClang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-AppleClang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-Clang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-Clang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-Clang.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Darwin-Initialize.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Darwin.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/UnixPaths.cmake /Users/noahjoubert/Programming/C++/Chessington/The$ Reworked$ Engine/CMakeLists.txt CMakeCache.txt CMakeFiles/3.24.2/CMakeCCompiler.cmake CMakeFiles/3.24.2/CMakeCXXCompiler.cmake CMakeFiles/3.24.2/CMakeSystem.cmake: phony
+build /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeCInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeCXXInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeCommonLanguageInclude.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeGenericSystem.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeInitializeConfigs.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeLanguageInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeSystemSpecificInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeSystemSpecificInitialize.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/AppleClang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/AppleClang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/CMakeCommonCompilerMacros.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/Clang.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Compiler/GNU.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/FindBoost.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/FindPackageHandleStandardArgs.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/FindPackageMessage.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-AppleClang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-AppleClang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-Clang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-Clang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Apple-Clang.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Darwin-Initialize.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/Darwin.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/Platform/UnixPaths.cmake /Users/noahjoubert/Programming/C++/Chessington/The$ Reworked$ Engine/Boost_tests/CMakeLists.txt /Users/noahjoubert/Programming/C++/Chessington/The$ Reworked$ Engine/CMakeLists.txt /Users/noahjoubert/Programming/C++/Chessington/The$ Reworked$ Engine/src/Board/CMakeLists.txt CMakeCache.txt CMakeFiles/3.24.2/CMakeCCompiler.cmake CMakeFiles/3.24.2/CMakeCXXCompiler.cmake CMakeFiles/3.24.2/CMakeSystem.cmake: phony
 
 
 #############################################

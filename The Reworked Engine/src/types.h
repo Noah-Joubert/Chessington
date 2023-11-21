@@ -32,7 +32,6 @@ typedef uint8_t SpecialMoveRights;
 /* Masks for decoding a move bitboard */
 constexpr Move fromMask = 63, toMask = 4032, promoMask = 12288, flagMask = 49152, fromTypeMask = 458752, toTypeMask = 3670016;
 
-
 enum Side {
     WHITE = 0,
     BLACK = 1
