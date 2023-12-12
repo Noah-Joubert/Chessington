@@ -67,8 +67,13 @@ enum Pieces {
     ROOK = 3,
     QUEEN = 4,
     KING = 5,
-    EMPTY = -3
+    EMPTY = 6
 };
-
+inline Pieces getPromoPiece(short promoCode) {
+    if (promoCode == KNIGHTPROMO) return KNIGHT;
+    if (promoCode == BISHOPPROMO) return BISHOP;
+    if (promoCode == ROOKPROMO) return ROOK;
+    if (promoCode == QUEENPROMO) return QUEEN;
+}
 
 #endif //SEARCH_CPP_TYPES_H

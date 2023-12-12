@@ -8,7 +8,7 @@
 # =============================================================================
 
 # =============================================================================
-# Project: Project
+# Project: BoostTests
 # Configurations: Debug
 # =============================================================================
 
@@ -46,12 +46,12 @@ cmake_ninja_workdir = /Users/noahjoubert/Programming/C++/Chessington/The$ Rework
 
 build cmake_object_order_depends_target_Boost_Tests_run: phony || CMakeFiles/Boost_Tests_run.dir
 
-build CMakeFiles/Boost_Tests_run.dir/[Move_Generation]_Unit_Tests/genKingBlockers.o: CXX_COMPILER__Boost_Tests_run_Debug /Users/noahjoubert/Programming/C++/Chessington/The$ Reworked$ Engine/Boost_tests/[Move$ Generation]$ Unit$ Tests/genKingBlockers.cpp || cmake_object_order_depends_target_Boost_Tests_run
-  DEP_FILE = CMakeFiles/Boost_Tests_run.dir/[Move_Generation]_Unit_Tests/genKingBlockers.o.d
+build CMakeFiles/Boost_Tests_run.dir/movegenTests.o: CXX_COMPILER__Boost_Tests_run_Debug /Users/noahjoubert/Programming/C++/Chessington/The$ Reworked$ Engine/Boost_tests/movegenTests.cpp || cmake_object_order_depends_target_Boost_Tests_run
+  DEP_FILE = CMakeFiles/Boost_Tests_run.dir/movegenTests.o.d
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -fcolor-diagnostics -std=gnu++20
   INCLUDES = -I/usr/local/include/boost_1_74_0
   OBJECT_DIR = CMakeFiles/Boost_Tests_run.dir
-  OBJECT_FILE_DIR = CMakeFiles/Boost_Tests_run.dir/[Move_Generation]_Unit_Tests
+  OBJECT_FILE_DIR = CMakeFiles/Boost_Tests_run.dir
 
 
 # =============================================================================
@@ -61,9 +61,9 @@ build CMakeFiles/Boost_Tests_run.dir/[Move_Generation]_Unit_Tests/genKingBlocker
 #############################################
 # Link the executable Boost_Tests_run
 
-build Boost_Tests_run: CXX_EXECUTABLE_LINKER__Boost_Tests_run_Debug CMakeFiles/Boost_Tests_run.dir/[Move_Generation]_Unit_Tests/genKingBlockers.o | /usr/local/include/boost_1_74_0/lib/libboost_unit_test_framework.dylib
+build Boost_Tests_run: CXX_EXECUTABLE_LINKER__Boost_Tests_run_Debug CMakeFiles/Boost_Tests_run.dir/movegenTests.o | /usr/local/include/boost_1_74_0/lib/libboost_unit_test_framework.dylib
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk
-  LINK_LIBRARIES = -Wl,-rpath,/usr/local/include/boost_1_74_0/lib  /usr/local/include/boost_1_74_0/lib/libboost_unit_test_framework.dylib  -lBoard_lib
+  LINK_LIBRARIES = -Wl,-rpath,/usr/local/include/boost_1_74_0/lib  /usr/local/include/boost_1_74_0/lib/libboost_unit_test_framework.dylib  -lBoard
   LINK_PATH = -L/usr/local/include/boost_1_74_0/lib
   OBJECT_DIR = CMakeFiles/Boost_Tests_run.dir
   POST_BUILD = :

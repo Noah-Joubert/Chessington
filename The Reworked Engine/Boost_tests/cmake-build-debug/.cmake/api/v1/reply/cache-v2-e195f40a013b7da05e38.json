@@ -2,6 +2,42 @@
 	"entries" : 
 	[
 		{
+			"name" : "BoostTests_BINARY_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/Boost_tests/cmake-build-debug"
+		},
+		{
+			"name" : "BoostTests_IS_TOP_LEVEL",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "ON"
+		},
+		{
+			"name" : "BoostTests_SOURCE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/Boost_tests"
+		},
+		{
 			"name" : "Boost_DIR",
 			"properties" : 
 			[
@@ -927,7 +963,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "Project"
+			"value" : "BoostTests"
 		},
 		{
 			"name" : "CMAKE_RANLIB",

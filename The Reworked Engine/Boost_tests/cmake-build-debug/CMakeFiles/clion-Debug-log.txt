@@ -1,9 +1,4 @@
 /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/ninja -G Ninja -S "/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/Boost_tests" -B "/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/Boost_tests/cmake-build-debug"
-CMake Error at CMakeLists.txt:10 (add_subdirectory):
-  add_subdirectory given source "Boost_Tests_run" which is not an existing
-  directory.
-
-
 CMake Warning (dev) in CMakeLists.txt:
   No cmake_minimum_required command is present.  A line of code such as
 
@@ -14,6 +9,31 @@ CMake Warning (dev) in CMakeLists.txt:
   information run "cmake --help-policy CMP0000".
 This warning is for project developers.  Use -Wno-dev to suppress it.
 
--- Configuring incomplete, errors occurred!
-See also "/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/Boost_tests/cmake-build-debug/CMakeFiles/CMakeOutput.log".
-See also "/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/Boost_tests/cmake-build-debug/CMakeFiles/CMakeError.log".
+-- Configuring done
+CMake Warning (dev) at CMakeLists.txt:12 (add_executable):
+  Policy CMP0003 should be set before this line.  Add code such as
+
+    if(COMMAND cmake_policy)
+      cmake_policy(SET CMP0003 NEW)
+    endif(COMMAND cmake_policy)
+
+  as early as possible but after the most recent call to
+  cmake_minimum_required or cmake_policy(VERSION).  This warning appears
+  because target "Boost_Tests_run" links to some libraries for which the
+  linker must search:
+
+    Board
+
+  and other libraries with known full path:
+
+    /usr/local/include/boost_1_74_0/lib/libboost_unit_test_framework.dylib
+
+  CMake is adding directories in the second list to the linker search path in
+  case they are needed to find libraries from the first list (for backwards
+  compatibility with CMake 2.4).  Set policy CMP0003 to OLD or NEW to enable
+  or disable this behavior explicitly.  Run "cmake --help-policy CMP0003" for
+  more information.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Generating done
+-- Build files have been written to: /Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/Boost_tests/cmake-build-debug

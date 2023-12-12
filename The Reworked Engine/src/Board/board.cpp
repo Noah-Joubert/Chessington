@@ -1,5 +1,9 @@
+#ifndef SEARCH_CPP_NEW_BOARD_CPP
+#define SEARCH_CPP_NEW_BOARD_CPP
+
 #include "board.h"
 #include "movegen.cpp"
+#include "makemove.cpp"
 #include <iomanip>
 
 Pieces FENToPieceCode(char c) {
@@ -210,3 +214,9 @@ void Board::readFEN(string FEN) {
         this->bitboards.enPassantRights = toBB(short(enpassSquare[0]) - short('a'));
     }
 }
+
+Board::Board() {
+    Masks::genMasks();
+}
+
+#endif //SEARCH_CPP_NEW_BOARD_H
