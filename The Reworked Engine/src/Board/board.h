@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "../types.h"
 #include "bitboards.cpp"
 
@@ -49,31 +51,24 @@ private:
     int moveNumber;
 public:
     Board ();
-    void readFEN(string FEN);
-    MoveList genMoves();
     void debugPrint();
 
-    /* move gen */
+    /* getters */
     Bitboards getBitboards() {return this->bitboards;}
     Side getCurrentSide() {return this->currentSide;}
-    void setMoveList(MoveList ml) {this->moveList = ml;}
     MoveList getMoveList() { return moveList; }
 
+    /* setters */
+    void setMoveList(MoveList ml) {this->moveList = ml;}
+    void readFEN(string FEN);
+
+    /* move gen */
+    MoveList genMoves();
+
     /* make move */
-    // TODO: refactor this
-    void innerMakeMove(Move move);
-    void innerUnMakeMove();
-    inline void decodeMove(Move move, short &from, short &to, short &promo, short &flag, short &fromType, short &toType);
-    inline void clearEnPassRights();
-    inline void doEnPass(short &fromType, short &toType, short &from, short &to);
-    void updateCastleRights();
-    inline void undoCastleRights();
-    inline void undoEnPassRights();
-    inline void doCastle(short &fromType, short &toType, short &from, short &to);
-    inline void doQuiet(short &fromType, short &from, short &to);
-    inline void doCapture(short &fromType, short &toType, short &from, short &to);
-    inline void setSquare(short &type, Side &side, short &sq);
-    inline void innerSwitchSide() {
+    void makeMove(Move move);
+    void unmakeMove();
+    inline void switchSide() {
         if (currentSide == WHITE) {
             currentSide = BLACK;
             otherSide = WHITE;

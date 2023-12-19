@@ -5,18 +5,12 @@
 #include <thread>
 #include <fstream>
 
-double moveTimer = 0;
-long long int nodeCount = 0;
-int numThreads = 5;
-bool useThreads = true;
-bool parallel = true;
-bool useLogs = true;
-int maxDepth = 4;
-
 mutex mtx;
 
+long int nodeCount = 0;
+
 /* Perft stuff. Don't need to touch this */
-void splitMoveList(MoveList moves, vector<MoveList> &moveLists) {
+void splitMoveList(MoveList moves, vector<MoveList> &moveLists, int numThreads) {
     int length = moves.size();
 
     // create the move lists
@@ -34,8 +28,8 @@ void splitMoveList(MoveList moves, vector<MoveList> &moveLists) {
         i = (i + 1) % numThreads;
     }
 }
-void reccursiveMoveCheck(int depth, Board &ChessBoard, int &count) {
-    if (depth == maxDepth - 1) {
+void perft(int currDepth, Board &ChessBoard, int &count, int maxDepth) {
+    if (currDepth == maxDepth - 1) {
         MoveList moves = ChessBoard.genMoves();
 
         count += moves.size();
@@ -47,14 +41,14 @@ void reccursiveMoveCheck(int depth, Board &ChessBoard, int &count) {
 
     for (Move move: moves) {
 
-        ChessBoard.innerMakeMove(move);
+        ChessBoard.makeMove(move);
 
-        reccursiveMoveCheck(depth + 1, ChessBoard, count);
+        perft(currDepth + 1, ChessBoard, count, maxDepth);
 
-        ChessBoard.innerUnMakeMove();
+        ChessBoard.unmakeMove();
     }
 }
-void startThread(MoveList moves, Board ChessBoard) {
+void startThread(MoveList moves, Board ChessBoard, int maxDepth) {
     /* note we pass by value here to allow the same super-board to be used for different threads */
     if (maxDepth == 1) {
         nodeCount += moves.size();
@@ -67,18 +61,21 @@ void startThread(MoveList moves, Board ChessBoard) {
         Move move = moves.back();
         moves.pop_back();
 
-        ChessBoard.innerMakeMove(move);
+        ChessBoard.makeMove(move);
 
-        reccursiveMoveCheck(1, ChessBoard, count);
+        perft(1, ChessBoard, count, maxDepth);
 
-        ChessBoard.innerUnMakeMove();
+        ChessBoard.unmakeMove();
     }
 
     mtx.lock(); // lock as it's accessed by multiple threads
     nodeCount += count; // add the count to the global count
     mtx.unlock();
 }
-float perft(Board &perftBoard) {
+void startPerft(Board &perftBoard, int depth, bool useThreads, int numThreads) {
+    double timeSpent;
+    nodeCount = 0;
+
     auto start = chrono::high_resolution_clock::now();
 
     MoveList moves = perftBoard.genMoves();
@@ -86,65 +83,42 @@ float perft(Board &perftBoard) {
     vector<Board> positions;
     vector<int> counts; // stores the counts for each sub move
 
-    nodeCount = 0;
-
     if (useThreads) {
         /* split the move list evenly */
-        splitMoveList(moves, moveLists);
+        splitMoveList(moves, moveLists, numThreads);
 
         /* create the threads */
-        if (!parallel) {
-            int i = 0;
-            cout << "{";
-            for (MoveList mList: moveLists) {
-                i++;
+        vector<thread> threads;
+        for (MoveList mList: moveLists) {
+            threads.emplace_back(thread(startThread, mList, perftBoard, depth));
+        }
 
-                /* create and join the thread */
-                thread t(startThread, mList, perftBoard);
-                t.join();
-                cout << "\n\tThread " << i << ": " << nodeCount << "";
-            }
-            cout << "\n}\n";
-        } else {
-            vector<thread> threads;
-            for (MoveList mList: moveLists) {
-                threads.emplace_back(thread(startThread, mList, perftBoard));
-            }
-
-            for (thread &T: threads) {
-                T.join();
-            }
+        for (thread &T: threads) {
+            T.join();
         }
     } else {
-        startThread(moves, perftBoard);
+        startThread(moves, perftBoard, depth);
     }
 
     auto finish = chrono::high_resolution_clock::now();
     chrono::duration<double> elapsed = finish - start;
-    moveTimer = elapsed.count();
+    timeSpent = elapsed.count();
 
-    if (useLogs) {
-        // write the result to file
-        string fileName;
-        if (useThreads) {
-            fileName = "/Users/Noah/CLionProjects/Improve chess/logs/multi-thread.txt";
-        } else {
-            fileName = "/Users/Noah/CLionProjects/Improve chess/logs/single-thread.txt";
-        }
-
-        // open, write, close the file
-        ofstream File;
-        File.open(fileName, ios::app);
-        File << "\n" << nodeCount << " " << moveTimer;
-        File.close();
+    // write the result to file
+    string fileName ;
+    if (useThreads) {
+        fileName = "/Users/Noah/CLionProjects/Improve chess/logs/multi-thread.txt";
+    } else {
+        fileName = "/Users/Noah/CLionProjects/Improve chess/logs/single-thread.txt";
     }
 
-    return moveTimer;
-}
-void doReccursiveThings(Board &board) {
-    moveTimer = perft(board);
+    // open, write, close the file
+    ofstream File;
+    File.open(fileName, ios::app);
+    File << "\n" << nodeCount << " " << timeSpent;
+    File.close();
 
-    cout << "Nodes per second: " << nodeCount / moveTimer << "\n";
-    cout << "Time: " << moveTimer << "\n";
+    cout << "Nodes per second: " << nodeCount / timeSpent << "\n";
+    cout << "Time: " << timeSpent << "\n";
     cout << "Nodes: " << nodeCount << "\n";
 }

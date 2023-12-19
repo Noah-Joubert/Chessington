@@ -88,9 +88,9 @@ BOOST_AUTO_TEST_SUITE(makeMove)
     BOOST_AUTO_TEST_CASE(basicMoves) {
         board.readFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         board.setMoveList(board.genMoves());
-        board.innerMakeMove(board.getMoveList()[0]);
+        board.makeMove(board.getMoveList()[0]);
         board.debugPrint();
-        board.innerUnMakeMove();
+        board.unmakeMove();
         board.debugPrint();
     }
 
@@ -101,6 +101,6 @@ BOOST_AUTO_TEST_SUITE(perftTime)
     Board board;
     BOOST_AUTO_TEST_CASE(initialPosn) {
         board.readFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-        doReccursiveThings(board);
+        startPerft(board, 4, false, 1);
     }
 BOOST_AUTO_TEST_SUITE_END();
