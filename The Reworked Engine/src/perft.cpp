@@ -43,9 +43,16 @@ void perft(int currDepth, Board &ChessBoard, int &count, int maxDepth) {
 
         ChessBoard.makeMove(move);
 
-        perft(currDepth + 1, ChessBoard, count, maxDepth);
+        int subCount = 0;
+        perft(currDepth + 1, ChessBoard, subCount, maxDepth);
+        count += subCount;
 
         ChessBoard.unmakeMove();
+
+        if (currDepth == 0) {
+            DecodedMove decodedMove(move);
+            cout << SquareStrings[decodedMove.from] << SquareStrings[decodedMove.to] << ": " << subCount << "\n";
+        }
     }
 }
 void startThread(MoveList moves, Board ChessBoard, int maxDepth) {
@@ -63,7 +70,9 @@ void startThread(MoveList moves, Board ChessBoard, int maxDepth) {
 
         ChessBoard.makeMove(move);
 
-        perft(1, ChessBoard, count, maxDepth);
+        int subCount = 0;
+        perft(1, ChessBoard, subCount, maxDepth);
+        count += subCount;
 
         ChessBoard.unmakeMove();
     }
@@ -72,7 +81,7 @@ void startThread(MoveList moves, Board ChessBoard, int maxDepth) {
     nodeCount += count; // add the count to the global count
     mtx.unlock();
 }
-void startPerft(Board &perftBoard, int depth, bool useThreads, int numThreads) {
+long recursivePerft(Board &perftBoard, int depth, bool useThreads, int numThreads) {
     double timeSpent;
     nodeCount = 0;
 
@@ -121,4 +130,65 @@ void startPerft(Board &perftBoard, int depth, bool useThreads, int numThreads) {
     cout << "Nodes per second: " << nodeCount / timeSpent << "\n";
     cout << "Time: " << timeSpent << "\n";
     cout << "Nodes: " << nodeCount << "\n";
+
+    return nodeCount;
+}
+void debugPerft(Board &perftBoard) {
+    while (true) {
+        string command;
+        cout << "Enter command (exit, perft, move, print, moves, fen): ";
+        cin >> command;
+
+        if (command == "exit") {
+            break;
+        } else if (command == "perft") {
+            int depth;
+            cout << "\tEnter depth: ";
+            cin >> depth;
+
+            // run the perft
+            int count = 0;
+
+            auto start = chrono::high_resolution_clock::now();
+            perft(0, perftBoard, count, depth);
+            auto finish = chrono::high_resolution_clock::now();
+
+            double timeSpent = (finish - start).count();
+            cout << "\tNodes per second: " << count / timeSpent << "\n";
+            cout << "\tTime: " << timeSpent << "\n";
+            cout << "\tNodes: " << count << "\n";
+        } else if (command == "move") {
+            string fromS, toS;
+            cout << "\tFrom: ";
+            cin >> fromS;
+            cout << "\tTo: ";
+            cin >> toS;
+
+            short from, to;
+            for (int i = 0; i < 64; i++) {
+                if (fromS == SquareStrings[i]) from = i;
+                if (toS == SquareStrings[i]) to = i;
+            }
+            for (Move move: perftBoard.genMoves()) {
+                DecodedMove decodedMove(move);
+                if (decodedMove.from == from && to == decodedMove.to) {
+                    perftBoard.makeMove(move);
+                }
+            }
+        } else if (command == "print") {
+            perftBoard.debugPrint();
+        } else if (command == "unmove") {
+            perftBoard.unmakeMove();
+        } else if (command == "fen") {
+            string FEN, FEN2;
+            cout << "       Enter FEN: ";
+            cin >> FEN;
+            getline(cin, FEN2);
+            perftBoard.readFEN(FEN + FEN2);
+        } else if (command == "test") {
+            printBitboard(perftBoard.getBitboards().getSideBB(WHITE));
+            printBitboard(perftBoard.getBitboards().getSideBB(BLACK));
+            printBitboard(perftBoard.getBitboards().getPieceBB(PAWN));
+        }
+    }
 }

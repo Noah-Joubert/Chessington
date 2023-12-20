@@ -552,6 +552,7 @@ namespace MoveGeneration {
         // TODO
         U64 enPassantRank; // rank on which pawns can en-passant
         U64 enPassantRightsMask = bitboards.enPassantRights;
+        U64 subValidationSquares;
         short upLeft, upRight, up; // directions relative to the current player
         if (blockers.friendly == WHITE) {
             up = Masks::north;
@@ -559,12 +560,14 @@ namespace MoveGeneration {
             upRight = Masks::noEa;
             enPassantRank = Masks::Rank5;
             enPassantRightsMask <<= (2 * 8);
+            subValidationSquares = blockers.validDestinationSquares | (blockers.validDestinationSquares >> 8);
         } else {
             up = Masks::south;
             upLeft = Masks::soEa;
             upRight = Masks::soWe;
             enPassantRank = Masks::Rank4;
             enPassantRightsMask <<= (5 * 8);
+            subValidationSquares = blockers.validDestinationSquares | (blockers.validDestinationSquares << 8);
         }
 
         // check the capturing-pawn is on the correct rank, and not a blocker
@@ -577,8 +580,9 @@ namespace MoveGeneration {
 
         // now check the taken piece wasn't a diagonal blocker, and that the destination square is valid
         U64 diagBlockers = ~(blockers.NE | blockers.NW);
-        enPassantLeftBB &= blockers.validDestinationSquares & diagBlockers;
-        enPassantRightBB &= blockers.validDestinationSquares & diagBlockers;
+
+        enPassantLeftBB &= subValidationSquares & diagBlockers;
+        enPassantRightBB &= subValidationSquares & diagBlockers;
 
         // check for the rare double horizontal discovered check TODO: optimise this
         U64 king = bitboards.getPieceBB(KING) & bitboards.getSideBB(blockers.friendly);
@@ -587,9 +591,13 @@ namespace MoveGeneration {
 
         U64 postLeftKingAttackers = genEastBB(king, postLeftEmptySquares) | genWestBB(king, postLeftEmptySquares);
         U64 postRightKingAttackers = genEastBB(king, postRightEmptySquares) | genWestBB(king, postRightEmptySquares);
+        postLeftKingAttackers &= (bitboards.getPieceBB(QUEEN) | bitboards.getPieceBB(ROOK)) & bitboards.getSideBB(blockers.enemy);
+        postRightKingAttackers &= (bitboards.getPieceBB(QUEEN) | bitboards.getPieceBB(ROOK)) & bitboards.getSideBB(blockers.enemy);
 
         if ((!postLeftKingAttackers) && (enPassantLeftBB)) return enPassantLeftBB;
         if ((!postRightKingAttackers) && (enPassantRightBB)) return enPassantRightBB;
+
+        return 0;
     }
     U64 genSemiLegalBBWrapper(U64 pieceBB, Pieces piece, MoveGenBitboards &blockers, Bitboards &bitboards) {
         U64 moves;
@@ -733,7 +741,7 @@ namespace MoveGeneration {
         diag = genSemiLegalBB<BISHOP>(sq, blockers, bitboards) & (bitboards.getPieceBB(BISHOP) | bitboards.getPieceBB(QUEEN));
         horiz = genSemiLegalBB<ROOK>(sq, blockers, bitboards) & (bitboards.getPieceBB(ROOK) | bitboards.getPieceBB(QUEEN));
         king = genSemiLegalBB<KING>(sq, blockers, bitboards) & bitboards.getPieceBB(KING);
-        pawn = Masks::pawnCaptureMask[blockers.enemy][bitScanForward(sq)] & bitboards.getPieceBB(PAWN); // pawns need to move in opposite direction
+        pawn = Masks::pawnCaptureMask[blockers.friendly][bitScanForward(sq)] & bitboards.getPieceBB(PAWN) & bitboards.getSideBB(blockers.enemy); // pawns need to move in opposite direction
         attacks = (knight | diag | horiz | king | pawn);
 
         attacks &= bitboards.getSideBB(blockers.enemy);
@@ -802,7 +810,7 @@ namespace MoveGeneration {
     inline void genStandardLegalMoves(MoveGenBitboards &blockers, Bitboards &bitboards, MoveListsContainer&moveLists, short numKingAttackers) {
         Side friendly = blockers.friendly;
 
-        genPawnLegalMoves(blockers, bitboards, moveLists);
+        if (numKingAttackers <= 1) genPawnLegalMoves(blockers, bitboards, moveLists);
         if (numKingAttackers == 0) genCastling(blockers, bitboards, moveLists);
         for (Pieces piece: {KNIGHT, BISHOP, ROOK, QUEEN, KING}) {
             // when there is a double check, we can only move the king
@@ -816,6 +824,7 @@ namespace MoveGeneration {
 
                 U64 moves = genSemiLegalBBWrapper(pieceBB, piece, blockers, bitboards);
                 U64 legalMoves = moves;
+
                 if (piece != KING) legalMoves &= blockers.validDestinationSquares;
                 U64 activeMoves = legalMoves & bitboards.getSideBB(blockers.enemy);
                 U64 quietMoves = legalMoves & bitboards.EmptySquares;
@@ -829,7 +838,6 @@ namespace MoveGeneration {
 }
 
 // The best way to do pawns is loop through each individual pawn and generate promo/ en-passant/ captures ect one at a time!
-
 MoveList Board::genMoves() {
     // build the move-lists
     MoveList activeMoveList, quietMoveList, combinedMoveList;
@@ -837,11 +845,11 @@ MoveList Board::genMoves() {
 
     // build the blockers
     MoveGeneration::MoveGenBitboards blockers{};
+    blockers.friendly = this->currentSide;
+    blockers.enemy = this->otherSide;
     MoveGeneration::genKingBlockers(this->bitboards, blockers); // find pinned pieces
     blockers.attackMap = MoveGeneration::genAttackMap(this->currentSide, this->bitboards); // to see if we are in check
     blockers.validDestinationSquares = ~(0);
-    blockers.friendly = this->currentSide;
-    blockers.enemy = this->otherSide;
 
     U64 king = this->bitboards.getPieceBB(KING) & this->bitboards.getSideBB(this->currentSide);
     bool inCheck = king & blockers.attackMap;
@@ -868,12 +876,6 @@ MoveList Board::genMoves() {
         numKingAttackers = 0;
     }
     MoveGeneration::genStandardLegalMoves(blockers, this->bitboards, moveLists, numKingAttackers);
-
-    /* TODO:
-     * Pawn move generation
-     * Castling generation
-     * inCheck case
-     * */
 
     moveLists.combineLists();
     return *moveLists.combinedMoveList;

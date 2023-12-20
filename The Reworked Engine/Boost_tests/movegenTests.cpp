@@ -96,11 +96,3 @@ BOOST_AUTO_TEST_SUITE(makeMove)
 
     BOOST_AUTO_TEST_SUITE_END();
 
-
-BOOST_AUTO_TEST_SUITE(perftTime)
-    Board board;
-    BOOST_AUTO_TEST_CASE(initialPosn) {
-        board.readFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-        startPerft(board, 4, false, 1);
-    }
-BOOST_AUTO_TEST_SUITE_END();

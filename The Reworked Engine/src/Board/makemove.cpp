@@ -105,15 +105,20 @@ template<> void executeMove<Promotion>(Bitboards &bitboards, Side &currentSide, 
     bitboards.setSquare(promoPiece, currentSide, move.to);
 }
 template<> void executeMove<EnPassant>(Bitboards &bitboards, Side &currentSide, DecodedMove &move) {
-    short enPassSquare = move.to + currentSide == WHITE ? 8 : -8;
+    short enPassSquare = move.to;
+    if (currentSide == WHITE) {
+        enPassSquare = move.to + 8;
+    } else {
+        enPassSquare = move.to - 8;
+    }
     Side otherSide = currentSide == WHITE ? BLACK : WHITE;
 
     // deal with the moving pawn
-    bitboards.setSquare(move.fromType, currentSide, move.from);
-    bitboards.setSquare(move.fromType, currentSide, move.to);
+    bitboards.setSquare(PAWN, currentSide, move.from);
+    bitboards.setSquare(PAWN, currentSide, move.to);
 
     // deal with the taken pawn
-    bitboards.setSquare(move.toType, otherSide, enPassSquare);
+    bitboards.setSquare(PAWN, otherSide, enPassSquare);
 }
 template<> void executeMove<Castle>(Bitboards &bitboards, Side &currentSide, DecodedMove &move) {
     // first reset the castle and king squares
@@ -129,14 +134,16 @@ template<> void executeMove<Castle>(Bitboards &bitboards, Side &currentSide, Dec
     bitboards.setSquare(move.toType, currentSide, newRook);
 }
 void executeMoveWrapper(Bitboards &bitboards, Side &currentSide, DecodedMove &decodedMove) {
-    if (decodedMove.flag == EnPassant) {
+    if (decodedMove.flag == ENPASSANT) {
         /* en passant */
         executeMove<EnPassant>(bitboards, currentSide, decodedMove);
-    } else if (decodedMove.flag == Castle) {
+    } else if (decodedMove.flag == CASTLING) {
         /* castle */
         executeMove<Castle>(bitboards, currentSide, decodedMove);
-    } else if (decodedMove.flag == Promotion) {
+    } else if (decodedMove.flag == PROMOTION) {
         executeMove<Promotion>(bitboards, currentSide, decodedMove);
+    } else if (decodedMove.toType != EMPTY) {
+        executeMove<Capture>(bitboards, currentSide, decodedMove);
     } else {
         executeMove<Quiet>(bitboards, currentSide, decodedMove);
     }
@@ -147,12 +154,16 @@ void executeMoveWrapper(Bitboards &bitboards, Side &currentSide, DecodedMove &de
  * You call the makeMove function, or the unmakeMove function with a legal move.
  */
 void Board::makeMove(Move move) {
+    DecodedMove decodedMove(move);
+    executeMoveWrapper(bitboards, currentSide, decodedMove);
+
     /* --- update en-passant rights --- */
     enPassantHistory.emplace_back(bitboards.enPassantRights);
     bitboards.enPassantRights = 0;
-
-    DecodedMove decodedMove(move);
-    executeMoveWrapper(bitboards, currentSide, decodedMove);
+    if ((decodedMove.fromType == PAWN) && ((decodedMove.from - decodedMove.to) % 16 == 0)) {
+        short file = decodedMove.to % 8;
+        bitboards.enPassantRights ^= toBB(file);
+    }
 
     /* --- update castle rights --- */
     SpecialMoveRights crights = bitboards.castleRights;
@@ -171,7 +182,6 @@ void Board::makeMove(Move move) {
     if ((crights & 8) && (b & CastleMasks[BLACK][1]) != CastleMasks[BLACK][1]) {
         crights ^= 8;
     }
-
     bitboards.castleRights = crights;
 
     /* --- switch the side,, store the move --- */
@@ -204,7 +214,5 @@ void Board::unmakeMove() {
 
     executeMoveWrapper(bitboards, currentSide, decodedMove);
 }
-
-
 
 #endif SEARCH_MAKEMOVECPP
