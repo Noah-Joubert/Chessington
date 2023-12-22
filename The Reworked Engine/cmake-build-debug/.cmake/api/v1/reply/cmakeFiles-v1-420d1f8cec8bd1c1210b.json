@@ -145,13 +145,31 @@
 			"isCMake" : true,
 			"isExternal" : true,
 			"path" : "/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"path" : "Boost_tests/CMakeLists.txt"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/FindBoost.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.24/Modules/FindPackageMessage.cmake"
 		}
 	],
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/src/Board/cmake-build-debug",
-		"source" : "/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/src/Board"
+		"build" : "/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/cmake-build-debug",
+		"source" : "/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine"
 	},
 	"version" : 
 	{

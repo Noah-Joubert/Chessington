@@ -5,7 +5,7 @@
 #ifndef SEARCH_CPP_BITBOSTFD_H
 #define SEARCH_CPP_BITBOSTFD_H
 
-#include "../types.h"
+#include "types.h"
 
 inline short bitScanForward(U64 &BB) {
     // returns the number of leading zeros - ie index of lsb.

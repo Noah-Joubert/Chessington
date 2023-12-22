@@ -1,3 +1,0 @@
-/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/src/Board/cmake-build-debug/CMakeFiles/Board.dir
-/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/src/Board/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/src/Board/cmake-build-debug/CMakeFiles/rebuild_cache.dir

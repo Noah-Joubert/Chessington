@@ -72,12 +72,12 @@ inline void getCastleSquares(U64 to, short &newRook, short &newKing) {
 }
 
 template <MoveType T>
-void executeMove(Bitboards &bitboards, Side &currentSide, DecodedMove &move);
-template<> void executeMove<Quiet>(Bitboards &bitboards, Side &currentSide, DecodedMove &move) {
+inline void executeMove(Bitboards &bitboards, Side &currentSide, DecodedMove &move);
+template<> inline void executeMove<Quiet>(Bitboards &bitboards, Side &currentSide, DecodedMove &move) {
     bitboards.setSquare(move.fromType, currentSide, move.from);
     bitboards.setSquare(move.fromType, currentSide, move.to);
 }
-template<> void executeMove<Capture>(Bitboards &bitboards, Side &currentSide, DecodedMove &move) {
+template<> inline void executeMove<Capture>(Bitboards &bitboards, Side &currentSide, DecodedMove &move) {
     Side otherSide = currentSide == WHITE ? BLACK : WHITE;
 
     // reset the from and too square
@@ -87,7 +87,7 @@ template<> void executeMove<Capture>(Bitboards &bitboards, Side &currentSide, De
     // set the too square
     bitboards.setSquare(move.fromType, currentSide, move.to);
 }
-template<> void executeMove<Promotion>(Bitboards &bitboards, Side &currentSide, DecodedMove &move) {
+template<> inline void executeMove<Promotion>(Bitboards &bitboards, Side &currentSide, DecodedMove &move) {
     if (move.toType == EMPTY) {
         /* quiet move */
         executeMove<Quiet>(bitboards, currentSide, move);
@@ -104,7 +104,7 @@ template<> void executeMove<Promotion>(Bitboards &bitboards, Side &currentSide, 
     short promoPiece = getPromoPiece(move.promo);
     bitboards.setSquare(promoPiece, currentSide, move.to);
 }
-template<> void executeMove<EnPassant>(Bitboards &bitboards, Side &currentSide, DecodedMove &move) {
+template<> inline void executeMove<EnPassant>(Bitboards &bitboards, Side &currentSide, DecodedMove &move) {
     short enPassSquare = move.to;
     if (currentSide == WHITE) {
         enPassSquare = move.to + 8;
@@ -120,7 +120,7 @@ template<> void executeMove<EnPassant>(Bitboards &bitboards, Side &currentSide, 
     // deal with the taken pawn
     bitboards.setSquare(PAWN, otherSide, enPassSquare);
 }
-template<> void executeMove<Castle>(Bitboards &bitboards, Side &currentSide, DecodedMove &move) {
+template<> inline void executeMove<Castle>(Bitboards &bitboards, Side &currentSide, DecodedMove &move) {
     // first reset the castle and king squares
     bitboards.setSquare(move.fromType, currentSide, move.from);
     bitboards.setSquare(move.toType, currentSide, move.to);
@@ -190,28 +190,21 @@ void Board::makeMove(Move move) {
     moveNumber ++;
 }
 void Board::unmakeMove() {
-    /* How does this work
-     * 1. Pop the last move from history
-     * 2. Reload the previous enPassantRights & castling rights
-     * 3. Switch the side back
-     * 4. Run the move in reverse
-     * */
-
-    Move move = moveHistory.back(); // get the last move played
-    moveHistory.pop_back();
-    moveNumber--; // decrease the move number
-
+    /* reset castle rights */
     bitboards.castleRights = CastleRightsHistory.back();
     CastleRightsHistory.pop_back();
 
+    /* reset enPassant rights */
     bitboards.enPassantRights = enPassantHistory.back();
     enPassantHistory.pop_back();
 
     switchSide(); // switch the side
 
-    // decode the move
+    /* unmake the move */
+    Move move = moveHistory.back(); // get the last move played
+    moveHistory.pop_back();
+    moveNumber--; // decrease the move number
     DecodedMove decodedMove(move);
-
     executeMoveWrapper(bitboards, currentSide, decodedMove);
 }
 

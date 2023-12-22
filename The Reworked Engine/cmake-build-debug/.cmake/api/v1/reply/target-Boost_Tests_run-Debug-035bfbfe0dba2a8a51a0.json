@@ -36,12 +36,6 @@
 				"parent" : 0
 			},
 			{
-				"command" : 1,
-				"file" : 0,
-				"line" : 14,
-				"parent" : 0
-			},
-			{
 				"command" : 2,
 				"file" : 0,
 				"line" : 6,
@@ -64,7 +58,7 @@
 			"includes" : 
 			[
 				{
-					"backtrace" : 4,
+					"backtrace" : 3,
 					"path" : "/usr/local/include/boost_1_74_0"
 				}
 			],
@@ -81,13 +75,6 @@
 			[
 				0
 			]
-		}
-	],
-	"dependencies" : 
-	[
-		{
-			"backtrace" : 3,
-			"id" : "Board::@53f91ef67c46522360e3"
 		}
 	],
 	"id" : "Boost_Tests_run::@0cfe60cb577c6d71ec60",
@@ -110,11 +97,6 @@
 			{
 				"backtrace" : 2,
 				"fragment" : "/usr/local/include/boost_1_74_0/lib/libboost_unit_test_framework.dylib",
-				"role" : "libraries"
-			},
-			{
-				"backtrace" : 3,
-				"fragment" : "src/Board/libBoard.a",
 				"role" : "libraries"
 			}
 		],
@@ -142,7 +124,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "Boost_tests/movegenTests.cpp",
+			"path" : "Boost_tests/moveGenerationTests.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

@@ -207,7 +207,13 @@ void Board::readFEN(string FEN) {
 }
 
 Board::Board() {
+    this->moveHistory.reserve(30);
+    this->CastleRightsHistory.reserve(30);
+    this->enPassantHistory.reserve(30);
+
     Masks::genMasks();
+
+    this->readFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 }
 
 #endif //SEARCH_CPP_NEW_BOARD_H

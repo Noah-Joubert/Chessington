@@ -186,18 +186,16 @@ void Board::readFENInner(string FEN) {
 
 /* Setters */
 void Board::innerSwitchSide() {
-    void Board::innerSwitchSide() {
-        if (currentSide == WHITE) {
-            currentSide = BLACK;
-            otherSide = WHITE;
-            friendly = nBlack;
-            enemy = nWhite;
-        } else {
-            currentSide = WHITE;
-            otherSide = BLACK;
-            friendly = nWhite;
-            enemy = nBlack;
-        }
+    if (currentSide == WHITE) {
+        currentSide = BLACK;
+        otherSide = WHITE;
+        friendly = nBlack;
+        enemy = nWhite;
+    } else {
+        currentSide = WHITE;
+        otherSide = BLACK;
+        friendly = nWhite;
+        enemy = nBlack;
     }
 }
 

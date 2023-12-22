@@ -231,9 +231,9 @@ int main() {
 
 //    mainLoop(searchParams);
 
-//    debugMode(searchParams);
+    debugMode(searchParams);
 
-    mainLoopUCI(searchParams);
+//    mainLoopUCI(searchParams);
 
     return 0;
 }

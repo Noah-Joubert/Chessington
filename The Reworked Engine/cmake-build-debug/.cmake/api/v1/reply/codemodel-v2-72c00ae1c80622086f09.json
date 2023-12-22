@@ -8,8 +8,7 @@
 					"build" : ".",
 					"childIndexes" : 
 					[
-						1,
-						2
+						1
 					],
 					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
 					"minimumCMakeVersion" : 
@@ -20,22 +19,8 @@
 					"source" : ".",
 					"targetIndexes" : 
 					[
+						1,
 						2
-					]
-				},
-				{
-					"build" : "src/Board",
-					"jsonFile" : "directory-src.Board-Debug-bd609e64c6b6b6fd0a89.json",
-					"minimumCMakeVersion" : 
-					{
-						"string" : "3.14"
-					},
-					"parentIndex" : 0,
-					"projectIndex" : 1,
-					"source" : "src/Board",
-					"targetIndexes" : 
-					[
-						0
 					]
 				},
 				{
@@ -46,11 +31,11 @@
 						"string" : "3.14"
 					},
 					"parentIndex" : 0,
-					"projectIndex" : 2,
+					"projectIndex" : 1,
 					"source" : "Boost_tests",
 					"targetIndexes" : 
 					[
-						1
+						0
 					]
 				}
 			],
@@ -60,16 +45,16 @@
 				{
 					"childIndexes" : 
 					[
-						1,
-						2
+						1
 					],
 					"directoryIndexes" : 
 					[
 						0
 					],
-					"name" : "Improve_chess",
+					"name" : "Chessington",
 					"targetIndexes" : 
 					[
+						1,
 						2
 					]
 				},
@@ -77,24 +62,12 @@
 					"directoryIndexes" : 
 					[
 						1
-					],
-					"name" : "Board",
-					"parentIndex" : 0,
-					"targetIndexes" : 
-					[
-						0
-					]
-				},
-				{
-					"directoryIndexes" : 
-					[
-						2
 					],
 					"name" : "BoostTests",
 					"parentIndex" : 0,
 					"targetIndexes" : 
 					[
-						1
+						0
 					]
 				}
 			],
@@ -102,22 +75,22 @@
 			[
 				{
 					"directoryIndex" : 1,
-					"id" : "Board::@53f91ef67c46522360e3",
-					"jsonFile" : "target-Board-Debug-aa7820bd3480b5309169.json",
-					"name" : "Board",
+					"id" : "Boost_Tests_run::@0cfe60cb577c6d71ec60",
+					"jsonFile" : "target-Boost_Tests_run-Debug-035bfbfe0dba2a8a51a0.json",
+					"name" : "Boost_Tests_run",
 					"projectIndex" : 1
 				},
 				{
-					"directoryIndex" : 2,
-					"id" : "Boost_Tests_run::@0cfe60cb577c6d71ec60",
-					"jsonFile" : "target-Boost_Tests_run-Debug-af274dc0004307fbbcbe.json",
-					"name" : "Boost_Tests_run",
-					"projectIndex" : 2
+					"directoryIndex" : 0,
+					"id" : "ChessingtonLib::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ChessingtonLib-Debug-b7699ac7715bd6903d52.json",
+					"name" : "ChessingtonLib",
+					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "app::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-app-Debug-fb788dc8faa2d9608c3b.json",
+					"jsonFile" : "target-app-Debug-536be6b6efb7b69a32e3.json",
 					"name" : "app",
 					"projectIndex" : 0
 				}

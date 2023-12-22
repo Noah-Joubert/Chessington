@@ -78,8 +78,7 @@ namespace Masks {
                0;
     }
 
-
-    // TODO call this function
+    // This function must be called upon startup!
     void genMasks() {
         for (int sq = A8; sq <= H1; sq++) {
             knightMasks[sq] = genKnightPatten(C64(1) << sq);
@@ -112,7 +111,7 @@ namespace MoveGeneration {
     };
 
     /* Generates sliding moves in a certain direction */
-    inline U64 genNorthBB(U64 generatingPieces, U64 emptySquares) {
+    inline U64 genNorthBB(U64 generatingPieces, U64 &emptySquares) {
         // get the flooded bit board of north moves
         U64 flood = 0; // set of possible locations
 
@@ -133,7 +132,7 @@ namespace MoveGeneration {
         // shift once more to include the blocker, and exclude the start square
         return flood >> 8;
     }
-    inline U64 genSouthBB(U64 generatingPieces, U64 emptySquares) {
+    inline U64 genSouthBB(U64 generatingPieces, U64 &emptySquares) {
         // get the flooded bit board of north moves
         U64 flood = 0; // set of possible locations
 
@@ -397,18 +396,16 @@ namespace MoveGeneration {
     inline Move encodeMove(short startSquare, short endSquare, short promoCode, short moveFlag, short startType, short endType) {
         return (startSquare) | (endSquare << 6) | (promoCode << 12) | (moveFlag << 14) | (startType << 16) | (endType << 19);
     }
-    template <MoveTypes T> // TODO: clean up this logic
-    void fillMoveList(MoveList *moveList, Bitboards &bitboards, Pieces startPiece, short startSquare, U64 moveBB);
-    template<> void fillMoveList<Quiet>(MoveList *moveList, Bitboards &bitboards, Pieces startPiece, short startSquare, U64 moveBB) {
+    template <MoveTypes T>
+    inline void fillMoveList(MoveList *moveList, Bitboards &bitboards, Pieces startPiece, short startSquare, U64 moveBB);
+    template<> inline void fillMoveList<Quiet>(MoveList *moveList, Bitboards &bitboards, Pieces startPiece, short startSquare, U64 moveBB) {
         while (moveBB) {
             const short endSquare = popIntLSB(moveBB);
             Move move = encodeMove(startSquare, endSquare, 0, 0, startPiece, EMPTY);
-
             moveList->emplace_back(move);
         }
-
     }
-    template<> void fillMoveList<Active>(MoveList *moveList, Bitboards &bitboards, Pieces startPiece, short startSquare, U64 moveBB) {
+    template<> inline void fillMoveList<Active>(MoveList *moveList, Bitboards &bitboards, Pieces startPiece, short startSquare, U64 moveBB) {
         if (moveBB == 0) return;
 
         for (Pieces endPiece: {PAWN, KNIGHT, KING, QUEEN, BISHOP, ROOK}) {
@@ -425,7 +422,7 @@ namespace MoveGeneration {
             if (!moveBB) break;
         }
     }
-    template<> void fillMoveList<Promo>(MoveList *moveList, Bitboards &bitboards, Pieces startPiece, short startSquare, U64 moveBB) {
+    template<> inline void fillMoveList<Promo>(MoveList *moveList, Bitboards &bitboards, Pieces startPiece, short startSquare, U64 moveBB) {
         U64 quietPromos = moveBB & bitboards.EmptySquares;
         while (quietPromos) {
             const short endSquare = popIntLSB(quietPromos);
@@ -441,6 +438,7 @@ namespace MoveGeneration {
         }
 
         U64 activePromos = moveBB & (~bitboards.EmptySquares);
+        if (activePromos == 0) { return; }
         for (Pieces endPiece: {PAWN, BISHOP, KNIGHT, QUEEN, KING, ROOK}) {
             U64 attackedPieces = activePromos & bitboards.getPieceBB(endPiece);
 
@@ -461,9 +459,7 @@ namespace MoveGeneration {
             if (!activePromos) break;
         }
     }
-    template<> void fillMoveList<EnPassant>(MoveList *moveList, Bitboards &bitboards, Pieces startPiece, short startSquare, U64 moveBB) {
-        if (!moveBB) return;
-
+    template<> inline void fillMoveList<EnPassant>(MoveList *moveList, Bitboards &bitboards, Pieces startPiece, short startSquare, U64 moveBB) {
         while (moveBB) {
             const short endSquare = popIntLSB(moveBB);
             Move move = encodeMove(startSquare, endSquare, 0, ENPASSANT, PAWN, PAWN);
@@ -750,31 +746,31 @@ namespace MoveGeneration {
     }
 
     inline void genPawnLegalMoves(MoveGenBitboards &blockers, Bitboards &bitboards, MoveListsContainer&moveLists) {
-        U64 promotingPawnsRank;
-        if (blockers.friendly == WHITE) {
-            promotingPawnsRank = Masks::Rank7;
-        } else {
-            promotingPawnsRank = Masks::Rank2;
-        }
+        U64 promotingPawnsRank = blockers.friendly == WHITE ? Masks::Rank7 : Masks::Rank2;
 
         U64 pawns = bitboards.getPieceBB(PAWN) & bitboards.getSideBB(blockers.friendly);
+        U64 nonPromotingPawns = pawns & ~promotingPawnsRank;
+        U64 promotingPawns = pawns & promotingPawnsRank;
 
-        while (pawns) {
-            U64 generatingPawn = popLSB(pawns);
+        while (nonPromotingPawns) {
+            U64 generatingPawn = popLSB(nonPromotingPawns);
             short generatingPawnSquare = bitScanForward(generatingPawn);
 
-            // non-promoting pawns
-            U64 nonPromoPawnMoves = genSemiLegalBB<PAWN>(generatingPawn & ~promotingPawnsRank, blockers, bitboards);
-            fillMoveList<Quiet>(moveLists.quietMoveList, bitboards, PAWN, generatingPawnSquare, nonPromoPawnMoves & bitboards.EmptySquares);
-            fillMoveList<Active>(moveLists.activeMoveList, bitboards, PAWN, generatingPawnSquare, nonPromoPawnMoves & ~bitboards.EmptySquares);
+            U64 nonPromoPawnMoves = genSemiLegalBB<PAWN>(generatingPawn, blockers, bitboards);
+            U64 quietMoves = nonPromoPawnMoves & bitboards.EmptySquares, activeMoves = nonPromoPawnMoves & ~bitboards.EmptySquares;
+            if (quietMoves) fillMoveList<Quiet>(moveLists.quietMoveList, bitboards, PAWN, generatingPawnSquare, quietMoves);
+            if (activeMoves) fillMoveList<Active>(moveLists.activeMoveList, bitboards, PAWN, generatingPawnSquare,activeMoves);
 
-            // promoting pawns
-            U64 promoPawnMoves = genSemiLegalBB<PAWN>(generatingPawn & promotingPawnsRank, blockers, bitboards);
-            fillMoveList<Promo>(moveLists.activeMoveList, bitboards, PAWN, generatingPawnSquare, promoPawnMoves);
-
-            // en-passant
             U64 enPassantMove = genSemiLegalBB<ENPASSANTPAWNS>(generatingPawn, blockers, bitboards);
-            fillMoveList<EnPassant>(moveLists.activeMoveList, bitboards, PAWN, generatingPawnSquare, enPassantMove);
+            if (enPassantMove) fillMoveList<EnPassant>(moveLists.activeMoveList, bitboards, PAWN, generatingPawnSquare, enPassantMove);
+        }
+
+        while (promotingPawns) {
+            U64 generatingPawn = popLSB(promotingPawns);
+            short generatingPawnSquare = bitScanForward(generatingPawn);
+
+            U64 promoPawnMoves = genSemiLegalBB<PAWN>(generatingPawn, blockers, bitboards);
+            if (promoPawnMoves) fillMoveList<Promo>(moveLists.activeMoveList, bitboards, PAWN, generatingPawnSquare, promoPawnMoves);
         }
     }
     inline void genCastling(MoveGenBitboards &blockers, Bitboards &bitboards, MoveListsContainer&moveLists) {
@@ -829,8 +825,8 @@ namespace MoveGeneration {
                 U64 activeMoves = legalMoves & bitboards.getSideBB(blockers.enemy);
                 U64 quietMoves = legalMoves & bitboards.EmptySquares;
 
-                fillMoveList<Quiet>(moveLists.quietMoveList, bitboards, piece, pieceIndex, quietMoves);
-                fillMoveList<Active>(moveLists.activeMoveList, bitboards, piece, pieceIndex,
+                if (quietMoves) fillMoveList<Quiet>(moveLists.quietMoveList, bitboards, piece, pieceIndex, quietMoves);
+                if (activeMoves) fillMoveList<Active>(moveLists.activeMoveList, bitboards, piece, pieceIndex,
                                      activeMoves);
             }
         }
@@ -841,6 +837,10 @@ namespace MoveGeneration {
 MoveList Board::genMoves() {
     // build the move-lists
     MoveList activeMoveList, quietMoveList, combinedMoveList;
+    activeMoveList.reserve(10);
+    quietMoveList.reserve(40);
+    combinedMoveList.reserve(50);
+
     MoveGeneration::MoveListsContainer moveLists(&quietMoveList, &activeMoveList, &combinedMoveList);
 
     // build the blockers

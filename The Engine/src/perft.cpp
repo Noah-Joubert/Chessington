@@ -7,8 +7,8 @@
 double moveTimer = 0;
 long long int nodeCount = 0;
 int numThreads = 5;
-bool useThreads = true;
-bool parallel = true;
+bool useThreads = false;
+bool parallel = false;
 bool useLogs = true;
 int maxDepth = 6;
 

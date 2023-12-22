@@ -182,7 +182,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=Improve_chess
+CMAKE_PROJECT_NAME:STATIC=Chessington
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/Library/Developer/CommandLineTools/usr/bin/ranlib
@@ -245,6 +245,15 @@ CMAKE_STRIP:FILEPATH=/Library/Developer/CommandLineTools/usr/bin/strip
 // during the make.  This is useful for debugging only. With Visual
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
+
+//Value Computed by CMake
+Chessington_BINARY_DIR:STATIC=/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/cmake-build-debug
+
+//Value Computed by CMake
+Chessington_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+Chessington_SOURCE_DIR:STATIC=/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine
 
 //Value Computed by CMake
 Improve_chess_BINARY_DIR:STATIC=/Users/noahjoubert/Programming/C++/Chessington/The Reworked Engine/cmake-build-debug
@@ -360,7 +369,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=3
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=2
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

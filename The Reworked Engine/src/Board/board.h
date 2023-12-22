@@ -1,6 +1,6 @@
 #include <utility>
 
-#include "../types.h"
+#include "types.h"
 #include "bitboards.cpp"
 
 #ifndef SEARCH_CPP_NEW_BOARD_H
@@ -12,7 +12,7 @@ struct Bitboards {
     U64 EmptySquares = ~0, OccupiedSquares = 0;
     SpecialMoveRights enPassantRights = 0, castleRights = 0;
 
-    void setSquare(short piece, Side side, short sq) {
+    inline void setSquare(short piece, Side side, short sq) {
         U64 square = toBB(sq);
 
         this->pieceBB[piece] ^= square;
@@ -20,13 +20,13 @@ struct Bitboards {
         this->EmptySquares ^= square;
         this->OccupiedSquares ^= square;
     }
-    U64 getPieceBB(Pieces piece) const {
+    inline U64 getPieceBB(Pieces piece) const {
         return this->pieceBB[piece];
     }
-    U64 getSideBB(Side side) const {
+    inline U64 getSideBB(Side side) const {
         return this->sideBB[side];
     }
-    Pieces getPieceAt(U64 sq) {
+    inline Pieces getPieceAt(U64 sq) {
         if (pieceBB[PAWN] & sq) return PAWN;
         if (pieceBB[KNIGHT] & sq) return KNIGHT;
         if (pieceBB[BISHOP] & sq) return BISHOP;
@@ -55,11 +55,8 @@ public:
 
     /* getters */
     Bitboards getBitboards() {return this->bitboards;}
-    Side getCurrentSide() {return this->currentSide;}
-    MoveList getMoveList() { return moveList; }
 
     /* setters */
-    void setMoveList(MoveList ml) {this->moveList = ml;}
     void readFEN(string FEN);
 
     /* move gen */
